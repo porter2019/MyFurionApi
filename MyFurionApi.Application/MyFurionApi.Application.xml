@@ -1,0 +1,770 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MyFurionApi.Application</name>
+    </assembly>
+    <members>
+        <member name="T:MyFurionApi.Application.ApiController.CacheController">
+            <summary>
+            缓存
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.CacheController.Add(System.String,System.String)">
+            <summary>
+            添加
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.CacheController.Get(System.String)">
+            <summary>
+            获取
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.CacheController.Del(System.String)">
+            <summary>
+            删除
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="T:MyFurionApi.Application.ApiController.DBController">
+            <summary>
+            数据库
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.DBController.Migration(System.String)">
+            <summary>
+            数据库迁移
+            </summary>
+            <param name="tableNames">指定实体名称，英文逗号分割</param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.DBController.SqlScript">
+            <summary>
+            执行数据库脚本
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:MyFurionApi.Application.ApiController.FileController">
+            <summary>
+            文件
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.FileController.Upload">
+            <summary>
+            通用文件上传
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:MyFurionApi.Application.ApiController.HealthController">
+            <summary>
+            健康检查
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.HealthController.Check">
+            <summary>
+            检查
+            </summary>
+            <returns>/api/health/check</returns>
+        </member>
+        <member name="T:MyFurionApi.Application.ApiController.SysController">
+            <summary>
+            系统
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.SysController.SyncPermis">
+            <summary>
+            更新系统权限
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:MyFurionApi.Application.ApiController.AccountController">
+            <summary>
+            账户
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.AccountController.InitData">
+            <summary>
+            添加测试用户
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.AccountController.Login(System.String,System.String)">
+            <summary>
+            登录/获取JWT Token
+            </summary>
+            <param name="loginName"></param>
+            <param name="password"></param>
+            <returns></returns>
+        </member>
+        <member name="T:MyFurionApi.Application.ApiController.EventPubController">
+            <summary>
+            事件发布测试
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.EventPubController.Pub(System.String)">
+            <summary>
+            发布消息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:MyFurionApi.Application.ApiController.FormValidateController">
+            <summary>
+            表单验证
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.FormValidateController.Manual(System.String)">
+            <summary>
+            手动验证某个字段
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.FormValidateController.Form(MyFurionApi.Application.Dto.TestFormValidateInput)">
+            <summary>
+            表单验证
+            </summary>
+            <param name="dto"></param>
+            <returns></returns>
+        </member>
+        <member name="T:MyFurionApi.Application.ApiController.ProducController">
+            <summary>
+            产品
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.ProducController.GetInfo(System.Int32)">
+            <summary>
+            获取详情
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.ProducController.GetInfo(MyFurionApi.Application.Dto.ProductSingleInput)">
+            <summary>
+            获取一条
+            </summary>
+            <param name="req"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.ProducController.Update(MyFurionApi.Application.Dto.ProductUpdateInput)">
+            <summary>
+            更新-使用DTO
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.ProducController.Update2(MyFurionApi.Application.Entity.Product)">
+            <summary>
+            修改-使用Entity并且更新ItemList
+            </summary>
+            <param name="dto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.ProducController.Add">
+            <summary>
+            添加
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.ProducController.Delete(System.Int32)">
+            <summary>
+            删除
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.ProducController.GetPageList(MyFurionApi.Application.Dto.ProductPageInput)">
+            <summary>
+            获取分页列表
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.ProducController.GetList(MyFurionApi.Application.Dto.ProductListInput)">
+            <summary>
+            获取列表
+            </summary>
+            <param name="req"></param>
+            <returns></returns>
+        </member>
+        <member name="T:MyFurionApi.Application.ApiController.RemoteController">
+            <summary>
+            调用远程接口
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.RemoteController.Get">
+            <summary>
+            Get请求
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:MyFurionApi.Application.ApiController.SysRoleController">
+            <summary>
+            系统角色组
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.SysRoleController.GetRolePermitList(System.Int32)">
+            <summary>
+            根据组Id获取组的权限配置数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.SysRoleController.SetRolePermit(System.Int32,System.String)">
+            <summary>
+            设置用户组权限
+            </summary>
+            <param name="roleId">组id</param>
+            <param name="permits">权限PermitId，英文逗号分开</param>
+            <returns></returns>
+        </member>
+        <member name="T:MyFurionApi.Application.ApiController.TreeController">
+            <summary>
+            树型实体
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.TreeController.Add(MyFurionApi.Application.Entity.ProCategory)">
+            <summary>
+            添加一条数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.TreeController.GetList(System.String)">
+            <summary>
+            获取树列表
+            </summary>
+            <param name="search">搜索关键字</param>
+            <returns></returns>
+        </member>
+        <member name="T:MyFurionApi.Application.Dto.ProductListInput">
+            <summary>
+            产品列表所需数据
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.ProductListInput.Name">
+            <summary>
+            名称like查询
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Dto.ProductPageInput">
+            <summary>
+            产品分页所需数据
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.ProductPageInput.Name">
+            <summary>
+            名称like查询
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Dto.ProductSingleInput">
+            <summary>
+            构建where
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.ProductSingleInput.Name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Dto.ProductUpdateInput">
+            <summary>
+            更新传入的
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.ProductUpdateInput.Name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.ProductUpdateInput.Type">
+            <summary>
+            类型
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.ProductUpdateInput.Num">
+            <summary>
+            数量
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.ProductUpdateInput.Value">
+            <summary>
+            金额
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Dto.TestFormValidateInput">
+            <summary>
+            测试表单验证输入参数
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.TestFormValidateInput.AccountName">
+            <summary>
+            账户名
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.TestFormValidateInput.Password">
+            <summary>
+            密码
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Dto.SysRoleModuleGroupOutput">
+            <summary>
+            用户组按模块分组显示
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.SysRoleModuleGroupOutput.ModuleName">
+            <summary>
+            模块名称
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.SysRoleModuleGroupOutput.HandlerList">
+            <summary>
+            功能列表
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Dto.SysRoleHandlerGroupOutput">
+            <summary>
+            用户组按控制器分组
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.SysRoleHandlerGroupOutput.HandlerName">
+            <summary>
+            功能名称
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.SysRoleHandlerGroupOutput.OrderNo">
+            <summary>
+            排序数字
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.SysRoleHandlerGroupOutput.PermitList">
+            <summary>
+            权限列表
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Dto.SysRolePermitOutput">
+            <summary>
+            用户组的权限信息
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.SysRolePermitOutput.ModuleName">
+            <summary>
+            模块名称
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.SysRolePermitOutput.HandlerName">
+            <summary>
+            功能名称
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.SysRolePermitOutput.PermitId">
+            <summary>
+            操作id
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.SysRolePermitOutput.PermitName">
+            <summary>
+            操作名称
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.SysRolePermitOutput.AliasName">
+            <summary>
+            操作别名
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.SysRolePermitOutput.OrderNo">
+            <summary>
+            排序数字
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.SysRolePermitOutput.IsChecked">
+            <summary>
+            组是否有了该权限
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Mapper">
+            <summary>
+            自定义映射规则
+            <code>该文件可以放在任何项目或文件夹中，Furion 会在程序启动的时候自动扫描并注入配置。</code>
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Entity.ProCategory">
+            <summary>
+            树型实体
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.ProCategory.Name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.ProCategory.OrderNo">
+            <summary>
+            排序数字，这里是string类型的，升序排列
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.ProCategory.ParentId">
+            <summary>
+            上级Id
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.ProCategory.ParentName">
+            <summary>
+            父级名称
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.ProCategory.FullId">
+            <summary>
+            完整Id
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.ProCategory.FullName">
+            <summary>
+            完整名称
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.ProCategory.FullOrderNo">
+            <summary>
+            完整类别层级排序，竖线分割
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.ProCategory.LevelNo">
+            <summary>
+            层级
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.ProCategory.Status">
+            <summary>
+            启用状态
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.ProCategory.Parent">
+            <summary>
+            父级信息
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.ProCategory.Childs">
+            <summary>
+            子列表
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Entity.Product">
+            <summary>
+            测试主表
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.Product.Name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.Product.Type">
+            <summary>
+            类型
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.Product.Num">
+            <summary>
+            数量
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.Product.Value">
+            <summary>
+            金额
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.Product.ItemList">
+            <summary>
+            明细
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Entity.ProductType">
+            <summary>
+            类型
+            </summary>
+        </member>
+        <member name="F:MyFurionApi.Application.Entity.ProductType.Default">
+            <summary>
+            默认
+            </summary>
+        </member>
+        <member name="F:MyFurionApi.Application.Entity.ProductType.Custom">
+            <summary>
+            自定义
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Entity.ProductItem">
+            <summary>
+            产品明细
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.ProductItem.ProductId">
+            <summary>
+            产品id
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.ProductItem.Num">
+            <summary>
+            唯一索引约束
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.ProductItem.Money">
+            <summary>
+            金额
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.ProductItem.Str">
+            <summary>
+            字符串
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Entity.SysHandler">
+            <summary>
+            系统模块下的功能
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.SysHandler.ModuleId">
+            <summary>
+            所属模块Id
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.SysHandler.HandlerName">
+            <summary>
+            功能名称
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.SysHandler.AliasName">
+            <summary>
+            功能别名
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.SysHandler.RefController">
+            <summary>
+            关联控制器
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.SysHandler.OrderNo">
+            <summary>
+            排序数字
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.SysHandler.Status">
+            <summary>
+            状态
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Entity.SysModule">
+            <summary>
+            系统模块
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.SysModule.ModuleName">
+            <summary>
+            模块名称
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.SysModule.OrderNo">
+            <summary>
+            排序数字，降序排列
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.SysModule.Status">
+            <summary>
+            状态
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Entity.SysPermit">
+            <summary>
+            功能下的权限
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.SysPermit.PermitName">
+            <summary>
+            权限名称
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.SysPermit.AliasName">
+            <summary>
+            权限别名
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.SysPermit.HandlerId">
+            <summary>
+            功能Id
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.SysPermit.Status">
+            <summary>
+            状态
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Entity.SysRole">
+            <summary>
+            用户组
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.SysRole.RoleName">
+            <summary>
+            用户组名称
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.SysRole.Description">
+            <summary>
+            描述
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.SysRole.IsSuper">
+            <summary>
+            是否超级管理组
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.SysRole.Status">
+            <summary>
+            状态
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Entity.SysRolePermit">
+            <summary>
+            用户组权限
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.SysRolePermit.RoleId">
+            <summary>
+            用户组Id
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.SysRolePermit.PermitId">
+            <summary>
+            权限Id
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Entity.SysRoleUser">
+            <summary>
+            用户组下的用户
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.SysRoleUser.RoleId">
+            <summary>
+            用户组Id
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.SysRoleUser.UserId">
+            <summary>
+            用户Id
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Entity.UserInfo">
+            <summary>
+            系统用户信息
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.UserInfo.LoginName">
+            <summary>
+            登录名
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.UserInfo.UserName">
+            <summary>
+            用户名
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.UserInfo.Password">
+            <summary>
+            密码
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.UserInfo.IsAdmin">
+            <summary>
+            是否超管
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.IUserInfoService">
+            <summary>
+            用户服务
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.ProductService">
+            <summary>
+            产品
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Application.ProductService.GetInfo(System.Int32)">
+            <summary>
+            获取一条信息
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="T:MyFurionApi.Application.SysRoleService">
+            <summary>
+            系统角色组服务
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Application.SysRoleService.GetRoleListByUserIdAsync(System.Int32)">
+            <summary>
+            根据用户id获取所属的用户组
+            </summary>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.SysRoleService.GetPermissionsByRoleIdAsync(System.String)">
+            <summary>
+            根据组ids获取所拥有的权限
+            </summary>
+            <param name="roleIds"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.SysRoleService.GetPermissionsByRoleIdsAndRefControllerAsync(System.String,System.String)">
+            <summary>
+            根据组ids和handler信息获取所拥有的权限信息
+            </summary>
+            <param name="roleIds"></param>
+            <param name="refControllerName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.SysRoleService.GetPermitListByRoleId(System.Int32)">
+            <summary>
+            获取用户组的权限配置信息
+            </summary>
+            <param name="roleId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.SysRoleService.SetRolePermitAsync(System.Int32,System.String)">
+            <summary>
+            设置用户组权限
+            </summary>
+            <param name="roleId">组id</param>
+            <param name="permits">权限PermitId，英文逗号分开</param>
+            <returns></returns>
+        </member>
+        <member name="T:MyFurionApi.Application.UserInfoService">
+            <summary>
+            用户服务
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Application.UserInfoService.CheckHasPermissionAsync(System.Int32,System.String,System.String)">
+            <summary>
+            检查用户是否有指定权限
+            </summary>
+            <param name="userId">用户id</param>
+            <param name="controllerName">接口控制器命名空间完整名称</param>
+            <param name="operations">要校验的操作,英文逗号分割</param>
+            <returns></returns>
+        </member>
+        <member name="T:MyFurionApi.Application.Startup">
+            <summary>
+            额外需要使用的服务
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Application.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            添加
+            </summary>
+            <param name="services"></param>
+        </member>
+        <member name="M:MyFurionApi.Application.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+            <summary>
+            使用
+            </summary>
+            <param name="app"></param>
+            <param name="env"></param>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <NoWarn>1701;1702;1591</NoWarn>
+    <DocumentationFile>MyFurionApi.Web.Core.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="MyFurionApi.Web.Core.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="IGeekFan.AspNetCore.Knife4jUI" Version="0.0.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyFurionApi.Application2\MyFurionApi.Application2.csproj" />
+    <ProjectReference Include="..\MyFurionApi.Application\MyFurionApi.Application.csproj" />
+  </ItemGroup>
+
+</Project>

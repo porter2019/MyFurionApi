@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <DebugType>none</DebugType>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <DebugType>none</DebugType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="Controllers\**" />
+		<Content Remove="Controllers\**" />
+		<EmbeddedResource Remove="Controllers\**" />
+		<None Remove="Controllers\**" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\MyFurionApi.Web.Core\MyFurionApi.Web.Core.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="log\" />
+	  <Folder Include="wwwroot\uploads\" />
+	</ItemGroup>
+	<ProjectExtensions>
+		<VisualStudio>
+			<UserProperties properties_4launchsettings_1json__JsonSchema="" />
+		</VisualStudio>
+	</ProjectExtensions>
+
+</Project>
