@@ -3,6 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+MyFurionApi.Web.Entry/wwwroot/uploads/*
+MyFurionApi.Web.Entry/log/*
+
 # User-specific files
 *.rsuser
 *.suo
