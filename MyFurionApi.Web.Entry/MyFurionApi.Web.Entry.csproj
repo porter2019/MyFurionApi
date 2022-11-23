@@ -4,6 +4,8 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+		<UserSecretsId>801d4dc9-bfa2-4c58-8fa9-c46578540c19</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -13,7 +15,11 @@
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 	  <DebugType>none</DebugType>
 	</PropertyGroup>
-
+	<ItemGroup>
+		<Content Update="appsettings.json" CopyToPublishDirectory="Never"></Content>
+		<Content Update="appsettings.Development.json" CopyToPublishDirectory="Never"></Content>
+		<Content Update="wwwroot\uploads\*" CopyToPublishDirectory="Never"></Content>
+	</ItemGroup>
 	<ItemGroup>
 		<Compile Remove="Controllers\**" />
 		<Content Remove="Controllers\**" />
@@ -24,8 +30,11 @@
 		<ProjectReference Include="..\MyFurionApi.Web.Core\MyFurionApi.Web.Core.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="log\" />
+	  <Folder Include="logs\" />
 	  <Folder Include="wwwroot\uploads\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
 	</ItemGroup>
 	<ProjectExtensions>
 		<VisualStudio>

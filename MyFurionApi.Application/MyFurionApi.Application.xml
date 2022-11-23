@@ -74,6 +74,19 @@
             系统
             </summary>
         </member>
+        <member name="M:MyFurionApi.Application.ApiController.SysController.GetConfigValue(System.String)">
+            <summary>
+            获取系统配置文件中的值
+            </summary>
+            <param name="path"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.SysController.GetIP">
+            <summary>
+            获取IP地址
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:MyFurionApi.Application.ApiController.SysController.SyncPermis">
             <summary>
             更新系统权限

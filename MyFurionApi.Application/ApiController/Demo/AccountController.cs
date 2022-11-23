@@ -67,7 +67,7 @@ public class AccountController : BaseApiController
         //  "Authorization",
         //  "Bearer " + ke.response.headers["access-token"]
         //);
-        App.HttpContext.SetTokensOfResponseHeaders(token, "这里是刷新token");
+        App.HttpContext.SetTokensOfResponseHeaders(token, "refresh-token");
         return token;
     }
 

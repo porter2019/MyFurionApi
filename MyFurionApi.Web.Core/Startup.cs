@@ -42,7 +42,7 @@ public class Startup : AppStartup
         //services.AddConsoleFormatter();
 
         //日志输出到文件
-        services.AddFileLogging("log/{0:yyyy}-{0:MM}-{0:dd}.log", options =>
+        services.AddFileLogging("logs/{0:yyyy}-{0:MM}-{0:dd}.log", options =>
         {
             options.FileNameRule = fileName =>
             {

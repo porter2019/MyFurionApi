@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.Extensions.Configuration;
 using System.Reflection;
 
 namespace MyFurionApi.Application.ApiController;
@@ -9,12 +10,39 @@ namespace MyFurionApi.Application.ApiController;
 public class SysController : BaseApiController
 {
     private readonly ILogger<SysController> _logger;
+    private readonly IConfiguration _config;
     private readonly SqlSugarRepository<SysHandler> _handlerRepo;
 
-    public SysController(ILogger<SysController> logger, SqlSugarRepository<SysHandler> handlerRepo)
+    public SysController(ILogger<SysController> logger, IConfiguration config, SqlSugarRepository<SysHandler> handlerRepo)
     {
         _logger = logger;
+        _config = config;
         _handlerRepo = handlerRepo;
+    }
+
+    /// <summary>
+    /// 获取系统配置文件中的值
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [AllowAnonymous]
+    public string GetConfigValue(string path)
+    {
+        if (path.IsNull()) return "path不能为空";
+        return _config[path];
+    }
+
+    /// <summary>
+    /// 获取IP地址
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet, AllowAnonymous]
+    public string GetIP()
+    {
+        var local = App.HttpContext.GetLocalIpAddressToIPv4();
+        var remote = App.HttpContext.GetRemoteIpAddressToIPv4();
+        return $"本机IP：{local}；客户端IP：{remote}；当前时间：{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}";
     }
 
     /// <summary>
