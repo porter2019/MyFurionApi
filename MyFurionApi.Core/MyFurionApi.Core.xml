@@ -674,11 +674,12 @@
              <returns></returns>
         </member>
         <member name="M:MyFurionApi.Core.ExtensionsHelper.ObjToLong(System.Object,System.Int32)">
-             <summary>
+            <summary>
             
-             </summary>
-             <param name="thisValue"></param>
-             <returns></returns>
+            </summary>
+            <param name="thisValue"></param>
+            <param name="errorValue"></param>
+            <returns></returns>
         </member>
         <member name="M:MyFurionApi.Core.ExtensionsHelper.ObjToDouble(System.Object)">
              <summary>
@@ -1083,14 +1084,16 @@
             <summary>
             判断List是否为Null
             </summary>
-            <param name="s"></param>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
             <returns></returns>
         </member>
         <member name="M:MyFurionApi.Core.ExtensionsHelper.IsNotNull``1(System.Collections.Generic.List{``0})">
             <summary>
             判断List是否不为Null
             </summary>
-            <param name="s"></param>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
             <returns></returns>
         </member>
         <member name="M:MyFurionApi.Core.ExtensionsHelper.IsEmpty``1(System.Collections.Generic.IEnumerable{``0})">

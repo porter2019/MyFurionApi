@@ -11,7 +11,7 @@ namespace MyFurionApi.Application2.Entity
         /// 名称
         /// </summary>
         [FsColumn("名称", true, 255)]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// 数量

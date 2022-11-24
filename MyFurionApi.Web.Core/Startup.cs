@@ -44,6 +44,7 @@ public class Startup : AppStartup
         //日志输出到文件
         services.AddFileLogging("logs/{0:yyyy}-{0:MM}-{0:dd}.log", options =>
         {
+            //options.MessageFormat = LoggerFormatter.JsonIndented;
             options.FileNameRule = fileName =>
             {
                 return string.Format(fileName, DateTime.UtcNow);
@@ -51,7 +52,10 @@ public class Startup : AppStartup
         });
 
         //全局捕捉接口控制器详细日志信息
-        services.AddMonitorLogging();//默认读取 Logging:Monitor 下配置
+        services.AddMonitorLogging(options =>
+        {
+            options.JsonIndented = true;
+        });//默认读取 Logging:Monitor 下配置
 
         //处理使用nginx代理后IP获取不正确的问题
         services.Configure<ForwardedHeadersOptions>(options =>

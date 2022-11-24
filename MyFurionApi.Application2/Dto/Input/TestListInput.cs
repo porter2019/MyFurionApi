@@ -9,5 +9,5 @@ public class TestListInput : BaseListQueryModel
     /// 名称like查询
     /// </summary>
     [PageQuery(PageQueryOperatorType.Like)]
-    public string Name { get; set; }
+    public string? Name { get; set; }
 }

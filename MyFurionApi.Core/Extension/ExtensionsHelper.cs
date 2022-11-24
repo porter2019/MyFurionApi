@@ -89,9 +89,10 @@ public static class ExtensionsHelper
     }
 
     /// <summary>
-    ///
+    /// 
     /// </summary>
     /// <param name="thisValue"></param>
+    /// <param name="errorValue"></param>
     /// <returns></returns>
     public static long ObjToLong(this object thisValue, int errorValue)
     {
@@ -1011,7 +1012,8 @@ public static class ExtensionsHelper
     /// <summary>
     /// 判断List是否为Null
     /// </summary>
-    /// <param name="s"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="list"></param>
     /// <returns></returns>
     public static bool IsNull<T>(this List<T> list)
     {
@@ -1021,7 +1023,8 @@ public static class ExtensionsHelper
     /// <summary>
     /// 判断List是否不为Null
     /// </summary>
-    /// <param name="s"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="list"></param>
     /// <returns></returns>
     public static bool IsNotNull<T>(this List<T> list)
     {
