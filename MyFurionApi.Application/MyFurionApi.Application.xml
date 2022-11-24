@@ -69,6 +69,34 @@
             </summary>
             <returns>/api/health/check</returns>
         </member>
+        <member name="T:MyFurionApi.Application.ApiController.ImgCaptchaController">
+            <summary>
+            图形验证码
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.ImgCaptchaController.GetActionIdentification">
+            <summary>
+            获取操作标识
+            </summary>
+            <remarks>返回标识长度：32</remarks>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.ImgCaptchaController.Generate(System.String)">
+            <summary>
+            生成图形验证码
+            </summary>
+            <param name="tag">操作标识（通过【获取操作标识】接口获得）</param>
+            <remarks>返回是文件流，直接img标签src复制</remarks>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.ApiController.ImgCaptchaController.Check(System.String,System.String)">
+            <summary>
+            校验图形验证码
+            </summary>
+            <param name="tag"></param>
+            <param name="code"></param>
+            <returns></returns>
+        </member>
         <member name="T:MyFurionApi.Application.ApiController.SysController">
             <summary>
             系统

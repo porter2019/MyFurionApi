@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>显示验证码</title>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            const tag = '7110041ef6424d06a61b0b77a4463ed0'
+            $("#img").click(function() {
+                $("#img").attr("src","http://localhost:5010/api/ImgCaptcha/get?tag="+tag);
+            })
+          });
+    </script>
+</head>
+<body>
+    <image id="img" src="https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png" width="120" height="50" style="cursor: pointer;"/>
+</body>
+</html>

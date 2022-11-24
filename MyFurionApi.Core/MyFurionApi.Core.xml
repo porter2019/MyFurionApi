@@ -1260,6 +1260,30 @@
             异常过滤器
             </summary>
         </member>
+        <member name="T:MyFurionApi.Core.RandomHelper">
+            <summary>
+            随机数工具类
+            </summary>
+        </member>
+        <member name="F:MyFurionApi.Core.RandomHelper.constantInt">
+            <summary>
+            整形随机数
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Core.RandomHelper.GenerateNumber(System.Int32)">
+            <summary>
+            生成随机数,数字+小写字母+大写字母随机组合
+            </summary>
+            <param name="Length">长度</param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Core.RandomHelper.GenerateIntNumber(System.Int32)">
+            <summary>
+            生成整形随机数
+            </summary>
+            <param name="Length">长度</param>
+            <returns></returns>
+        </member>
         <member name="T:MyFurionApi.Core.SystemTextJsonConfig">
             <summary>
             SystemTextJson序列化配置
@@ -1313,12 +1337,73 @@
             <param name="folder">保存的文件夹</param>
             <returns></returns>
         </member>
+        <member name="T:MyFurionApi.Core.ImgCaptchaService">
+            <summary>
+            图形验证码服务
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Core.ImgCaptchaService.GenerateAsync(System.String)">
+            <summary>
+            根据操作标识生成图形验证码
+            </summary>
+            <remarks>同时保存到缓存中</remarks>
+            <param name="guid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Core.ImgCaptchaService.ValidateCodeAsync(System.String,System.String)">
+            <summary>
+            校验图形验证码
+            </summary>
+            <param name="guid"></param>
+            <param name="code"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Core.ImgCaptchaService.GenerateAsync(System.String,System.Int32,System.Int32)">
+            <summary>
+            生成验证码图片
+            </summary>
+            <param name="code">验证码</param>
+            <param name="width">宽为0将根据验证码长度自动匹配合适宽度</param>
+            <param name="height">高</param>
+            <remarks>注意引用的System.Drawing.Common包版本是5.0的，6.0的会提示仅支持windows</remarks>
+            <returns></returns>
+        </member>
         <member name="M:MyFurionApi.Core.IAttachUploadService.SaveAttach(Microsoft.AspNetCore.Http.IFormFileCollection,System.String)">
             <summary>
             保存附件
             </summary>
             <param name="files">上传文件列表</param>
             <param name="folder">保存的文件夹</param>
+            <returns></returns>
+        </member>
+        <member name="T:MyFurionApi.Core.IImgCaptchaService">
+            <summary>
+            图形验证码
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Core.IImgCaptchaService.GenerateAsync(System.String,System.Int32,System.Int32)">
+            <summary>
+            生成验证码图片
+            </summary>
+            <param name="code">验证码</param>
+            <param name="width">宽为0将根据验证码长度自动匹配合适宽度</param>
+            <param name="height">高</param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Core.IImgCaptchaService.GenerateAsync(System.String)">
+            <summary>
+            根据操作标识生成图形验证码
+            </summary>
+            <remarks>同时保存到缓存中</remarks>
+            <param name="guid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Core.IImgCaptchaService.ValidateCodeAsync(System.String,System.String)">
+            <summary>
+            校验图形验证码
+            </summary>
+            <param name="guid"></param>
+            <param name="code"></param>
             <returns></returns>
         </member>
         <member name="P:MyFurionApi.Core.SqlSugarPagedList`1.PageIndex">
