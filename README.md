@@ -94,3 +94,65 @@ docker run --name my-furion-api-prod -p 5011:80 -v D:\Docker\Volumes\MyFurionApi
 `Windows`：`192.168.65.2`
 
 `Linux`：`172.17.0.1`
+
+# 使用Consul Key/Value
+
+## Consul配置
+
+- Consul配置好后，默认访问地址：http://127.0.0.1:8500/
+
+- 进入Consul控制台的Key/Value，新建一个名为`furion`的文件夹
+
+- 进入`furion`文件夹，创建 `appsettings.Development.json`文件，将项目中的配置文件内容复制到这个文件中
+
+## 程序代码
+
+- nuget包搜索`Winton.Extensions.Configuration.Consul`，添加到`MyFurionApi.Web.Entry`项目中
+
+- `Program.cs`中替换为如下代码：
+  
+  ```csharp
+  using Winton.Extensions.Configuration.Consul;
+  
+  Serve.Run(RunOptions.Default.WithArgs(args)
+      .ConfigureInject((builder, options) =>
+      {
+          options.ConfigureAppConfiguration((_, cfb) =>
+          {
+              if (builder.Configuration.GetValue<bool>("ConsulKV:IsEnabled"))
+              {
+                  string serverUrl = builder.Configuration.GetValue<string>("ConsulKV:ServerUrl");
+                  string folderName = builder.Configuration.GetValue<string>("ConsulKV:Folder");
+                  if (!string.IsNullOrEmpty(folderName)) folderName += "/";
+                  else folderName = "";
+                  string key = $"{folderName}appsettings.{builder.Environment.EnvironmentName}.json";
+                  cfb.AddConsul(key, opts =>
+                  {
+                      opts.Optional = true;
+                      opts.ReloadOnChange = true;
+                      opts.ConsulConfigurationOptions = cco => { cco.Address = new Uri(serverUrl); };
+                      opts.OnLoadException = ex => { throw ex.Exception; };
+                  });
+              }
+          });
+  
+          options.ConfigureWebServices((_, services) =>
+          {
+  
+          });
+      })
+  );
+  ```
+  
+  - `appsettings.json`注释掉已在Consul中配置的数据，然后新增如下配置：
+    
+    ```json
+    "ConsulKV": {
+        "IsEnabled": true,
+        "ServerUrl": "http://127.0.0.1:8500/",
+        "Folder": "furion"
+      }
+    ```
+  
+  -  编译，重新运行，大功告成，用这种方式可以实现配置文件的`ReloadOnChange`
+            
