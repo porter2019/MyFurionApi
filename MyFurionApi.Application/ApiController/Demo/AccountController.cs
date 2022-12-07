@@ -8,9 +8,9 @@ namespace MyFurionApi.Application.ApiController;
 public class AccountController : BaseApiController
 {
     private readonly ILogger<AccountController> _logger;
-    private readonly SqlSugarRepository<UserInfo> _userInfoRep;
+    private readonly SqlSugarRepository<SysUser> _userInfoRep;
 
-    public AccountController(ILogger<AccountController> logger, SqlSugarRepository<UserInfo> userInfoRep)
+    public AccountController(ILogger<AccountController> logger, SqlSugarRepository<SysUser> userInfoRep)
     {
         _logger = logger;
         _userInfoRep = userInfoRep;
@@ -23,7 +23,7 @@ public class AccountController : BaseApiController
     [HttpGet, AllowAnonymous]
     public int InitData()
     {
-        var userEntity = new UserInfo()
+        var userEntity = new SysUser()
         {
             LoginName = "admin",
             Password = "000".ToMD5Encrypt(),
@@ -31,7 +31,7 @@ public class AccountController : BaseApiController
             IsAdmin = true
         };
         _userInfoRep.InsertReturnIdentity(userEntity);
-        userEntity = new UserInfo()
+        userEntity = new SysUser()
         {
             LoginName = "test",
             Password = "000".ToMD5Encrypt(),

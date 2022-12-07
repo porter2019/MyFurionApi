@@ -1,8 +1,5 @@
 ﻿
 using MyFurionApi.Application.Dto;
-using MyFurionApi.Application.Entity;
-using Org.BouncyCastle.Ocsp;
-using System;
 
 namespace MyFurionApi.Application.ApiController
 {

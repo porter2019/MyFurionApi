@@ -9,11 +9,11 @@ public class UserInfoService : IUserInfoService, ITransient
 {
     private readonly ILogger<UserInfoService> _logger;
     private readonly ISysRoleService _roleService;
-    private readonly SqlSugarRepository<UserInfo> _userInfoRepo;
+    private readonly SqlSugarRepository<SysUser> _userInfoRepo;
 
     public UserInfoService(ILogger<UserInfoService> logger,
         ISysRoleService roleService,
-        SqlSugarRepository<UserInfo> userInfoRepo)
+        SqlSugarRepository<SysUser> userInfoRepo)
     {
         _logger = logger;
         _roleService = roleService;

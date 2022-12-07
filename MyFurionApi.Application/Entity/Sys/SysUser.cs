@@ -3,8 +3,8 @@
     /// <summary>
     /// 系统用户信息
     /// </summary>
-    [SugarTable(null), SugarIndex("unique_userinfo_loginname", nameof(LoginName), OrderByType.Asc, true)]
-    public class UserInfo : BaseEntityStandard
+    [SugarTable(null), SugarIndex("unique_sys_user_loginname", nameof(LoginName), OrderByType.Asc, true)]
+    public class SysUser : BaseEntityStandard
     {
         /// <summary>
         /// 登录名
