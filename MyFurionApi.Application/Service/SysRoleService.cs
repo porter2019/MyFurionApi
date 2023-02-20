@@ -5,10 +5,10 @@
 /// </summary>
 public class SysRoleService : ISysRoleService, ITransient
 {
-    private readonly ILogger<ProductService> _logger;
+    private readonly ILogger<SysRoleService> _logger;
     private readonly SqlSugarRepository<SysRole> _sysRoleRepo;
 
-    public SysRoleService(ILogger<ProductService> logger, SqlSugarRepository<SysRole> sysRoleRepo)
+    public SysRoleService(ILogger<SysRoleService> logger, SqlSugarRepository<SysRole> sysRoleRepo)
     {
         _logger = logger;
         _sysRoleRepo = sysRoleRepo;
@@ -118,23 +118,10 @@ public class SysRoleService : ISysRoleService, ITransient
 
         var _rolePermitRepo = _sysRoleRepo.Change<SysRolePermit>();
 
-        try
-        {
-            _rolePermitRepo.CurrentBeginTran();
+        await _rolePermitRepo.DeleteAsync(x => x.RoleId == roleId);
+        await _rolePermitRepo.InsertAsync(rolePermitList);
 
-            await _rolePermitRepo.DeleteAsync(x => x.RoleId == roleId);
-            await _rolePermitRepo.InsertAsync(rolePermitList);
-
-            _rolePermitRepo.CurrentCommitTran();
-
-            return true;
-        }
-        catch
-        {
-            _rolePermitRepo.CurrentRollbackTran();
-            return false;
-        }
-
+        return true;
     }
 
 }

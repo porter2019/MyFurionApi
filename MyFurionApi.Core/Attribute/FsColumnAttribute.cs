@@ -16,6 +16,15 @@ public class FsColumnAttribute : SqlSugar.SugarColumn
     }
 
     /// <summary>
+    /// 基本，设置忽略
+    /// </summary>
+    /// <param name="isIgnore"></param>
+    public FsColumnAttribute(bool isIgnore)
+    {
+        base.IsIgnore = isIgnore;
+    }
+
+    /// <summary>
     /// 通用，只设置列说明和是否可以为空
     /// </summary>
     /// <param name="displayName">列说明</param>

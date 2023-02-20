@@ -1,7 +1,9 @@
 ﻿global using Furion;
 global using Furion.DataEncryption;
 global using Furion.DataValidation;
+global using Furion.DatabaseAccessor;
 global using Furion.DependencyInjection;
+global using Furion.UnifyResult;
 global using Furion.DynamicApiController;
 global using Furion.Extensions;
 global using Furion.FriendlyException;
@@ -18,3 +20,4 @@ global using Microsoft.Extensions.Logging;
 global using MyFurionApi.Core;
 global using MyFurionApi.Application.Entity;
 global using Microsoft.Extensions.Options;
+global using MyFurionApi.Application.Dto;

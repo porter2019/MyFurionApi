@@ -51,7 +51,7 @@ public class JwtHandler : AppAuthorizeHandler
         if (permissionHandlerAttribute == null || permissionAttribute == null) return Task.FromResult(true);//只要控制器或方法，两者任意为null就不验证了
 
         //校验权限
-        var _userInfoService = App.GetRequiredService<IUserInfoService>();
+        var _userInfoService = App.GetRequiredService<ISysUserService>();
         return _userInfoService.CheckHasPermissionAsync(currentUserId,
                                     controllerActionDescriptor.ControllerTypeInfo.FullName,
                                     permissionAttribute.OperationName);

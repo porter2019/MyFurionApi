@@ -981,58 +981,6 @@ public static class ExtensionsHelper
 
     #endregion Array
 
-    #region List<T>
-
-    /// <summary>
-    /// 仿照JavaScript的join方法
-    /// </summary>
-    /// <param name="list"></param>
-    /// <param name="separator">分隔符，默认','</param>
-    /// <returns></returns>
-    public static string Join(this List<string> list, char separator = ',')
-    {
-        if (list == null) return "";
-        if (list.Count == 0) return "";
-        return string.Join(separator, list);
-    }
-
-    /// <summary>
-    /// 仿照JavaScript的join方法
-    /// </summary>
-    /// <param name="list"></param>
-    /// <param name="separator">分隔符，默认','</param>
-    /// <returns></returns>
-    public static string Join(this List<int> list, char separator = ',')
-    {
-        if (list == null) return "";
-        if (list.Count == 0) return "";
-        return string.Join(separator, list);
-    }
-
-    /// <summary>
-    /// 判断List是否为Null
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="list"></param>
-    /// <returns></returns>
-    public static bool IsNull<T>(this List<T> list)
-    {
-        return list == null;
-    }
-
-    /// <summary>
-    /// 判断List是否不为Null
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="list"></param>
-    /// <returns></returns>
-    public static bool IsNotNull<T>(this List<T> list)
-    {
-        return list != null;
-    }
-
-    #endregion List<T>
-
     #region IEnumerable<T>
 
     /// <summary>
@@ -1051,6 +999,19 @@ public static class ExtensionsHelper
         {
             return !list.Any();
         }
+    }
+
+    /// <summary>
+    /// 仿照JavaScript的join方法
+    /// </summary>
+    /// <param name="list"></param>
+    /// <param name="separator">分隔符，默认','</param>
+    /// <returns></returns>
+    public static string Join(this IEnumerable<int> list, char separator = ',')
+    {
+        if (list == null) return "";
+        if (list.Count() == 0) return "";
+        return string.Join(separator, list);
     }
 
     #endregion
@@ -1303,25 +1264,25 @@ public static class ExtensionsHelper
         return null;
     }
 
-    ///// <summary>
-    ///// 获取枚举名以及对应的Value
-    ///// </summary>
-    ///// <param name="type">枚举类型typeof(T)</param>
-    ///// <returns></returns>
-    //public static List<ApiEnumOptions> GetEnumOptions(this Type type)
-    //{
-    //    if (type.IsEnum)
-    //    {
-    //        var list = new List<ApiEnumOptions>();
-    //        var enumValues = Enum.GetValues(type);
-    //        foreach (Enum value in enumValues)
-    //        {
-    //            list.Add(new ApiEnumOptions(GetEnumDescription(value), value.GetHashCode().ObjToInt()));
-    //        }
-    //        return list;
-    //    }
-    //    return null;
-    //}
+    /// <summary>
+    /// 获取枚举名以及对应的Value
+    /// </summary>
+    /// <param name="type">枚举类型typeof(T)</param>
+    /// <returns></returns>
+    public static List<dynamic> GetEnumOptions(this Type type)
+    {
+        if (type.IsEnum)
+        {
+            var list = new List<dynamic>();
+            var enumValues = Enum.GetValues(type);
+            foreach (Enum value in enumValues)
+            {
+                list.Add(new { Label = GetEnumDescription(value), Value = value.GetHashCode().ObjToInt() });
+            }
+            return list;
+        }
+        return null;
+    }
 
     #endregion 枚举
 

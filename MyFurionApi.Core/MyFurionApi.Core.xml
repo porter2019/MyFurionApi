@@ -26,6 +26,12 @@
             </summary>
             <param name="displayName">显示名</param>
         </member>
+        <member name="M:MyFurionApi.Core.FsColumnAttribute.#ctor(System.Boolean)">
+            <summary>
+            基本，设置忽略
+            </summary>
+            <param name="isIgnore"></param>
+        </member>
         <member name="M:MyFurionApi.Core.FsColumnAttribute.#ctor(System.String,System.Boolean)">
             <summary>
             通用，只设置列说明和是否可以为空
@@ -398,6 +404,16 @@
             Redis配置
             </summary>
         </member>
+        <member name="T:MyFurionApi.Core.AppSettingsConst">
+            <summary>
+            配置文件key常量
+            </summary>
+        </member>
+        <member name="F:MyFurionApi.Core.AppSettingsConst.DomainUrl">
+            <summary>
+            本站域名
+            </summary>
+        </member>
         <member name="T:MyFurionApi.Core.ClaimConst">
             <summary>
             身份令牌常量
@@ -423,48 +439,6 @@
             <summary>
             是否超级管理员
             </summary>
-        </member>
-        <member name="T:MyFurionApi.Core.CacheType">
-            <summary>
-            缓存类型
-            </summary>
-        </member>
-        <member name="F:MyFurionApi.Core.CacheType.MemoryCache">
-            <summary>
-            内存缓存
-            </summary>
-        </member>
-        <member name="F:MyFurionApi.Core.CacheType.RedisCache">
-            <summary>
-            Redis缓存
-            </summary>
-        </member>
-        <member name="F:MyFurionApi.Core.MyValidationTypes.AccountName">
-            <summary>
-            账户名称
-            </summary>
-        </member>
-        <member name="F:MyFurionApi.Core.MyValidationTypes.CellPhone">
-            <summary>
-            11位手机号码
-            </summary>
-        </member>
-        <member name="F:MyFurionApi.Core.MyValidationTypes.Email">
-            <summary>
-            邮箱
-            </summary>
-        </member>
-        <member name="T:MyFurionApi.Core.LogEventSubscriber">
-            <summary>
-            日志事件订阅
-            </summary>
-        </member>
-        <member name="M:MyFurionApi.Core.LogEventSubscriber.CreateOpLog(Furion.EventBus.EventHandlerExecutingContext)">
-            <summary>
-            订阅
-            </summary>
-            <param name="context"></param>
-            <returns></returns>
         </member>
         <member name="T:MyFurionApi.Core.BaseEntity">
             <summary>
@@ -533,6 +507,148 @@
             <summary>
             假删除的列，包含更新信息
             </summary>
+            <returns></returns>
+        </member>
+        <member name="T:MyFurionApi.Core.CommonAttach">
+            <summary>
+            附件表
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Core.CommonAttach.AttachType">
+            <summary>
+            类型
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Core.CommonAttach.RefId">
+            <summary>
+            关联的数据id
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Core.CommonAttach.FileName">
+            <summary>
+            文件名称
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Core.CommonAttach.FileType">
+            <summary>
+            文件类型
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Core.CommonAttach.FileSize">
+            <summary>
+            文件大小
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Core.CommonAttach.FileExt">
+            <summary>
+            文件后缀名
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Core.CommonAttach.FilePath">
+            <summary>
+            文件相对路径
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Core.CommonAttach.FileWebPath">
+            <summary>
+            完整路径
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Core.CommonAttach.name">
+            <summary>
+            前端上传组件回显需要
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Core.CommonAttach.url">
+            <summary>
+            前端上传组件回显需要
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Core.CommonAttachType">
+            <summary>
+            附件类型
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Core.UploadFileInfo">
+            <summary>
+            上传附件返回对象
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Core.UploadFileInfo.FilePath">
+            <summary>
+            文件相对路径
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Core.UploadFileInfo.FileWebPath">
+            <summary>
+            包含域名的访问地址
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Core.UploadFileInfo.FileName">
+            <summary>
+            文件名(上传时的文件名)
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Core.UploadFileInfo.FileSourceName">
+            <summary>
+            文件原始名称
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Core.UploadFileInfo.FileSize">
+            <summary>
+            文件大小
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Core.UploadFileInfo.FileType">
+            <summary>
+            文件类型
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Core.UploadFileInfo.FileExt">
+            <summary>
+            文件拓展名
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Core.CacheType">
+            <summary>
+            缓存类型
+            </summary>
+        </member>
+        <member name="F:MyFurionApi.Core.CacheType.MemoryCache">
+            <summary>
+            内存缓存
+            </summary>
+        </member>
+        <member name="F:MyFurionApi.Core.CacheType.RedisCache">
+            <summary>
+            Redis缓存
+            </summary>
+        </member>
+        <member name="F:MyFurionApi.Core.MyValidationTypes.AccountName">
+            <summary>
+            账户名称
+            </summary>
+        </member>
+        <member name="F:MyFurionApi.Core.MyValidationTypes.CellPhone">
+            <summary>
+            11位手机号码
+            </summary>
+        </member>
+        <member name="F:MyFurionApi.Core.MyValidationTypes.Email">
+            <summary>
+            邮箱
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Core.LogEventSubscriber">
+            <summary>
+            日志事件订阅
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Core.LogEventSubscriber.CreateOpLog(Furion.EventBus.EventHandlerExecutingContext)">
+            <summary>
+            订阅
+            </summary>
+            <param name="context"></param>
             <returns></returns>
         </member>
         <member name="T:MyFurionApi.Core.BasePageQueryModel`1">
@@ -1064,44 +1180,20 @@
             <returns></returns>
         </member>
         <!-- Badly formed XML comment ignored for member "M:MyFurionApi.Core.ExtensionsHelper.ConvertIntList(System.String[])" -->
-        <member name="M:MyFurionApi.Core.ExtensionsHelper.Join(System.Collections.Generic.List{System.String},System.Char)">
-            <summary>
-            仿照JavaScript的join方法
-            </summary>
-            <param name="list"></param>
-            <param name="separator">分隔符，默认','</param>
-            <returns></returns>
-        </member>
-        <member name="M:MyFurionApi.Core.ExtensionsHelper.Join(System.Collections.Generic.List{System.Int32},System.Char)">
-            <summary>
-            仿照JavaScript的join方法
-            </summary>
-            <param name="list"></param>
-            <param name="separator">分隔符，默认','</param>
-            <returns></returns>
-        </member>
-        <member name="M:MyFurionApi.Core.ExtensionsHelper.IsNull``1(System.Collections.Generic.List{``0})">
-            <summary>
-            判断List是否为Null
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="list"></param>
-            <returns></returns>
-        </member>
-        <member name="M:MyFurionApi.Core.ExtensionsHelper.IsNotNull``1(System.Collections.Generic.List{``0})">
-            <summary>
-            判断List是否不为Null
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="list"></param>
-            <returns></returns>
-        </member>
         <member name="M:MyFurionApi.Core.ExtensionsHelper.IsEmpty``1(System.Collections.Generic.IEnumerable{``0})">
             <summary>
             判断IEnumerable是否是空的
             <code>为null或者有没有值</code>
             </summary>
             <param name="list"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Core.ExtensionsHelper.Join(System.Collections.Generic.IEnumerable{System.Int32},System.Char)">
+            <summary>
+            仿照JavaScript的join方法
+            </summary>
+            <param name="list"></param>
+            <param name="separator">分隔符，默认','</param>
             <returns></returns>
         </member>
         <member name="M:MyFurionApi.Core.ExtensionsHelper.StripHtml(System.String)">
@@ -1205,6 +1297,13 @@
             <param name="type">枚举类型typeof(T)</param>
             <returns>返回Dictionary  ,Key为描述名，  Value为枚举对应的值</returns>
         </member>
+        <member name="M:MyFurionApi.Core.ExtensionsHelper.GetEnumOptions(System.Type)">
+            <summary>
+            获取枚举名以及对应的Value
+            </summary>
+            <param name="type">枚举类型typeof(T)</param>
+            <returns></returns>
+        </member>
         <member name="M:MyFurionApi.Core.ExtensionsHelper.GetValue(Microsoft.AspNetCore.Http.IHeaderDictionary,System.String)">
             <summary>
             获取Request中的Header指定key的值
@@ -1212,46 +1311,6 @@
             <param name="heads"></param>
             <param name="key"></param>
             <returns></returns>
-        </member>
-        <member name="T:MyFurionApi.Core.UploadFileInfo">
-            <summary>
-            上传附件返回对象
-            </summary>
-        </member>
-        <member name="P:MyFurionApi.Core.UploadFileInfo.FilePath">
-            <summary>
-            文件相对路径
-            </summary>
-        </member>
-        <member name="P:MyFurionApi.Core.UploadFileInfo.FileWebPath">
-            <summary>
-            包含域名的访问地址
-            </summary>
-        </member>
-        <member name="P:MyFurionApi.Core.UploadFileInfo.FileName">
-            <summary>
-            文件名(上传时的文件名)
-            </summary>
-        </member>
-        <member name="P:MyFurionApi.Core.UploadFileInfo.FileSourceName">
-            <summary>
-            文件原始名称
-            </summary>
-        </member>
-        <member name="P:MyFurionApi.Core.UploadFileInfo.FileSize">
-            <summary>
-            文件大小
-            </summary>
-        </member>
-        <member name="P:MyFurionApi.Core.UploadFileInfo.FileType">
-            <summary>
-            文件类型
-            </summary>
-        </member>
-        <member name="P:MyFurionApi.Core.UploadFileInfo.FileExt">
-            <summary>
-            文件拓展名
-            </summary>
         </member>
         <member name="T:MyFurionApi.Core.MyActionFilter">
             <summary>
@@ -1775,6 +1834,36 @@
             <param name="masterId"></param>
             <param name="list"></param>
         </member>
+        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.UpdateItemDiffClear(System.Int32,System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            更新明细，清空重新添加
+            </summary>
+            <param name="masterId"></param>
+            <param name="list"></param>
+        </member>
+        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.UpdateItemDiffClearAsync(System.Int32,System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            更新明细，清空重新添加
+            </summary>
+            <param name="masterId"></param>
+            <param name="list"></param>
+        </member>
+        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.UpdateAttachFiles(System.Int32,MyFurionApi.Core.CommonAttachType,System.Collections.Generic.IEnumerable{MyFurionApi.Core.CommonAttach})">
+            <summary>
+            添加附件，清空重新添加
+            </summary>
+            <param name="refId"></param>
+            <param name="attachType">附件类型</param>
+            <param name="list"></param>
+        </member>
+        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.UpdateAttachFilesAsync(System.Int32,MyFurionApi.Core.CommonAttachType,System.Collections.Generic.IEnumerable{MyFurionApi.Core.CommonAttach})">
+            <summary>
+            添加附件，清空重新添加
+            </summary>
+            <param name="refId"></param>
+            <param name="attachType">附件类型</param>
+            <param name="list"></param>
+        </member>
         <member name="M:MyFurionApi.Core.SqlSugarRepository`1.Update(`0)">
             <summary>
             更新一条记录
@@ -1905,6 +1994,13 @@
             <param name="key"></param>
             <returns></returns>
         </member>
+        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.Delete(System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>
+            删除多条记录
+            </summary>
+            <param name="keys"></param>
+            <returns></returns>
+        </member>
         <member name="M:MyFurionApi.Core.SqlSugarRepository`1.Delete(System.Object[])">
             <summary>
             删除多条记录
@@ -1940,6 +2036,13 @@
             <param name="key"></param>
             <returns></returns>
         </member>
+        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.DeleteAsync(System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>
+            删除多条记录
+            </summary>
+            <param name="keys"></param>
+            <returns></returns>
+        </member>
         <member name="M:MyFurionApi.Core.SqlSugarRepository`1.DeleteAsync(System.Object[])">
             <summary>
             删除多条记录
@@ -1968,14 +2071,14 @@
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.DeleteWithSoft(System.Collections.Generic.List{System.Int32})">
+        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.DeleteWithSoft(System.Collections.Generic.IEnumerable{System.Int32})">
             <summary>
             软删除
             </summary>
             <param name="idList"></param>
             <returns></returns>
         </member>
-        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.DeleteWithSoft(System.Collections.Generic.List{System.Int32},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.DeleteWithSoft(System.Collections.Generic.IEnumerable{System.Int32},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
             <summary>
             软删除
             </summary>
@@ -1997,14 +2100,14 @@
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.DeleteWithSoftAsync(System.Collections.Generic.List{System.Int32})">
+        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.DeleteWithSoftAsync(System.Collections.Generic.IEnumerable{System.Int32})">
             <summary>
             软删除
             </summary>
             <param name="idList"></param>
             <returns></returns>
         </member>
-        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.DeleteWithSoftAsync(System.Collections.Generic.List{System.Int32},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.DeleteWithSoftAsync(System.Collections.Generic.IEnumerable{System.Int32},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
             <summary>
             软删除
             </summary>
@@ -2124,6 +2227,54 @@
             <summary>
             所有db
             </summary>
+        </member>
+        <member name="T:MyFurionApi.Core.SqlSugarUnitOfWork">
+            <summary>
+            SqlSugar 工作单元实现
+            </summary>
+        </member>
+        <member name="F:MyFurionApi.Core.SqlSugarUnitOfWork._sqlSugarClient">
+            <summary>
+            SqlSugar 对象
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Core.SqlSugarUnitOfWork.#ctor(SqlSugar.ISqlSugarClient)">
+            <summary>
+            构造函数
+            </summary>
+            <param name="sqlSugarClient"></param>
+        </member>
+        <member name="M:MyFurionApi.Core.SqlSugarUnitOfWork.BeginTransaction(Microsoft.AspNetCore.Mvc.Filters.FilterContext,Furion.DatabaseAccessor.UnitOfWorkAttribute)">
+            <summary>
+            开启工作单元处理
+            </summary>
+            <param name="context"></param>
+            <param name="unitOfWork"></param>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:MyFurionApi.Core.SqlSugarUnitOfWork.CommitTransaction(Microsoft.AspNetCore.Mvc.Filters.FilterContext,Furion.DatabaseAccessor.UnitOfWorkAttribute)">
+            <summary>
+            提交工作单元处理
+            </summary>
+            <param name="resultContext"></param>
+            <param name="unitOfWork"></param>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:MyFurionApi.Core.SqlSugarUnitOfWork.RollbackTransaction(Microsoft.AspNetCore.Mvc.Filters.FilterContext,Furion.DatabaseAccessor.UnitOfWorkAttribute)">
+            <summary>
+            回滚工作单元处理
+            </summary>
+            <param name="resultContext"></param>
+            <param name="unitOfWork"></param>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:MyFurionApi.Core.SqlSugarUnitOfWork.OnCompleted(Microsoft.AspNetCore.Mvc.Filters.FilterContext,Microsoft.AspNetCore.Mvc.Filters.FilterContext)">
+            <summary>
+            执行完毕（无论成功失败）
+            </summary>
+            <param name="context"></param>
+            <param name="resultContext"></param>
+            <exception cref="T:System.NotImplementedException"></exception>
         </member>
     </members>
 </doc>

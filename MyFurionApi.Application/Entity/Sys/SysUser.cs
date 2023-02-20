@@ -30,5 +30,35 @@
         [FsColumn("是否超管")]
         public bool IsAdmin { get; set; } = false;
 
+        /// <summary>
+        /// 头像
+        /// </summary>
+        [FsColumn("头像", true, 500)]
+        public string Avatar { get; set; }
+
+        /// <summary>
+        /// 头像web地址
+        /// </summary>
+        [FsColumn("头像web地址", IsIgnore = true)]
+        public string AvatarPath 
+        {
+            get
+            {
+                return Avatar.IsNull() ? "" : App.Configuration[AppSettingsConst.DomainUrl] + Avatar;
+            }
+        }
+
+        /// <summary>
+        /// 账号启用状态
+        /// </summary>
+        [FsColumn("账号状态")]
+        public bool Status { get; set; } = true;
+
+        /// <summary>
+        /// 最后登录时间
+        /// </summary>
+        [FsColumn("最后登录时间")]
+        public DateTime? LastLoginTime { get; set; }
+
     }
 }

@@ -1,5 +1,4 @@
 ﻿using SqlSugar;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -589,7 +588,7 @@ namespace MyFurionApi.Core
             //执行添加
             Insert(addDataList);
             //执行修改
-            UpdateWithOptLock(updateDataList);
+            Update(updateDataList);
             //查找删除的
             if (sourceList.Any())
             {
@@ -655,7 +654,7 @@ namespace MyFurionApi.Core
             //执行添加
             await InsertAsync(addDataList);
             //执行修改
-            await UpdateWithOptLockAsync(updateDataList);
+            await UpdateAsync(updateDataList);
             //查找删除的
             if (sourceList.Any())
             {
@@ -670,6 +669,116 @@ namespace MyFurionApi.Core
                 await DeleteWithSoftAsync(deleteIdList.ToList<int>());
             }
         }
+
+        /// <summary>
+        /// 更新明细，清空重新添加
+        /// </summary>
+        /// <param name="masterId"></param>
+        /// <param name="list"></param>
+        public virtual void UpdateItemDiffClear(int masterId, IEnumerable<TEntity> list)
+        {
+            var type = typeof(TEntity);
+            //获取外键
+            var foreignKeyProInfo = type.GetProperties().First(x => x.GetCustomAttribute(typeof(ForeignKeyTagAttribute), true) != null);
+            if (foreignKeyProInfo == null) throw new Exception($"{type.FullName}缺少指定{typeof(ForeignKeyTagAttribute).FullName}标记的属性");
+            var foreignKeyName = foreignKeyProInfo.Name;
+
+            //清空
+            DeleteWithSoft($"{foreignKeyName} = {masterId}");
+            if (list.IsEmpty()) return;
+
+            if (!type.GetProperties().Any(x => x.Name == "Id")) throw new Exception($"{type.FullName}缺少Id主键");
+            //新增的
+            var addDataList = new List<TEntity>();
+            //查找新增和修改的
+            foreach (var item in list)
+            {
+                //外键赋值
+                item.GetType().GetRuntimeProperty(foreignKeyName).SetValue(item, masterId);
+                addDataList.Add(item);
+            }
+
+            //执行添加
+            Insert(addDataList);
+        }
+
+        /// <summary>
+        /// 更新明细，清空重新添加
+        /// </summary>
+        /// <param name="masterId"></param>
+        /// <param name="list"></param>
+        public virtual async Task UpdateItemDiffClearAsync(int masterId, IEnumerable<TEntity> list)
+        {
+            var type = typeof(TEntity);
+            //获取外键
+            var foreignKeyProInfo = type.GetProperties().First(x => x.GetCustomAttribute(typeof(ForeignKeyTagAttribute), true) != null);
+            if (foreignKeyProInfo == null) throw new Exception($"{type.FullName}缺少指定{typeof(ForeignKeyTagAttribute).FullName}标记的属性");
+            var foreignKeyName = foreignKeyProInfo.Name;
+
+            //清空
+            DeleteWithSoft($"{foreignKeyName} = {masterId}");
+            if (list.IsEmpty()) return;
+
+            if (!type.GetProperties().Any(x => x.Name == "Id")) throw new Exception($"{type.FullName}缺少Id主键");
+
+            //新增的
+            var addDataList = new List<TEntity>();
+            //查找新增和修改的
+            foreach (var item in list)
+            {
+                //外键赋值
+                item.GetType().GetRuntimeProperty(foreignKeyName).SetValue(item, masterId);
+                addDataList.Add(item);
+            }
+
+            //执行添加
+            await InsertAsync(addDataList);
+        }
+
+        /// <summary>
+        /// 添加附件，清空重新添加
+        /// </summary>
+        /// <param name="refId"></param>
+        /// <param name="attachType">附件类型</param>
+        /// <param name="list"></param>
+        public virtual void UpdateAttachFiles(int refId, CommonAttachType attachType, IEnumerable<CommonAttach> list)
+        {
+            //清空
+            Context.Updateable<CommonAttach>().SetColumns("IsDeleted", 1).SetColumns("Version", "-1").Where(x => x.AttachType == attachType && x.RefId == refId).ExecuteCommand();
+            if (list.IsEmpty()) return;
+
+            //查找新增和修改的
+            foreach (var item in list)
+            {
+                item.RefId = refId;
+                item.AttachType = attachType;
+            }
+            //执行添加
+            Context.Insertable<CommonAttach>(list).ExecuteCommand();
+        }
+
+        /// <summary>
+        /// 添加附件，清空重新添加
+        /// </summary>
+        /// <param name="refId"></param>
+        /// <param name="attachType">附件类型</param>
+        /// <param name="list"></param>
+        public virtual async Task UpdateAttachFilesAsync(int refId, CommonAttachType attachType, IEnumerable<CommonAttach> list)
+        {
+            //清空
+            await Context.Updateable<CommonAttach>().SetColumns("IsDeleted", 1).SetColumns("Version", "-1").Where(x => x.AttachType == attachType && x.RefId == refId).ExecuteCommandAsync();
+            if (list.IsEmpty()) return;
+
+            //查找新增和修改的
+            foreach (var item in list)
+            {
+                item.RefId = refId;
+                item.AttachType = attachType;
+            }
+            //执行添加
+            await Context.Insertable<CommonAttach>(list).ExecuteCommandAsync();
+        }
+
 
         /// <summary>
         /// 更新一条记录
@@ -875,6 +984,16 @@ namespace MyFurionApi.Core
         /// </summary>
         /// <param name="keys"></param>
         /// <returns></returns>
+        public virtual int Delete(IEnumerable<int> keys)
+        {
+            return EntityContext.Deleteable<TEntity>().In(keys).ExecuteCommand();
+        }
+
+        /// <summary>
+        /// 删除多条记录
+        /// </summary>
+        /// <param name="keys"></param>
+        /// <returns></returns>
         public virtual int Delete(params object[] keys)
         {
             return EntityContext.Deleteable<TEntity>().In(keys).ExecuteCommand();
@@ -919,6 +1038,16 @@ namespace MyFurionApi.Core
         public virtual Task<int> DeleteAsync(object key)
         {
             return EntityContext.Deleteable<TEntity>().In(key).ExecuteCommandAsync();
+        }
+
+        /// <summary>
+        /// 删除多条记录
+        /// </summary>
+        /// <param name="keys"></param>
+        /// <returns></returns>
+        public virtual Task<int> DeleteAsync(IEnumerable<int> keys)
+        {
+            return EntityContext.Deleteable<TEntity>().In(keys).ExecuteCommandAsync();
         }
 
         /// <summary>
@@ -972,7 +1101,7 @@ namespace MyFurionApi.Core
         /// </summary>
         /// <param name="idList"></param>
         /// <returns></returns>
-        public int DeleteWithSoft(List<int> idList)
+        public int DeleteWithSoft(IEnumerable<int> idList)
         {
             if (idList.IsEmpty()) return 0;
             return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).SetColumns("Version", "-1").Where($"Id in ({idList.Join()})").ExecuteCommand();
@@ -984,7 +1113,7 @@ namespace MyFurionApi.Core
         /// <param name="idList"></param>
         /// <param name="where">额外条件</param>
         /// <returns></returns>
-        public int DeleteWithSoft(List<int> idList, Expression<Func<TEntity, bool>> where)
+        public int DeleteWithSoft(IEnumerable<int> idList, Expression<Func<TEntity, bool>> where)
         {
             if (idList.IsEmpty()) return 0;
             return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).SetColumns("Version", "-1").Where($"Id in ({idList.Join()})").Where(where).ExecuteCommand();
@@ -1017,7 +1146,7 @@ namespace MyFurionApi.Core
         /// </summary>
         /// <param name="idList"></param>
         /// <returns></returns>
-        public Task<int> DeleteWithSoftAsync(List<int> idList)
+        public Task<int> DeleteWithSoftAsync(IEnumerable<int> idList)
         {
             if (idList.IsEmpty()) return Task.FromResult(0);
             return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).SetColumns("Version", "-1").Where($"Id in ({idList.Join()})").ExecuteCommandAsync();
@@ -1029,7 +1158,7 @@ namespace MyFurionApi.Core
         /// <param name="idList"></param>
         /// <param name="where">额外条件</param>
         /// <returns></returns>
-        public Task<int> DeleteWithSoftAsync(List<int> idList, Expression<Func<TEntity, bool>> where)
+        public Task<int> DeleteWithSoftAsync(IEnumerable<int> idList, Expression<Func<TEntity, bool>> where)
         {
             if (idList.IsEmpty()) return Task.FromResult(0);
             return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).SetColumns("Version", "-1").Where($"Id in ({idList.Join()})").Where(where).ExecuteCommandAsync();

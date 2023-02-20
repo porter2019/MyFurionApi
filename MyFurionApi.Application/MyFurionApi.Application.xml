@@ -4,84 +4,84 @@
         <name>MyFurionApi.Application</name>
     </assembly>
     <members>
-        <member name="T:MyFurionApi.Application.ApiController.CacheController">
+        <member name="T:MyFurionApi.Application.Controller.CacheController">
             <summary>
             缓存
             </summary>
         </member>
-        <member name="M:MyFurionApi.Application.ApiController.CacheController.Add(System.String,System.String)">
+        <member name="M:MyFurionApi.Application.Controller.CacheController.Add(System.String,System.String)">
             <summary>
             添加
             </summary>
             <returns></returns>
         </member>
-        <member name="M:MyFurionApi.Application.ApiController.CacheController.Get(System.String)">
+        <member name="M:MyFurionApi.Application.Controller.CacheController.Get(System.String)">
             <summary>
             获取
             </summary>
             <param name="key"></param>
             <returns></returns>
         </member>
-        <member name="M:MyFurionApi.Application.ApiController.CacheController.Del(System.String)">
+        <member name="M:MyFurionApi.Application.Controller.CacheController.Del(System.String)">
             <summary>
             删除
             </summary>
             <param name="key"></param>
             <returns></returns>
         </member>
-        <member name="T:MyFurionApi.Application.ApiController.DBController">
+        <member name="T:MyFurionApi.Application.Controller.DBController">
             <summary>
             数据库
             </summary>
         </member>
-        <member name="M:MyFurionApi.Application.ApiController.DBController.Migration(System.String)">
+        <member name="M:MyFurionApi.Application.Controller.DBController.Migration(System.String)">
             <summary>
             数据库迁移
             </summary>
             <param name="tableNames">指定实体名称，英文逗号分割</param>
             <returns></returns>
         </member>
-        <member name="M:MyFurionApi.Application.ApiController.DBController.SqlScript">
+        <member name="M:MyFurionApi.Application.Controller.DBController.SqlScript">
             <summary>
             执行数据库脚本
             </summary>
             <returns></returns>
         </member>
-        <member name="T:MyFurionApi.Application.ApiController.FileController">
+        <member name="T:MyFurionApi.Application.Controller.FileController">
             <summary>
             文件
             </summary>
         </member>
-        <member name="M:MyFurionApi.Application.ApiController.FileController.Upload">
+        <member name="M:MyFurionApi.Application.Controller.FileController.Upload">
             <summary>
             通用文件上传
             </summary>
             <returns></returns>
         </member>
-        <member name="T:MyFurionApi.Application.ApiController.HealthController">
+        <member name="T:MyFurionApi.Application.Controller.HealthController">
             <summary>
             健康检查
             </summary>
         </member>
-        <member name="M:MyFurionApi.Application.ApiController.HealthController.Check">
+        <member name="M:MyFurionApi.Application.Controller.HealthController.Check">
             <summary>
             检查
             </summary>
             <returns>/api/health/check</returns>
         </member>
-        <member name="T:MyFurionApi.Application.ApiController.ImgCaptchaController">
+        <member name="T:MyFurionApi.Application.Controller.ImgCaptchaController">
             <summary>
             图形验证码
             </summary>
         </member>
-        <member name="M:MyFurionApi.Application.ApiController.ImgCaptchaController.GetActionIdentification">
+        <member name="M:MyFurionApi.Application.Controller.ImgCaptchaController.GetActionIdentification">
             <summary>
             获取操作标识
             </summary>
             <remarks>返回标识长度：32</remarks>
             <returns></returns>
         </member>
-        <member name="M:MyFurionApi.Application.ApiController.ImgCaptchaController.Generate(System.String)">
+        <member name="M:MyFurionApi.Application.Controller.ImgCaptchaController.Generate(System.String)">
             <summary>
             生成图形验证码
             </summary>
@@ -89,7 +89,7 @@
             <remarks>返回是文件流，直接img标签src复制</remarks>
             <returns></returns>
         </member>
-        <member name="M:MyFurionApi.Application.ApiController.ImgCaptchaController.Check(System.String,System.String)">
+        <member name="M:MyFurionApi.Application.Controller.ImgCaptchaController.Check(System.String,System.String)">
             <summary>
             校验图形验证码
             </summary>
@@ -97,159 +97,119 @@
             <param name="code"></param>
             <returns></returns>
         </member>
-        <member name="T:MyFurionApi.Application.ApiController.SysController">
+        <member name="T:MyFurionApi.Application.Controller.SysController">
             <summary>
             系统
             </summary>
         </member>
-        <member name="M:MyFurionApi.Application.ApiController.SysController.GetConfigValue(System.String)">
+        <member name="M:MyFurionApi.Application.Controller.SysController.GetConfigValue(System.String)">
             <summary>
             获取系统配置文件中的值
             </summary>
             <param name="path"></param>
             <returns></returns>
         </member>
-        <member name="M:MyFurionApi.Application.ApiController.SysController.GetIP">
+        <member name="M:MyFurionApi.Application.Controller.SysController.GetIP">
             <summary>
             获取IP地址
             </summary>
             <returns></returns>
         </member>
-        <member name="M:MyFurionApi.Application.ApiController.SysController.SyncPermis">
+        <member name="M:MyFurionApi.Application.Controller.SysController.SyncPermis">
             <summary>
             更新系统权限
             </summary>
             <returns></returns>
         </member>
-        <member name="T:MyFurionApi.Application.ApiController.AccountController">
+        <member name="T:MyFurionApi.Application.Controller.ContractController">
             <summary>
-            账户
+            合同接口
             </summary>
         </member>
-        <member name="M:MyFurionApi.Application.ApiController.AccountController.InitData">
+        <member name="M:MyFurionApi.Application.Controller.ContractController.GetPageList(MyFurionApi.Application.Dto.ContractPageInput)">
             <summary>
-            添加测试用户
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:MyFurionApi.Application.ApiController.AccountController.Login(System.String,System.String)">
-            <summary>
-            登录/获取JWT Token
-            </summary>
-            <param name="loginName"></param>
-            <param name="password"></param>
-            <returns></returns>
-        </member>
-        <member name="T:MyFurionApi.Application.ApiController.EventPubController">
-            <summary>
-            事件发布测试
-            </summary>
-        </member>
-        <member name="M:MyFurionApi.Application.ApiController.EventPubController.Pub(System.String)">
-            <summary>
-            发布消息
+            获取分页列表
             </summary>
             <returns></returns>
         </member>
-        <member name="T:MyFurionApi.Application.ApiController.FormValidateController">
-            <summary>
-            表单验证
-            </summary>
-        </member>
-        <member name="M:MyFurionApi.Application.ApiController.FormValidateController.Manual(System.String)">
-            <summary>
-            手动验证某个字段
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:MyFurionApi.Application.ApiController.FormValidateController.Form(MyFurionApi.Application.Dto.TestFormValidateInput)">
-            <summary>
-            表单验证
-            </summary>
-            <param name="dto"></param>
-            <returns></returns>
-        </member>
-        <member name="T:MyFurionApi.Application.ApiController.ProducController">
-            <summary>
-            产品
-            </summary>
-        </member>
-        <member name="M:MyFurionApi.Application.ApiController.ProducController.GetInfo(System.Int32)">
+        <member name="M:MyFurionApi.Application.Controller.ContractController.GetInfo(System.Int32)">
             <summary>
             获取详情
             </summary>
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:MyFurionApi.Application.ApiController.ProducController.GetInfo(MyFurionApi.Application.Dto.ProductSingleInput)">
-            <summary>
-            获取一条
-            </summary>
-            <param name="req"></param>
-            <returns></returns>
-        </member>
-        <member name="M:MyFurionApi.Application.ApiController.ProducController.Update(MyFurionApi.Application.Dto.ProductUpdateInput)">
-            <summary>
-            更新-使用DTO
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:MyFurionApi.Application.ApiController.ProducController.Update2(MyFurionApi.Application.Entity.Product)">
-            <summary>
-            修改-使用Entity并且更新ItemList
-            </summary>
-            <param name="dto"></param>
-            <returns></returns>
-        </member>
-        <member name="M:MyFurionApi.Application.ApiController.ProducController.Add">
+        <member name="M:MyFurionApi.Application.Controller.ContractController.Add(MyFurionApi.Application.Dto.ContractModifyInput)">
             <summary>
             添加
             </summary>
             <returns></returns>
         </member>
-        <member name="M:MyFurionApi.Application.ApiController.ProducController.Delete(System.Int32)">
+        <member name="M:MyFurionApi.Application.Controller.ContractController.Update(MyFurionApi.Application.Dto.ContractModifyInput)">
+            <summary>
+            更新
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.Controller.ContractController.Delete(System.String)">
             <summary>
             删除
             </summary>
-            <param name="id"></param>
+            <param name="ids"></param>
             <returns></returns>
         </member>
-        <member name="M:MyFurionApi.Application.ApiController.ProducController.GetPageList(MyFurionApi.Application.Dto.ProductPageInput)">
+        <member name="T:MyFurionApi.Application.Controller.AccountController">
             <summary>
-            获取分页列表
+            账户
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Application.Controller.AccountController.InitData">
+            <summary>
+            添加测试用户
             </summary>
             <returns></returns>
         </member>
-        <member name="M:MyFurionApi.Application.ApiController.ProducController.GetList(MyFurionApi.Application.Dto.ProductListInput)">
+        <member name="M:MyFurionApi.Application.Controller.AccountController.Login(MyFurionApi.Application.Dto.LoginInput)">
             <summary>
-            获取列表
+            登录/获取JWT Token
             </summary>
             <param name="req"></param>
             <returns></returns>
         </member>
-        <member name="T:MyFurionApi.Application.ApiController.RemoteController">
+        <member name="T:MyFurionApi.Application.Controller.EventPubController">
+            <summary>
+            事件发布测试
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Application.Controller.EventPubController.Pub(System.String)">
+            <summary>
+            发布消息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:MyFurionApi.Application.Controller.RemoteController">
             <summary>
             调用远程接口
             </summary>
         </member>
-        <member name="M:MyFurionApi.Application.ApiController.RemoteController.Get">
+        <member name="M:MyFurionApi.Application.Controller.RemoteController.Get">
             <summary>
             Get请求
             </summary>
             <returns></returns>
         </member>
-        <member name="T:MyFurionApi.Application.ApiController.SysRoleController">
+        <member name="T:MyFurionApi.Application.Controller.SysRoleController">
             <summary>
             系统角色组
             </summary>
         </member>
-        <member name="M:MyFurionApi.Application.ApiController.SysRoleController.GetRolePermitList(System.Int32)">
+        <member name="M:MyFurionApi.Application.Controller.SysRoleController.GetRolePermitList(System.Int32)">
             <summary>
             根据组Id获取组的权限配置数据
             </summary>
             <returns></returns>
         </member>
-        <member name="M:MyFurionApi.Application.ApiController.SysRoleController.SetRolePermit(System.Int32,System.String)">
+        <member name="M:MyFurionApi.Application.Controller.SysRoleController.SetRolePermit(System.Int32,System.String)">
             <summary>
             设置用户组权限
             </summary>
@@ -257,92 +217,204 @@
             <param name="permits">权限PermitId，英文逗号分开</param>
             <returns></returns>
         </member>
-        <member name="T:MyFurionApi.Application.ApiController.TreeController">
+        <member name="T:MyFurionApi.Application.Controller.TreeController">
             <summary>
             树型实体
             </summary>
         </member>
-        <member name="M:MyFurionApi.Application.ApiController.TreeController.Add(MyFurionApi.Application.Entity.ProCategory)">
-            <summary>
-            添加一条数据
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:MyFurionApi.Application.ApiController.TreeController.GetList(System.String)">
+        <member name="M:MyFurionApi.Application.Controller.TreeController.GetList(System.String)">
             <summary>
             获取树列表
             </summary>
             <param name="search">搜索关键字</param>
             <returns></returns>
         </member>
-        <member name="T:MyFurionApi.Application.Dto.ProductListInput">
+        <member name="M:MyFurionApi.Application.Controller.TreeController.GetInfo(System.Int32)">
             <summary>
-            产品列表所需数据
+            获取详情
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.Controller.TreeController.GetNextOrderNo(System.Int32)">
+            <summary>
+            生成排序号
+            </summary>
+            <param name="pid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.Controller.TreeController.Add(MyFurionApi.Application.Entity.Tree)">
+            <summary>
+            添加
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.Controller.TreeController.Edit(MyFurionApi.Application.Entity.Tree)">
+            <summary>
+            修改
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.Controller.TreeController.Delete(System.Int32)">
+            <summary>
+            删除
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="T:MyFurionApi.Application.Dto.LoginInput">
+            <summary>
+            账号登录所需参数
             </summary>
         </member>
-        <member name="P:MyFurionApi.Application.Dto.ProductListInput.Name">
+        <member name="P:MyFurionApi.Application.Dto.LoginInput.LoginName">
             <summary>
-            名称like查询
+            登录名
             </summary>
         </member>
-        <member name="T:MyFurionApi.Application.Dto.ProductPageInput">
+        <member name="P:MyFurionApi.Application.Dto.LoginInput.Password">
             <summary>
-            产品分页所需数据
+            密码
             </summary>
         </member>
-        <member name="P:MyFurionApi.Application.Dto.ProductPageInput.Name">
+        <member name="T:MyFurionApi.Application.Dto.AttachModifyInput">
             <summary>
-            名称like查询
+            修改附件需要传入的
             </summary>
         </member>
-        <member name="T:MyFurionApi.Application.Dto.ProductSingleInput">
-            <summary>
-            构建where
-            </summary>
-        </member>
-        <member name="P:MyFurionApi.Application.Dto.ProductSingleInput.Name">
-            <summary>
-            名称
-            </summary>
-        </member>
-        <member name="T:MyFurionApi.Application.Dto.ProductUpdateInput">
-            <summary>
-            更新传入的
-            </summary>
-        </member>
-        <member name="P:MyFurionApi.Application.Dto.ProductUpdateInput.Name">
-            <summary>
-            名称
-            </summary>
-        </member>
-        <member name="P:MyFurionApi.Application.Dto.ProductUpdateInput.Type">
+        <member name="P:MyFurionApi.Application.Dto.AttachModifyInput.AttachType">
             <summary>
             类型
             </summary>
         </member>
-        <member name="P:MyFurionApi.Application.Dto.ProductUpdateInput.Num">
+        <member name="P:MyFurionApi.Application.Dto.AttachModifyInput.FileName">
+            <summary>
+            文件名称
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.AttachModifyInput.FileType">
+            <summary>
+            文件类型
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.AttachModifyInput.FileSize">
+            <summary>
+            文件大小
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.AttachModifyInput.FileExt">
+            <summary>
+            文件后缀名
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.AttachModifyInput.FilePath">
+            <summary>
+            文件相对路径
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Dto.ContractListInput">
+            <summary>
+            查询列表所需数据
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.ContractListInput.Name">
+            <summary>
+            名称like查询
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Dto.ContractModifyInput">
+            <summary>
+            更新合同
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.ContractModifyInput.Name">
+            <summary>
+            合同名称
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.ContractModifyInput.CType">
+            <summary>
+            合同类型
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.ContractModifyInput.SignDate">
+            <summary>
+            签订时间
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.ContractModifyInput.Value">
+            <summary>
+            合同金额
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.ContractModifyInput.Summary">
+            <summary>
+            摘要
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.ContractModifyInput.ItemList">
+            <summary>
+            明细
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.ContractModifyInput.AttachList">
+            <summary>
+            附件
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Dto.ContractItemModifyInput">
+            <summary>
+            修改合同明细所需
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.ContractItemModifyInput.Name">
+            <summary>
+            明细名称
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.ContractItemModifyInput.Price">
+            <summary>
+            单价
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.ContractItemModifyInput.Amount">
             <summary>
             数量
             </summary>
         </member>
-        <member name="P:MyFurionApi.Application.Dto.ProductUpdateInput.Value">
+        <member name="P:MyFurionApi.Application.Dto.ContractItemModifyInput.Value">
             <summary>
             金额
             </summary>
         </member>
-        <member name="T:MyFurionApi.Application.Dto.TestFormValidateInput">
+        <member name="P:MyFurionApi.Application.Dto.ContractItemModifyInput.Remark">
             <summary>
-            测试表单验证输入参数
+            备注
             </summary>
         </member>
-        <member name="P:MyFurionApi.Application.Dto.TestFormValidateInput.AccountName">
+        <member name="T:MyFurionApi.Application.Dto.ContractPageInput">
             <summary>
-            账户名
+            产品分页所需数据
             </summary>
         </member>
-        <member name="P:MyFurionApi.Application.Dto.TestFormValidateInput.Password">
+        <member name="P:MyFurionApi.Application.Dto.ContractPageInput.Code">
             <summary>
-            密码
+            code like查询
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.ContractPageInput.Name">
+            <summary>
+            名称like查询
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Dto.ContractSingleInput">
+            <summary>
+            查询单条实体所需条件，自动构建where
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Dto.ContractSingleInput.Code">
+            <summary>
+            名称
             </summary>
         </member>
         <member name="T:MyFurionApi.Application.Dto.SysRoleModuleGroupOutput">
@@ -426,134 +498,109 @@
             <code>该文件可以放在任何项目或文件夹中，Furion 会在程序启动的时候自动扫描并注入配置。</code>
             </summary>
         </member>
-        <member name="T:MyFurionApi.Application.Entity.ProCategory">
+        <member name="T:MyFurionApi.Application.Entity.Contract">
             <summary>
-            树型实体
+            合同
             </summary>
         </member>
-        <member name="P:MyFurionApi.Application.Entity.ProCategory.Name">
+        <member name="P:MyFurionApi.Application.Entity.Contract.Code">
             <summary>
-            名称
+            合同编号
             </summary>
         </member>
-        <member name="P:MyFurionApi.Application.Entity.ProCategory.OrderNo">
+        <member name="P:MyFurionApi.Application.Entity.Contract.Name">
             <summary>
-            排序数字，这里是string类型的，升序排列
+            合同名称
             </summary>
         </member>
-        <member name="P:MyFurionApi.Application.Entity.ProCategory.ParentId">
+        <member name="P:MyFurionApi.Application.Entity.Contract.CType">
             <summary>
-            上级Id
+            合同类型
             </summary>
         </member>
-        <member name="P:MyFurionApi.Application.Entity.ProCategory.ParentName">
+        <member name="P:MyFurionApi.Application.Entity.Contract.CTypeName">
             <summary>
-            父级名称
+            合同类型名称
             </summary>
         </member>
-        <member name="P:MyFurionApi.Application.Entity.ProCategory.FullId">
+        <member name="P:MyFurionApi.Application.Entity.Contract.SignDate">
             <summary>
-            完整Id
+            签订时间
             </summary>
         </member>
-        <member name="P:MyFurionApi.Application.Entity.ProCategory.FullName">
+        <member name="P:MyFurionApi.Application.Entity.Contract.Value">
             <summary>
-            完整名称
+            合同金额
             </summary>
         </member>
-        <member name="P:MyFurionApi.Application.Entity.ProCategory.FullOrderNo">
+        <member name="P:MyFurionApi.Application.Entity.Contract.Summary">
             <summary>
-            完整类别层级排序，竖线分割
+            摘要
             </summary>
         </member>
-        <member name="P:MyFurionApi.Application.Entity.ProCategory.LevelNo">
+        <member name="P:MyFurionApi.Application.Entity.Contract.Flag">
             <summary>
-            层级
+            审批状态
             </summary>
         </member>
-        <member name="P:MyFurionApi.Application.Entity.ProCategory.Status">
+        <member name="P:MyFurionApi.Application.Entity.Contract.FlagName">
             <summary>
-            启用状态
+            审批状态名称
             </summary>
         </member>
-        <member name="P:MyFurionApi.Application.Entity.ProCategory.Parent">
-            <summary>
-            父级信息
-            </summary>
-        </member>
-        <member name="P:MyFurionApi.Application.Entity.ProCategory.Childs">
-            <summary>
-            子列表
-            </summary>
-        </member>
-        <member name="T:MyFurionApi.Application.Entity.Product">
-            <summary>
-            测试主表
-            </summary>
-        </member>
-        <member name="P:MyFurionApi.Application.Entity.Product.Name">
-            <summary>
-            名称
-            </summary>
-        </member>
-        <member name="P:MyFurionApi.Application.Entity.Product.Type">
-            <summary>
-            类型
-            </summary>
-        </member>
-        <member name="P:MyFurionApi.Application.Entity.Product.Num">
-            <summary>
-            数量
-            </summary>
-        </member>
-        <member name="P:MyFurionApi.Application.Entity.Product.Value">
-            <summary>
-            金额
-            </summary>
-        </member>
-        <member name="P:MyFurionApi.Application.Entity.Product.ItemList">
+        <member name="P:MyFurionApi.Application.Entity.Contract.ItemList">
             <summary>
             明细
             </summary>
         </member>
-        <member name="T:MyFurionApi.Application.Entity.ProductType">
+        <member name="P:MyFurionApi.Application.Entity.Contract.AttachList">
             <summary>
-            类型
+            附件
             </summary>
         </member>
-        <member name="F:MyFurionApi.Application.Entity.ProductType.Default">
+        <member name="T:MyFurionApi.Application.Entity.ContractTypeEnum">
             <summary>
-            默认
+            合同类型
             </summary>
         </member>
-        <member name="F:MyFurionApi.Application.Entity.ProductType.Custom">
+        <member name="T:MyFurionApi.Application.Entity.ContractFlagEnum">
             <summary>
-            自定义
+            合同状态
             </summary>
         </member>
-        <member name="T:MyFurionApi.Application.Entity.ProductItem">
+        <member name="T:MyFurionApi.Application.Entity.ContractItem">
             <summary>
-            产品明细
+            合同明细
             </summary>
         </member>
-        <member name="P:MyFurionApi.Application.Entity.ProductItem.ProductId">
+        <member name="P:MyFurionApi.Application.Entity.ContractItem.ContractId">
             <summary>
-            产品id
+            所属合同Id
             </summary>
         </member>
-        <member name="P:MyFurionApi.Application.Entity.ProductItem.Num">
+        <member name="P:MyFurionApi.Application.Entity.ContractItem.Name">
             <summary>
-            唯一索引约束
+            明细名称
             </summary>
         </member>
-        <member name="P:MyFurionApi.Application.Entity.ProductItem.Money">
+        <member name="P:MyFurionApi.Application.Entity.ContractItem.Price">
+            <summary>
+            单价
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.ContractItem.Amount">
+            <summary>
+            数量
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.ContractItem.Value">
             <summary>
             金额
             </summary>
         </member>
-        <member name="P:MyFurionApi.Application.Entity.ProductItem.Str">
+        <member name="P:MyFurionApi.Application.Entity.ContractItem.Remark">
             <summary>
-            字符串
+            备注
             </summary>
         </member>
         <member name="T:MyFurionApi.Application.Entity.SysHandler">
@@ -691,47 +738,125 @@
             用户Id
             </summary>
         </member>
-        <member name="T:MyFurionApi.Application.Entity.UserInfo">
+        <member name="T:MyFurionApi.Application.Entity.SysUser">
             <summary>
             系统用户信息
             </summary>
         </member>
-        <member name="P:MyFurionApi.Application.Entity.UserInfo.LoginName">
+        <member name="P:MyFurionApi.Application.Entity.SysUser.LoginName">
             <summary>
             登录名
             </summary>
         </member>
-        <member name="P:MyFurionApi.Application.Entity.UserInfo.UserName">
+        <member name="P:MyFurionApi.Application.Entity.SysUser.UserName">
             <summary>
             用户名
             </summary>
         </member>
-        <member name="P:MyFurionApi.Application.Entity.UserInfo.Password">
+        <member name="P:MyFurionApi.Application.Entity.SysUser.Password">
             <summary>
             密码
             </summary>
         </member>
-        <member name="P:MyFurionApi.Application.Entity.UserInfo.IsAdmin">
+        <member name="P:MyFurionApi.Application.Entity.SysUser.IsAdmin">
             <summary>
             是否超管
             </summary>
         </member>
-        <member name="T:MyFurionApi.Application.IUserInfoService">
+        <member name="P:MyFurionApi.Application.Entity.SysUser.Avatar">
+            <summary>
+            头像
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.SysUser.AvatarPath">
+            <summary>
+            头像web地址
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.SysUser.Status">
+            <summary>
+            账号启用状态
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.SysUser.LastLoginTime">
+            <summary>
+            最后登录时间
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Entity.Tree">
+            <summary>
+            树型实体
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.Tree.Name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.Tree.OrderNo">
+            <summary>
+            排序数字，这里是string类型的，升序排列
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.Tree.ParentId">
+            <summary>
+            上级Id
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.Tree.ParentName">
+            <summary>
+            父级名称
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.Tree.FullId">
+            <summary>
+            完整Id
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.Tree.FullName">
+            <summary>
+            完整名称
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.Tree.FullOrderNo">
+            <summary>
+            完整类别层级排序，竖线分割
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.Tree.LevelNo">
+            <summary>
+            层级
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.Tree.Status">
+            <summary>
+            启用状态
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.Tree.Parent">
+            <summary>
+            父级信息
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.Tree.Childs">
+            <summary>
+            子列表
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.Entity.TreeGenerateNextNoQuery">
+            <summary>
+            生成排序号查询时所需实体
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Application.Entity.TreeGenerateNextNoQuery.ParentId">
+            <summary>
+            上级id
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Application.ISysUserService">
             <summary>
             用户服务
             </summary>
-        </member>
-        <member name="T:MyFurionApi.Application.ProductService">
-            <summary>
-            产品
-            </summary>
-        </member>
-        <member name="M:MyFurionApi.Application.ProductService.GetInfo(System.Int32)">
-            <summary>
-            获取一条信息
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
         </member>
         <member name="T:MyFurionApi.Application.SysRoleService">
             <summary>
@@ -775,12 +900,12 @@
             <param name="permits">权限PermitId，英文逗号分开</param>
             <returns></returns>
         </member>
-        <member name="T:MyFurionApi.Application.UserInfoService">
+        <member name="T:MyFurionApi.Application.SysUserService">
             <summary>
             用户服务
             </summary>
         </member>
-        <member name="M:MyFurionApi.Application.UserInfoService.CheckHasPermissionAsync(System.Int32,System.String,System.String)">
+        <member name="M:MyFurionApi.Application.SysUserService.CheckHasPermissionAsync(System.Int32,System.String,System.String)">
             <summary>
             检查用户是否有指定权限
             </summary>

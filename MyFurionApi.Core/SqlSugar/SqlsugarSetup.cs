@@ -77,6 +77,9 @@ namespace MyFurionApi.Core
 
             // 注册 SqlSugar 仓储
             services.AddScoped(typeof(SqlSugarRepository<>));
+
+            //工作单元
+            services.AddUnitOfWork<SqlSugarUnitOfWork>();
         }
     }
 }
