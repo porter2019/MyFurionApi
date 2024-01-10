@@ -1,6 +1,6 @@
 # 概述
 
-    基于 [Furion](https://furion.baiqian.ltd/docs) 框架，结合现有的业务，对框架进行业务性完善，已达到开箱即用的程度
+    基于 [Furion](https://furion.baiqian.ltd/docs) 框架，结合现有的业务，集成常用业务和功能，开箱即用
 
 ORM使用SqlSugar
 
@@ -9,6 +9,8 @@ ORM使用SqlSugar
 在本地IIS中创建一个网站，目录指向 `/MyFurionApi.Web.Entry`，端口设置 `5010`，访问域名即 `http://localhost:5010/doc/index.html`
 
 > 此功能需要到 `Visual Studio Installer`程序中勾选`开发时间 IIS 支持`
+> 
+> 网站正常跑起来后，如果在vs中build时提示dll文件被占用，重启VS就好了；如果还是不行，试试清空bin文件夹
 
 # Docker部署
 
@@ -38,7 +40,7 @@ ORM使用SqlSugar
 ```bash
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM registry.cn-zhangjiakou.aliyuncs.com/litdev-dotnet/aspnet-with-libgdiplus:6.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 EXPOSE 80
 
@@ -154,5 +156,5 @@ docker run --name my-furion-api-prod -p 5011:80 -v D:\Docker\Volumes\MyFurionApi
       }
     ```
   
-  -  编译，重新运行，大功告成，用这种方式可以实现配置文件的`ReloadOnChange`
-            
+  - 编译，重新运行，大功告成，用这种方式可以实现配置文件的`ReloadOnChange`
+           

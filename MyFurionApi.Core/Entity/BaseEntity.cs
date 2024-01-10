@@ -28,12 +28,6 @@ public abstract class BaseEntity
     public DateTime? UpdatedTime { get; set; }
 
     /// <summary>
-    /// 乐观锁
-    /// </summary>
-    [FsColumn("乐观锁", IsEnableUpdateVersionValidation = true)]
-    public long Version { get; set; }
-
-    /// <summary>
     /// 软删除
     /// <code>CreateTableFieldSort设置后无效，不知道为啥</code>
     /// </summary>

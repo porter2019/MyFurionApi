@@ -414,6 +414,11 @@
             本站域名
             </summary>
         </member>
+        <member name="F:MyFurionApi.Core.AppSettingsConst.HanfireCallBackDomainUrl">
+            <summary>
+            Hanfire计划任务回调该系统请求的域名
+            </summary>
+        </member>
         <member name="T:MyFurionApi.Core.ClaimConst">
             <summary>
             身份令牌常量
@@ -459,11 +464,6 @@
         <member name="P:MyFurionApi.Core.BaseEntity.UpdatedTime">
             <summary>
             更新时间
-            </summary>
-        </member>
-        <member name="P:MyFurionApi.Core.BaseEntity.Version">
-            <summary>
-            乐观锁
             </summary>
         </member>
         <member name="P:MyFurionApi.Core.BaseEntity.IsDeleted">
@@ -567,6 +567,77 @@
         <member name="T:MyFurionApi.Core.CommonAttachType">
             <summary>
             附件类型
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Core.HanfireJobModel">
+            <summary>
+            Hanfire添加计划任务所需实体
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Core.HanfireJobModel.#ctor(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            BackgroudJob，指定多少分钟后执行
+            </summary>
+            <param name="jobName">任务名称</param>
+            <param name="url">任务访问的url</param>
+            <param name="method">请求方式，Get/Post</param>
+            <param name="delayFromMinutes">指定多少分钟后执行</param>
+        </member>
+        <member name="M:MyFurionApi.Core.HanfireJobModel.#ctor(System.String,System.String,System.String,System.DateTime)">
+            <summary>
+            BackgroudJob，指定运行时间
+            </summary>
+            <param name="jobName">任务名称</param>
+            <param name="url">任务访问的url</param>
+            <param name="method">请求方式，Get/Post</param>
+            <param name="runAt">指定运行时间</param>
+        </member>
+        <member name="M:MyFurionApi.Core.HanfireJobModel.#ctor(System.String,System.String,System.String,System.String)">
+            <summary>
+            RecurringJob，指定Corn表达式
+            </summary>
+            <param name="jobName">任务名称</param>
+            <param name="url">任务访问的url</param>
+            <param name="method">请求方式，Get/Post</param>
+            <param name="corn">Corn表达式</param>
+        </member>
+        <member name="P:MyFurionApi.Core.HanfireJobModel.JobName">
+            <summary>
+            任务名称，如果是一次性后台任务，则仅仅是标识使用，如果是Recurring任务，则删除时需要这个同样的JobName
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Core.HanfireJobModel.Url">
+            <summary>
+            访问的url
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Core.HanfireJobModel.Method">
+            <summary>
+            访问方式，Get/Post
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Core.HanfireJobModel.DelayFromMinutes">
+            <summary>
+            BackgroudJob，指定多少分钟后执行
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Core.HanfireJobModel.RunAt">
+            <summary>
+            BackgroudJob，指定运行时间
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Core.HanfireJobModel.Corn">
+            <summary>
+            RecurringJob，指定Corn表达式，支持 6位数的Cron表达式(支持到秒级)，F12查看常用示例
+            <code>执行周期的问题：https://github.com/yuzd/Hangfire.HttpJob/issues/66 </code>
+            <code>0 15 10 ? * *    每天上午10:15触发 </code>
+            <code>0 0/5 14 * * ?   在每天下午2点到下午2:55期间的每5分钟触发 </code>
+            <code>0 0 10,14,16 * * ?   每天上午10点、下午2点、4点触发 </code>
+            <code>0 0 12 ? * WED   每个星期三中午12点触发 </code>
+            <code>0 15 10 ? * MON-FRI    周一至周五的上午10:15触发 </code>
+            <code>0 25 10 15 * ?   每月15日上午10:25触发 </code>
+            <code>0 15 10 L * ?    每月最后一日的上午10:15触发 </code>
+            <code>更多参考：https://www.cnblogs.com/yanghj010/p/10875151.html</code>
             </summary>
         </member>
         <member name="T:MyFurionApi.Core.UploadFileInfo">
@@ -1399,6 +1470,82 @@
             <param name="folder">保存的文件夹</param>
             <returns></returns>
         </member>
+        <member name="T:MyFurionApi.Core.HangfireJobService">
+            <summary>
+            Hanfire计划任务服务
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Core.HangfireJobService.AddBackgroudJobRunAtAsync(MyFurionApi.Core.HanfireJobModel)">
+            <summary>
+            添加一个一次性任务，指定执行时间
+            </summary>
+            <param name="model">任务名称</param>
+            <returns>返回jobId，删除时需要</returns>
+            <example>await _hangfireJobService.AddBackgroudJobRunAtAsync(new HanfireJobModel(jobName: "inquiry_expire_" + inquiryEntity.Id,url: $"{_config[AppSettingsConst.HanfireCallBackDomainUrl]}/api/inquiryContent/taskjob/expire?id={inquiryEntity.Id}",method: "Get",runAt: inquiryEntity.ExpireTime))</example>
+        </member>
+        <member name="M:MyFurionApi.Core.HangfireJobService.RemoveBackgroundJobAsync(System.String)">
+            <summary>
+            删除一个一次性任务
+            </summary>
+            <param name="jobId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Core.HangfireJobService.AddBackgroundJob(Hangfire.HttpJob.Client.BackgroundJob)">
+            <summary>
+            添加一个一次性任务
+            </summary>
+            <param name="job"></param>
+            <returns>如果返回为空，则执行成功，否则返回异常消息</returns>
+        </member>
+        <member name="M:MyFurionApi.Core.HangfireJobService.AddBackgroundJobAsync(Hangfire.HttpJob.Client.BackgroundJob)">
+            <summary>
+            添加一个一次性任务
+            </summary>
+            <param name="job"></param>
+            <returns>如果返回为空，则执行成功，否则返回异常消息</returns>
+        </member>
+        <member name="M:MyFurionApi.Core.HangfireJobService.DeleteBackgroundJob(System.String)">
+            <summary>
+            根据jobid删除一个一次性任务
+            </summary>
+            <param name="jobId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Core.HangfireJobService.DeleteBackgroundJobAsync(System.String)">
+            <summary>
+            根据jobid删除一个一次性任务
+            </summary>
+            <param name="jobId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Core.HangfireJobService.AddRecurringJob(Hangfire.HttpJob.Client.RecurringJob)">
+            <summary>
+             添加一个指定Corn的任务
+            </summary>
+            <param name="job"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Core.HangfireJobService.AddRecurringJobAsync(Hangfire.HttpJob.Client.RecurringJob)">
+            <summary>
+             添加一个指定Corn的任务
+            </summary>
+            <param name="job"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Core.HangfireJobService.DeleteRecurringJob(System.String)">
+            <summary>
+            根据jobName删除周期任务
+            </summary>
+            <param name="jobName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Core.HangfireJobService.DeleteRecurringJobAsync(System.String)">
+            <summary>
+            根据jobName删除周期任务
+            </summary>
+            <param name="jobName"></param>
+            <returns></returns>
+        </member>
         <member name="T:MyFurionApi.Core.ImgCaptchaService">
             <summary>
             图形验证码服务
@@ -1420,14 +1567,13 @@
             <param name="code"></param>
             <returns></returns>
         </member>
-        <member name="M:MyFurionApi.Core.ImgCaptchaService.GenerateAsync(System.String,System.Int32,System.Int32)">
+        <member name="M:MyFurionApi.Core.ImgCaptchaService.GenerateImg(System.String,System.Int32,System.Int32)">
             <summary>
             生成验证码图片
             </summary>
             <param name="code">验证码</param>
-            <param name="width">宽为0将根据验证码长度自动匹配合适宽度</param>
+            <param name="width">宽</param>
             <param name="height">高</param>
-            <remarks>注意引用的System.Drawing.Common包版本是5.0的，6.0的会提示仅支持windows</remarks>
             <returns></returns>
         </member>
         <member name="M:MyFurionApi.Core.IAttachUploadService.SaveAttach(Microsoft.AspNetCore.Http.IFormFileCollection,System.String)">
@@ -1438,12 +1584,17 @@
             <param name="folder">保存的文件夹</param>
             <returns></returns>
         </member>
+        <member name="T:MyFurionApi.Core.IHangfireJobService">
+            <summary>
+            Hanfire计划任务服务
+            </summary>
+        </member>
         <member name="T:MyFurionApi.Core.IImgCaptchaService">
             <summary>
             图形验证码
             </summary>
         </member>
-        <member name="M:MyFurionApi.Core.IImgCaptchaService.GenerateAsync(System.String,System.Int32,System.Int32)">
+        <member name="M:MyFurionApi.Core.IImgCaptchaService.GenerateImg(System.String,System.Int32,System.Int32)">
             <summary>
             生成验证码图片
             </summary>
@@ -1922,64 +2073,6 @@
             <param name="entities"></param>
             <returns></returns>
         </member>
-        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.UpdateWithOptLock(`0)">
-            <summary>
-            更新一条记录
-            </summary>
-            <param name="entity"></param>
-            <returns></returns>
-        </member>
-        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.UpdateWithOptLock(`0[])">
-            <summary>
-            更新多条记录
-            </summary>
-            <param name="entities"></param>
-            <returns></returns>
-        </member>
-        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.UpdateWithOptLock(System.Collections.Generic.IEnumerable{`0})">
-            <summary>
-            更新多条记录
-            </summary>
-            <param name="entities"></param>
-            <returns></returns>
-        </member>
-        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.UpdateWithOptLockAsync(`0)">
-            <summary>
-            更新一条记录
-            </summary>
-            <param name="entity"></param>
-            <returns></returns>
-        </member>
-        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.UpdateWithOptLock(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{`0,`0}})">
-            <summary>
-            更新记录
-            </summary>
-            <param name="predicate">更新的条件</param>
-            <param name="content">更新的内容</param>
-            <returns></returns>
-        </member>
-        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.UpdateWithOptLockAsync(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{`0,`0}})">
-            <summary>
-            更新记录
-            </summary>
-            <param name="predicate">更新的条件</param>
-            <param name="content">更新的内容</param>
-            <returns></returns>
-        </member>
-        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.UpdateWithOptLockAsync(`0[])">
-            <summary>
-            更新多条记录
-            </summary>
-            <param name="entities"></param>
-            <returns></returns>
-        </member>
-        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.UpdateWithOptLockAsync(System.Collections.Generic.IEnumerable{`0})">
-            <summary>
-            更新多条记录
-            </summary>
-            <param name="entities"></param>
-            <returns></returns>
-        </member>
         <member name="M:MyFurionApi.Core.SqlSugarRepository`1.Delete(`0)">
             <summary>
             删除一条记录
@@ -2227,6 +2320,18 @@
             <summary>
             所有db
             </summary>
+        </member>
+        <member name="M:MyFurionApi.Core.SqlsugarSetup.GetUserId">
+            <summary>
+            获取当前用户id
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Core.SqlsugarSetup.GetUserName">
+            <summary>
+            获取当前用户名
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:MyFurionApi.Core.SqlSugarUnitOfWork">
             <summary>

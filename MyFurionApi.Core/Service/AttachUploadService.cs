@@ -1,8 +1,6 @@
 ﻿using Furion.DependencyInjection;
 using Microsoft.AspNetCore.Http;
-using StackExchange.Profiling.Internal;
 using System.IO;
-using System.Runtime.Intrinsics.Arm;
 
 namespace MyFurionApi.Core;
 

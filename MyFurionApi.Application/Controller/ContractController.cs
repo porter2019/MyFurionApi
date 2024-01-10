@@ -102,8 +102,8 @@ namespace MyFurionApi.Application.Controller
         {
             var data = dto.Adapt<Contract>();
 
-            //更新主体，更新时判断Version
-            await _contractRepository.UpdateWithOptLockAsync(data);
+            //更新主体
+            await _contractRepository.UpdateAsync(data);
             //更新明细，同add
             await _contractRepository.Change<ContractItem>().UpdateItemDiffAsync(dto.Id, data.ItemList);
             //更新附件，同add

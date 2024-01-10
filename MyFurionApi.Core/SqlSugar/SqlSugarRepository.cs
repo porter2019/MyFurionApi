@@ -9,7 +9,7 @@ namespace MyFurionApi.Core
     /// </summary>
     public class SqlSugarRepository<TEntity> where TEntity : class, new()
     {
-        private readonly string[] UpdateIgnoreColumns = new string[] { "CreatedTime", "CreatedUserId", "CreatedUserName" };
+        private readonly string[] UpdateIgnoreColumns = new string[] { "CreatedTime", "CreatedUserId", "CreatedUserName", "IsDeleted" };
 
         #region 属性
 
@@ -744,7 +744,7 @@ namespace MyFurionApi.Core
         public virtual void UpdateAttachFiles(int refId, CommonAttachType attachType, IEnumerable<CommonAttach> list)
         {
             //清空
-            Context.Updateable<CommonAttach>().SetColumns("IsDeleted", 1).SetColumns("Version", "-1").Where(x => x.AttachType == attachType && x.RefId == refId).ExecuteCommand();
+            Context.Updateable<CommonAttach>().SetColumns("IsDeleted", 1).Where(x => x.AttachType == attachType && x.RefId == refId).ExecuteCommand();
             if (list.IsEmpty()) return;
 
             //查找新增和修改的
@@ -766,7 +766,7 @@ namespace MyFurionApi.Core
         public virtual async Task UpdateAttachFilesAsync(int refId, CommonAttachType attachType, IEnumerable<CommonAttach> list)
         {
             //清空
-            await Context.Updateable<CommonAttach>().SetColumns("IsDeleted", 1).SetColumns("Version", "-1").Where(x => x.AttachType == attachType && x.RefId == refId).ExecuteCommandAsync();
+            await Context.Updateable<CommonAttach>().SetColumns("IsDeleted", 1).Where(x => x.AttachType == attachType && x.RefId == refId).ExecuteCommandAsync();
             if (list.IsEmpty()) return;
 
             //查找新增和修改的
@@ -871,89 +871,89 @@ namespace MyFurionApi.Core
         }
         #endregion
 
-        #region 更新 带乐观锁 Version
+        //#region 更新 带乐观锁 Version
 
-        /// <summary>
-        /// 更新一条记录
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        public virtual int UpdateWithOptLock(TEntity entity)
-        {
-            return EntityContext.Updateable(entity).IgnoreColumns(UpdateIgnoreColumns).ExecuteCommandWithOptLock(true);
-        }
+        ///// <summary>
+        ///// 更新一条记录
+        ///// </summary>
+        ///// <param name="entity"></param>
+        ///// <returns></returns>
+        //public virtual int UpdateWithOptLock(TEntity entity)
+        //{
+        //    return EntityContext.Updateable(entity).IgnoreColumns(UpdateIgnoreColumns).ExecuteCommandWithOptLock(true);
+        //}
 
-        /// <summary>
-        /// 更新多条记录
-        /// </summary>
-        /// <param name="entities"></param>
-        /// <returns></returns>
-        public virtual int UpdateWithOptLock(params TEntity[] entities)
-        {
-            return EntityContext.Updateable(entities).IgnoreColumns(UpdateIgnoreColumns).ExecuteCommandWithOptLock(true);
-        }
-        /// <summary>
-        /// 更新多条记录
-        /// </summary>
-        /// <param name="entities"></param>
-        /// <returns></returns>
-        public virtual int UpdateWithOptLock(IEnumerable<TEntity> entities)
-        {
-            return EntityContext.Updateable(entities.ToArray()).IgnoreColumns(UpdateIgnoreColumns).ExecuteCommandWithOptLock(true);
-        }
+        ///// <summary>
+        ///// 更新多条记录
+        ///// </summary>
+        ///// <param name="entities"></param>
+        ///// <returns></returns>
+        //public virtual int UpdateWithOptLock(params TEntity[] entities)
+        //{
+        //    return EntityContext.Updateable(entities).IgnoreColumns(UpdateIgnoreColumns).ExecuteCommandWithOptLock(true);
+        //}
+        ///// <summary>
+        ///// 更新多条记录
+        ///// </summary>
+        ///// <param name="entities"></param>
+        ///// <returns></returns>
+        //public virtual int UpdateWithOptLock(IEnumerable<TEntity> entities)
+        //{
+        //    return EntityContext.Updateable(entities.ToArray()).IgnoreColumns(UpdateIgnoreColumns).ExecuteCommandWithOptLock(true);
+        //}
 
-        /// <summary>
-        /// 更新一条记录
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        public virtual async Task<int> UpdateWithOptLockAsync(TEntity entity)
-        {
-            return await EntityContext.Updateable(entity).IgnoreColumns(UpdateIgnoreColumns).ExecuteCommandWithOptLockAsync(true);
-        }
-        /// <summary>
-        /// 更新记录
-        /// </summary>
-        /// <param name="predicate">更新的条件</param>
-        /// <param name="content">更新的内容</param>
-        /// <returns></returns>
-        public virtual int UpdateWithOptLock(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, TEntity>> content)
-        {
-            return EntityContext.Updateable(content).Where(predicate).IgnoreColumns(UpdateIgnoreColumns).ExecuteCommandWithOptLock(true);
-        }
+        ///// <summary>
+        ///// 更新一条记录
+        ///// </summary>
+        ///// <param name="entity"></param>
+        ///// <returns></returns>
+        //public virtual async Task<int> UpdateWithOptLockAsync(TEntity entity)
+        //{
+        //    return await EntityContext.Updateable(entity).IgnoreColumns(UpdateIgnoreColumns).ExecuteCommandWithOptLockAsync(true);
+        //}
+        ///// <summary>
+        ///// 更新记录
+        ///// </summary>
+        ///// <param name="predicate">更新的条件</param>
+        ///// <param name="content">更新的内容</param>
+        ///// <returns></returns>
+        //public virtual int UpdateWithOptLock(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, TEntity>> content)
+        //{
+        //    return EntityContext.Updateable(content).Where(predicate).IgnoreColumns(UpdateIgnoreColumns).ExecuteCommandWithOptLock(true);
+        //}
 
-        /// <summary>
-        /// 更新记录
-        /// </summary>
-        /// <param name="predicate">更新的条件</param>
-        /// <param name="content">更新的内容</param>
-        /// <returns></returns>
-        public virtual async Task<int> UpdateWithOptLockAsync(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, TEntity>> content)
-        {
-            return await EntityContext.Updateable(content).Where(predicate).IgnoreColumns(UpdateIgnoreColumns).ExecuteCommandWithOptLockAsync(true);
-        }
+        ///// <summary>
+        ///// 更新记录
+        ///// </summary>
+        ///// <param name="predicate">更新的条件</param>
+        ///// <param name="content">更新的内容</param>
+        ///// <returns></returns>
+        //public virtual async Task<int> UpdateWithOptLockAsync(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, TEntity>> content)
+        //{
+        //    return await EntityContext.Updateable(content).Where(predicate).IgnoreColumns(UpdateIgnoreColumns).ExecuteCommandWithOptLockAsync(true);
+        //}
 
-        /// <summary>
-        /// 更新多条记录
-        /// </summary>
-        /// <param name="entities"></param>
-        /// <returns></returns>
-        public virtual Task<int> UpdateWithOptLockAsync(params TEntity[] entities)
-        {
-            return EntityContext.Updateable(entities).IgnoreColumns(UpdateIgnoreColumns).ExecuteCommandWithOptLockAsync(true);
-        }
+        ///// <summary>
+        ///// 更新多条记录
+        ///// </summary>
+        ///// <param name="entities"></param>
+        ///// <returns></returns>
+        //public virtual Task<int> UpdateWithOptLockAsync(params TEntity[] entities)
+        //{
+        //    return EntityContext.Updateable(entities).IgnoreColumns(UpdateIgnoreColumns).ExecuteCommandWithOptLockAsync(true);
+        //}
 
-        /// <summary>
-        /// 更新多条记录
-        /// </summary>
-        /// <param name="entities"></param>
-        /// <returns></returns>
-        public virtual Task<int> UpdateWithOptLockAsync(IEnumerable<TEntity> entities)
-        {
-            return EntityContext.Updateable(entities.ToArray()).IgnoreColumns(UpdateIgnoreColumns).ExecuteCommandWithOptLockAsync(true);
-        }
+        ///// <summary>
+        ///// 更新多条记录
+        ///// </summary>
+        ///// <param name="entities"></param>
+        ///// <returns></returns>
+        //public virtual Task<int> UpdateWithOptLockAsync(IEnumerable<TEntity> entities)
+        //{
+        //    return EntityContext.Updateable(entities.ToArray()).IgnoreColumns(UpdateIgnoreColumns).ExecuteCommandWithOptLockAsync(true);
+        //}
 
-        #endregion
+        //#endregion
 
         #region 删除
 
@@ -1093,7 +1093,7 @@ namespace MyFurionApi.Core
         public int DeleteWithSoft(int id)
         {
             if (id < 1) return 0;
-            return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).SetColumns("Version", "-1").Where($"Id={id}").ExecuteCommand();
+            return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).Where($"Id={id}").ExecuteCommand();
         }
 
         /// <summary>
@@ -1104,7 +1104,7 @@ namespace MyFurionApi.Core
         public int DeleteWithSoft(IEnumerable<int> idList)
         {
             if (idList.IsEmpty()) return 0;
-            return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).SetColumns("Version", "-1").Where($"Id in ({idList.Join()})").ExecuteCommand();
+            return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).Where($"Id in ({idList.Join()})").ExecuteCommand();
         }
 
         /// <summary>
@@ -1116,7 +1116,7 @@ namespace MyFurionApi.Core
         public int DeleteWithSoft(IEnumerable<int> idList, Expression<Func<TEntity, bool>> where)
         {
             if (idList.IsEmpty()) return 0;
-            return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).SetColumns("Version", "-1").Where($"Id in ({idList.Join()})").Where(where).ExecuteCommand();
+            return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).Where($"Id in ({idList.Join()})").Where(where).ExecuteCommand();
         }
 
         /// <summary>
@@ -1127,7 +1127,7 @@ namespace MyFurionApi.Core
         public int DeleteWithSoft(string whereSql)
         {
             if (whereSql.IsNull()) return 0;
-            return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).SetColumns("Version", "-1").Where(whereSql).ExecuteCommand();
+            return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).Where(whereSql).ExecuteCommand();
         }
 
         /// <summary>
@@ -1138,7 +1138,7 @@ namespace MyFurionApi.Core
         public Task<int> DeleteWithSoftAsync(int id)
         {
             if (id < 1) return Task.FromResult(0);
-            return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).SetColumns("Version", "-1").Where($"Id={id}").ExecuteCommandAsync();
+            return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).Where($"Id={id}").ExecuteCommandAsync();
         }
 
         /// <summary>
@@ -1149,7 +1149,7 @@ namespace MyFurionApi.Core
         public Task<int> DeleteWithSoftAsync(IEnumerable<int> idList)
         {
             if (idList.IsEmpty()) return Task.FromResult(0);
-            return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).SetColumns("Version", "-1").Where($"Id in ({idList.Join()})").ExecuteCommandAsync();
+            return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).Where($"Id in ({idList.Join()})").ExecuteCommandAsync();
         }
 
         /// <summary>
@@ -1161,7 +1161,7 @@ namespace MyFurionApi.Core
         public Task<int> DeleteWithSoftAsync(IEnumerable<int> idList, Expression<Func<TEntity, bool>> where)
         {
             if (idList.IsEmpty()) return Task.FromResult(0);
-            return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).SetColumns("Version", "-1").Where($"Id in ({idList.Join()})").Where(where).ExecuteCommandAsync();
+            return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).Where($"Id in ({idList.Join()})").Where(where).ExecuteCommandAsync();
         }
 
         /// <summary>
@@ -1172,7 +1172,7 @@ namespace MyFurionApi.Core
         public Task<int> DeleteWithSoftAsync(string whereSql)
         {
             if (whereSql.IsNull()) return Task.FromResult(0);
-            return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).SetColumns("Version", "-1").Where(whereSql).ExecuteCommandAsync();
+            return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).Where(whereSql).ExecuteCommandAsync();
         }
 
         #endregion

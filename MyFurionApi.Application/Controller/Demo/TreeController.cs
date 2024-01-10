@@ -112,7 +112,7 @@
         [Permission("修改", "edit")]
         public async Task<string> Edit(Tree dto)
         {
-            await _treeRep.UpdateWithOptLockAsync(dto);
+            await _treeRep.UpdateAsync(dto);
 
             //执行存储过程
             await _treeRep.Ado.UseStoredProcedure().ExecuteCommandAsync("sp_update_tree_layer");

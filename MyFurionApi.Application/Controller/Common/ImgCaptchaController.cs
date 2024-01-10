@@ -38,8 +38,8 @@ public class ImgCaptchaController : BaseApiController
     {
         if (tag.IsNull()) throw Oops.Bah("tag不能为空");
         var ms = await _imgCaptchaService.GenerateAsync(tag);
-        
-        return new FileContentResult(ms.ToArray(), @"image/png");
+
+        return new FileContentResult(ms, @"image/png");
     }
 
     /// <summary>

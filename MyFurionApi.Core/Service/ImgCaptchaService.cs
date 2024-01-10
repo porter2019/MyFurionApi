@@ -1,10 +1,8 @@
 ﻿using Furion.DependencyInjection;
-using Furion.DistributedIDGenerator;
 using Furion.FriendlyException;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Drawing;
-using System.Drawing.Imaging;
+using SkiaSharp;
 using System.IO;
 
 namespace MyFurionApi.Core;
@@ -19,11 +17,11 @@ public class ImgCaptchaService : IImgCaptchaService, ITransient
 
     private readonly string _cacheKey = "img_captcha_";
 
-    public ImgCaptchaService(ILogger<ImgCaptchaService> logger, IOptions<CacheOptions> cacheOptions, Func<string, ISingleton, object> resolveNamed)
+    public ImgCaptchaService(ILogger<ImgCaptchaService> logger, IOptions<CacheOptions> cacheOptions, INamedServiceProvider<ICacheMyService> namedServiceProvider)
     {
         _logger = logger;
         // 因为都注入了MemoryCache和RedisCache，所以这里根据配置文件来取具体使用哪个服务
-        _cacheService = resolveNamed(cacheOptions.Value.CacheType.ToString(), default) as ICacheMyService;
+        _cacheService = namedServiceProvider.GetService<ISingleton>(cacheOptions.Value.CacheType.ToString());
     }
 
     /// <summary>
@@ -32,13 +30,13 @@ public class ImgCaptchaService : IImgCaptchaService, ITransient
     /// <remarks>同时保存到缓存中</remarks>
     /// <param name="guid"></param>
     /// <returns></returns>
-    public async Task<MemoryStream> GenerateAsync(string guid)
+    public async Task<byte[]> GenerateAsync(string guid)
     {
         var cacheKey = _cacheKey + guid;
         var code = RandomHelper.GenerateIntNumber(4);
-        var ms = GenerateAsync(code, 0, 30);
+        var imgByte = GenerateImg(code);
         await _cacheService.SetAsync(cacheKey, code, TimeSpan.FromMinutes(60)); //1小时后缓存过期
-        return ms;
+        return imgByte;
     }
 
     /// <summary>
@@ -63,65 +61,53 @@ public class ImgCaptchaService : IImgCaptchaService, ITransient
     /// 生成验证码图片
     /// </summary>
     /// <param name="code">验证码</param>
-    /// <param name="width">宽为0将根据验证码长度自动匹配合适宽度</param>
+    /// <param name="width">宽</param>
     /// <param name="height">高</param>
-    /// <remarks>注意引用的System.Drawing.Common包版本是5.0的，6.0的会提示仅支持windows</remarks>
     /// <returns></returns>
-    public MemoryStream GenerateAsync(string code, int width = 0, int height = 30)
+    public byte[] GenerateImg(string code, int width = 128, int height = 45)
     {
-        //验证码颜色集合
-        Color[] c = { Color.Black, Color.Red, Color.DarkBlue, Color.Green, Color.Orange, Color.Brown, Color.DarkCyan, Color.Purple };
+        Random random = new();
 
-        //验证码字体集合
-        string[] fonts = { "Verdana", "Microsoft Sans Serif", "Comic Sans MS", "Arial", "宋体" };
+        //创建bitmap位图
+        using SKBitmap image = new(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
+        //创建画笔
+        using SKCanvas canvas = new(image);
+        //填充背景颜色为白色
+        canvas.DrawColor(SKColors.White);
 
-        //定义图像的大小，生成图像的实例
-
-        var image = new Bitmap(width == 0 ? code.Length * 25 : width, height);
-        var g = Graphics.FromImage(image);
-
-        //背景设为白色
-        g.Clear(Color.White);
-
-        var random = new Random();
-
-        //在随机位置画背景点
-        for (var i = 0; i < 100; i++)
+        //画图片的背景噪音线
+        for (int i = 0; i < (width * height * 0.015); i++)
         {
-            var x = random.Next(image.Width);
-            var y = random.Next(image.Height);
-            g.DrawRectangle(new Pen(Color.LightGray, 0), x, y, 1, 1);
+            using SKPaint drawStyle = new();
+            drawStyle.Color = new(Convert.ToUInt32(random.Next(Int32.MaxValue)));
+
+            canvas.DrawLine(random.Next(0, width), random.Next(0, height), random.Next(0, width), random.Next(0, height), drawStyle);
+        }
+        //将文字写到画布上
+        //使用本项目的字体文件
+        var fontFilePath = Path.Combine(App.WebHostEnvironment.WebRootPath, "fonts", "STXINGKA.ttf");
+        var font = new SKFont(SKFontManager.Default.CreateTypeface(File.Open(fontFilePath, FileMode.Open)));
+        font.Size = 38;
+        using (SKPaint drawStyle = new())
+        {
+            drawStyle.Color = new SKColor(59, 59, 59);// SKColors.Red;
+            drawStyle.TextSize = height - 10;
+            drawStyle.StrokeWidth = 1;
+
+            float emHeight = height - (float)height * (float)0.14;
+            float emWidth = ((float)width / code.Length) - ((float)width * (float)0.13);
+            canvas.DrawText(code, emWidth, emHeight, font, drawStyle);
         }
 
-        //验证码绘制在g中
-        for (var i = 0; i < code.Length; i++)
+        //画图片的前景噪音点
+        for (int i = 0; i < (width * height * 0.15); i++)
         {
-            //随机颜色索引值
-            var cindex = random.Next(c.Length);
-
-            //随机字体索引值
-            var findex = random.Next(fonts.Length);
-
-            //字体
-            var f = new Font(fonts[findex], 16, FontStyle.Bold);
-
-            //颜色
-            Brush b = new SolidBrush(c[cindex]);
-
-            var ii = 4;
-            if ((i + 1) % 2 == 0)//控制验证码不在同一高度
-                ii = 2;
-
-            //绘制一个验证字符
-            g.DrawString(code.Substring(i, 1), f, b, 17 + (i * 17), ii);
+            image.SetPixel(random.Next(0, width), random.Next(0, height), new SKColor(Convert.ToUInt32(random.Next(Int32.MaxValue))));
         }
 
-        var ms = new MemoryStream();
-        image.Save(ms, ImageFormat.Png);
+        using var img = SKImage.FromBitmap(image);
+        using SKData p = img.Encode(SKEncodedImageFormat.Png, 100);
 
-        g.Dispose();
-        image.Dispose();
-        //return File(ms.ToArray(), @"image/png");
-        return ms;
+        return p.ToArray();
     }
 }
