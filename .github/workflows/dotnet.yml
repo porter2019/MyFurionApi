@@ -1,0 +1,47 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: Docker Image CI
+
+on: workflow_dispatch
+#  push:
+#    branches: [ "master" ]
+#  pull_request:
+#    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    # 拉取仓库文件
+    - name: 拉取master分支代码
+      uses: actions/checkout@v3
+      with: 
+        # 默认当前分支
+        ref: 'master'
+    # 安装dotnet
+    - name: 安装 .NET6
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    # 恢复项目的依赖项和工具
+    - name: 执行 dotnet restore 命令
+      run: dotnet restore
+    # 构建程序
+    - name: 执行 dotnet build 命令
+      run: dotnet build --no-restore
+    # 测试程序是否生成成功
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+    # 创建Docker镜像
+    - name: 生成Docker镜像并推送到阿里云镜像仓库
+      run: |
+        docker version
+        # 登录阿里云镜像仓库
+        docker login --username=${{ secrets.DOCKER_USERNAME }} --password=${{ secrets.DOCKER_PASSWORD }} registry.cn-zhangjiakou.aliyuncs.com
+        # 使用Dockerfile构建镜像
+        docker build . --file Dockerfile --tag registry.cn-zhangjiakou.aliyuncs.com/pub-ext/my-furion-api:1.0
+        # 推送镜像
+        docker push registry.cn-zhangjiakou.aliyuncs.com/pub-ext/my-furion-api:1.0
