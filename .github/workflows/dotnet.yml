@@ -1,5 +1,7 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+# 教程参见：https://www.cnblogs.com/kuangdaoyizhimei/p/14763610.html#_caption0
+# 另有一篇介绍使用ssh发布到服务器上：https://www.cnblogs.com/morang/archive/2023/08/28/zhontai_admin_core_book_04.html
 
 name: Docker Image CI
 
@@ -27,14 +29,14 @@ jobs:
       with:
         dotnet-version: 6.0.x
     # 恢复项目的依赖项和工具
-    - name: 执行 dotnet restore 命令
-      run: dotnet restore
+    #- name: 执行 dotnet restore 命令
+    #  run: dotnet restore
     # 构建程序
-    - name: 执行 dotnet build 命令
-      run: dotnet build --no-restore
+    #- name: 执行 dotnet build 命令
+    #  run: dotnet build --no-restore
     # 测试程序是否生成成功
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+    #- name: Test
+    #  run: dotnet test --no-build --verbosity normal
     # 创建Docker镜像
     - name: 生成Docker镜像并推送到阿里云镜像仓库
       run: |

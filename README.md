@@ -97,6 +97,12 @@ docker run --name my-furion-api-prod -p 5011:80 -v D:\Docker\Volumes\MyFurionApi
 
 `Linux`：`172.17.0.1`
 
+
+
+# Github workflow
+
+这里使用workflow打包成docker镜像，然后推送到阿里云私有镜像仓库中
+
 # 使用Consul Key/Value
 
 ## Consul配置
