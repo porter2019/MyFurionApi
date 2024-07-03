@@ -29,6 +29,23 @@
             <param name="key"></param>
             <returns></returns>
         </member>
+        <member name="T:MyFurionApi.Application.Controller.CurrentController">
+            <summary>
+            上下文信息
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Application.Controller.CurrentController.GetUserInfo">
+            <summary>
+            获取上下文中用户信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Application.Controller.CurrentController.GetPermissionList">
+            <summary>
+            获取用户权限信息
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:MyFurionApi.Application.Controller.DBController">
             <summary>
             数据库

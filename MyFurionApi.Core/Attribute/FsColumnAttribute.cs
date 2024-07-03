@@ -13,6 +13,7 @@ public class FsColumnAttribute : SqlSugar.SugarColumn
     public FsColumnAttribute(string displayName)
     {
         base.ColumnDescription = displayName;
+        base.IsNullable = true;
     }
 
     /// <summary>

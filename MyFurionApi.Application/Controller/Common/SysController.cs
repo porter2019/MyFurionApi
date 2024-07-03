@@ -1,6 +1,4 @@
-﻿
-using Microsoft.Extensions.Configuration;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace MyFurionApi.Application.Controller;
 

@@ -11,9 +11,10 @@ public class HealthController : ControllerBase
     /// 检查
     /// </summary>
     /// <returns>/api/health/check</returns>
-    [HttpGet, Route("check"), AllowAnonymous]
+    [HttpGet, Route("check"), AllowAnonymous, SwaggerIgnore]
     public string Check()
     {
+        //SwaggerIgnore文档中隐藏此接口
         return "OK";
     }
 

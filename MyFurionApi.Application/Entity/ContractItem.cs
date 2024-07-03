@@ -9,7 +9,7 @@ public class ContractItem : BaseEntity
     /// <summary>
     /// 所属合同Id
     /// </summary>
-    [FsColumn("所属合同Id"), ForeignKeyTag]
+    [FsColumn("所属合同Id", false), ForeignKeyTag]
     public int ContractId { get; set; }
 
     /// <summary>
@@ -21,19 +21,19 @@ public class ContractItem : BaseEntity
     /// <summary>
     /// 单价
     /// </summary>
-    [FsColumn("单价", ColumnDataType = "money")]
+    [FsColumn("单价", false, ColumnDataType = "money")]
     public decimal Price { get; set; }
 
     /// <summary>
     /// 数量
     /// </summary>
-    [FsColumn("数量", ColumnDataType = "decimal(10,4)")]
+    [FsColumn("数量", false, ColumnDataType = "decimal(10,4)")]
     public decimal Amount { get; set; }
 
     /// <summary>
     /// 金额
     /// </summary>
-    [FsColumn("金额", ColumnDataType = "money")]
+    [FsColumn("金额", false, ColumnDataType = "money")]
     public decimal Value { get; set; }
 
     /// <summary>

@@ -1,5 +1,4 @@
-﻿using Hangfire.HttpJob.Client;
-namespace MyFurionApi.Core;
+﻿namespace MyFurionApi.Core;
 
 /// <summary>
 /// Hanfire计划任务服务

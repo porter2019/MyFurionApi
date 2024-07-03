@@ -1,4 +1,5 @@
 ﻿using Furion.FriendlyException;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Text.Json.Serialization;
 
 namespace MyFurionApi.Core;
@@ -313,10 +314,12 @@ public class BaseFormPostModel
     /// <summary>
     /// 数据Id
     /// </summary>
+    [SwaggerIgnore]
     public int Id { get; set; }
 
     /// <summary>
     /// 版本
     /// </summary>
+    [SwaggerIgnore]
     public long Version { get; set; }
 }

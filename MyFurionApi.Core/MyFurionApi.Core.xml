@@ -469,7 +469,6 @@
         <member name="P:MyFurionApi.Core.BaseEntity.IsDeleted">
             <summary>
             软删除
-            <code>CreateTableFieldSort设置后无效，不知道为啥</code>
             </summary>
         </member>
         <member name="T:MyFurionApi.Core.BaseEntityStandard">
@@ -496,18 +495,6 @@
             <summary>
             修改者名称
             </summary>
-        </member>
-        <member name="M:MyFurionApi.Core.BaseEntityStandard.UpdateColumn">
-            <summary>
-            更新信息列
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:MyFurionApi.Core.BaseEntityStandard.FalseDeleteColumn">
-            <summary>
-            假删除的列，包含更新信息
-            </summary>
-            <returns></returns>
         </member>
         <member name="T:MyFurionApi.Core.CommonAttach">
             <summary>
@@ -1393,6 +1380,26 @@
             异常过滤器
             </summary>
         </member>
+        <member name="T:MyFurionApi.Core.JsonHelper">
+            <summary>
+            Json序列号
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Core.JsonHelper.Serialize(System.Object)">
+            <summary>
+            序列化对象为json字符串
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyFurionApi.Core.JsonHelper.Deserialize``1(System.String)">
+            <summary>
+            序列化json字符串为对象
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="json"></param>
+            <returns></returns>
+        </member>
         <member name="T:MyFurionApi.Core.RandomHelper">
             <summary>
             随机数工具类
@@ -2015,11 +2022,12 @@
             <param name="attachType">附件类型</param>
             <param name="list"></param>
         </member>
-        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.Update(`0)">
+        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.Update(`0,System.String[])">
             <summary>
             更新一条记录
             </summary>
             <param name="entity"></param>
+            <param name="ignoreColumns"></param>
             <returns></returns>
         </member>
         <member name="M:MyFurionApi.Core.SqlSugarRepository`1.Update(`0[])">
@@ -2036,11 +2044,12 @@
             <param name="entities"></param>
             <returns></returns>
         </member>
-        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.UpdateAsync(`0)">
+        <member name="M:MyFurionApi.Core.SqlSugarRepository`1.UpdateAsync(`0,System.String[])">
             <summary>
             更新一条记录
             </summary>
             <param name="entity"></param>
+            <param name="ignoreColumns"></param>
             <returns></returns>
         </member>
         <member name="M:MyFurionApi.Core.SqlSugarRepository`1.Update(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{`0,`0}})">

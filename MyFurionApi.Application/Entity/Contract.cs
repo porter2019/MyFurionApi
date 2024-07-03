@@ -33,7 +33,7 @@ public class Contract : BaseEntityStandard
     /// <summary>
     /// 签订时间
     /// </summary>
-    [FsColumn("签订时间", true)]
+    [FsColumn("签订时间")]
     public DateTime? SignDate { get; set; } = DateTime.Now;
 
     /// <summary>
@@ -51,7 +51,7 @@ public class Contract : BaseEntityStandard
     /// <summary>
     /// 审批状态
     /// </summary>
-    [FsColumn("审批状态")]
+    [FsColumn("审批状态", false)]
     public ContractFlagEnum Flag { get; set; } = ContractFlagEnum.草稿;
 
     /// <summary>

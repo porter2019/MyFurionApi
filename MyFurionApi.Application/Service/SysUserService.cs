@@ -1,6 +1,4 @@
-﻿using Furion.FriendlyException;
-
-namespace MyFurionApi.Application;
+﻿namespace MyFurionApi.Application;
 
 /// <summary>
 /// 用户服务

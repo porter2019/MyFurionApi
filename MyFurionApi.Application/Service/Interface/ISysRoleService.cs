@@ -1,7 +1,4 @@
-﻿
-using MyFurionApi.Application.Dto;
-
-namespace MyFurionApi.Application;
+﻿namespace MyFurionApi.Application;
 
 public interface ISysRoleService
 {
