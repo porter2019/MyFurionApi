@@ -39,7 +39,7 @@ public class Contract : BaseEntityStandard
     /// <summary>
     /// 合同金额
     /// </summary>
-    [FsColumn("合同金额", false, ColumnDataType = "money")]
+    [FsColumn("合同金额", false, ColumnDataType = DBColumnDataType.Money)]
     public decimal Value { get; set; }
 
     /// <summary>

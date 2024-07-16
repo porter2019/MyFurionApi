@@ -112,7 +112,7 @@ public enum PageQueryOperatorType
     LikeRight,
 
     /// <summary>
-    /// CHARINDEX('参数',UserName) > 0
+    /// CHARINDEX('参数',UserName) > 0，MySQL下使用locate替代
     /// </summary>
     CharIndex,
 

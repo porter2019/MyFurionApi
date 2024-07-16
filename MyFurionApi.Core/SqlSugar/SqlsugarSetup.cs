@@ -18,8 +18,8 @@ public static class SqlsugarSetup
             //Log
             db.Aop.OnLogExecuting = (sql, pars) =>
             {
-                App.PrintToMiniProfiler("SqlSugar", "Info", UtilMethods.GetSqlString(DbType.SqlServer, sql, pars));
-                $"Sql:\r\n\r\n {UtilMethods.GetSqlString(DbType.SqlServer, sql, pars)}".LogInformation();
+                App.PrintToMiniProfiler("SqlSugar", "Info", UtilMethods.GetSqlString(db.CurrentConnectionConfig.DbType, sql, pars));
+                $"Sql:\r\n\r\n {UtilMethods.GetSqlString(db.CurrentConnectionConfig.DbType, sql, pars)}".LogInformation();
                 //Console.WriteLine(sql);//输出sql
             };
             //数据执行前

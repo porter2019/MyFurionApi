@@ -1,0 +1,93 @@
+﻿DELIMITER //
+
+DROP PROCEDURE IF EXISTS sp_update_tree_layer //
+
+CREATE PROCEDURE sp_update_tree_layer()
+BEGIN
+    DECLARE done INT DEFAULT 0;
+    DECLARE current_level INT DEFAULT 1;
+    
+    -- 创建临时表来存储递归结果
+    CREATE TEMPORARY TABLE IF NOT EXISTS temp_tree (
+        Id INT,
+        Name VARCHAR(255),
+        OrderNo INT,
+        ParentName VARCHAR(255),
+        FullId TEXT,
+        FullName TEXT,
+        LevelNo INT,
+        FullOrderNo TEXT
+    );
+
+    -- 初始化根节点
+    INSERT INTO temp_tree
+    SELECT 
+        a.Id, a.Name, a.OrderNo, 
+        '' AS ParentName,
+        CONCAT('|', a.Id, '|') AS FullId, 
+        a.Name AS FullName, 
+        1 AS LevelNo,
+        a.OrderNo AS FullOrderNo
+    FROM Tree a 
+    WHERE a.ParentId = 0;
+
+    -- 递归插入子节点
+    REPEAT
+        -- 创建临时表来存储当前级别的结果
+        CREATE TEMPORARY TABLE IF NOT EXISTS temp_tree_current (
+            Id INT,
+            Name VARCHAR(255),
+            OrderNo INT,
+            ParentName VARCHAR(255),
+            FullId TEXT,
+            FullName TEXT,
+            LevelNo INT,
+            FullOrderNo TEXT
+        );
+
+        -- 插入当前级别的子节点
+        INSERT INTO temp_tree_current
+        SELECT 
+            a.Id, a.Name, a.OrderNo, 
+            p.Name AS ParentName,
+            CONCAT(p.FullId, a.Id, '|') AS FullId, 
+            CONCAT(p.FullName, '|', a.Name) AS FullName,
+            (p.LevelNo + 1) AS LevelNo,
+            CONCAT(p.FullOrderNo, '|', a.OrderNo) AS FullOrderNo
+        FROM Tree a 
+        INNER JOIN temp_tree p ON a.ParentId = p.Id
+        WHERE a.Id > 0
+        AND p.LevelNo = current_level;
+
+        -- 检查是否有新记录插入，如果没有则停止递归
+        IF ROW_COUNT() = 0 THEN
+            SET done = 1;
+        END IF;
+
+        -- 将当前级别的结果插入主临时表
+        INSERT INTO temp_tree
+        SELECT * FROM temp_tree_current;
+
+        -- 删除临时表
+        DROP TEMPORARY TABLE IF EXISTS temp_tree_current;
+
+        -- 增加当前级别
+        SET current_level = current_level + 1;
+
+    UNTIL done END REPEAT;
+
+    -- 更新原表
+    UPDATE Tree q 
+    INNER JOIN temp_tree p ON q.Id = p.Id
+    SET 
+        q.ParentName = p.ParentName, 
+        q.FullId = p.FullId, 
+        q.FullName = p.FullName, 
+        q.LevelNo = p.LevelNo, 
+        q.FullOrderNo = p.FullOrderNo;
+
+    -- 删除临时表
+    DROP TEMPORARY TABLE IF EXISTS temp_tree;
+END //
+
+DELIMITER ;

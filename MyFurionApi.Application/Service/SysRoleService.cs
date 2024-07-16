@@ -32,9 +32,11 @@ public class SysRoleService : ISysRoleService, ITransient
     /// <returns></returns>
     public Task<List<string>> GetPermissionsByRoleIdAsync(string roleIds)
     {
-        string sql = string.Format(@"select DISTINCT (c.AliasName + '.' + b.AliasName) as auth from
-                                            SysRolePermit as a left join SysPermit as b on a.PermitId = b.Id and a.IsDeleted = 0 and a.RoleId in({0})
-                                            left join SysHandler as c on b.HandlerId = c.Id and c.IsDeleted=0", roleIds);
+        var diffFunc = _sysRoleRepo.Context.CurrentConnectionConfig.DbType == DbType.SqlServer ? "(c.AliasName + '.' + b.AliasName)" : "CONCAT(c.AliasName, '.', b.AliasName)";
+        //sql server使用+号连接，mysql使用concat
+        string sql = string.Format(@"select DISTINCT {0} as auth from
+                                            SysRolePermit as a left join SysPermit as b on a.PermitId = b.Id and a.IsDeleted = 0 and a.RoleId in({1})
+                                            left join SysHandler as c on b.HandlerId = c.Id and c.IsDeleted=0", diffFunc, roleIds);
         return _sysRoleRepo.Ado.SqlQueryAsync<string>(sql);
     }
 
@@ -63,13 +65,14 @@ public class SysRoleService : ISysRoleService, ITransient
     /// <returns></returns>
     public List<Dto.SysRoleModuleGroupOutput> GetPermitListByRoleId(int roleId)
     {
+        var diffFunc = _sysRoleRepo.Context.CurrentConnectionConfig.DbType == DbType.SqlServer ? "ISNULL" : "COALESCE";
+        //sql server使用ISNULL，mysql使用COALESCE
         var sql = string.Format(@"select sm.ModuleName, sh.HandlerName, sp.Id as PermitId,sp.PermitName, sp.AliasName, sh.OrderNo,
-                                                case when ISNULL(srp.PermitId,0)!=0  then 1 else 0 end IsChecked
+                                                case when {0}(srp.PermitId,0)!=0  then 1 else 0 end IsChecked
                                                 from SysPermit as sp
                                                 inner join SysHandler as sh on sp.HandlerId = sh.Id
                                                 inner join SysModule as sm on sh.ModuleId = sm.Id
-                                                left join SysRolePermit as srp on srp.PermitId = sp.Id and srp.RoleId = {0}",
-                                        roleId);
+                                                left join SysRolePermit as srp on srp.PermitId = sp.Id and srp.RoleId = {1}", diffFunc, roleId);
         var _sysRolePermitRepo = _sysRoleRepo.Change<SysRolePermit>();
 
         var dbData = _sysRolePermitRepo.Ado.SqlQuery<Dto.SysRolePermitOutput>(sql);

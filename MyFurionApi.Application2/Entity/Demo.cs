@@ -21,7 +21,7 @@ public class Demo : BaseEntityStandard
     /// <summary>
     /// 金额
     /// </summary>
-    [FsColumn("金额", ColumnDataType = "money")]
+    [FsColumn("金额", ColumnDataType = DBColumnDataType.Money)]
     public decimal Value { get; set; }
 
 }

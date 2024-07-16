@@ -25,12 +25,11 @@ public class AttachUploadService : IAttachUploadService, ISingleton
     public List<UploadFileInfo> SaveAttach(IFormFileCollection files, string folder)
     {
         if (files == null) return default;
-        //TODO 未测试，因为Postwoman插件不支持上传文件
         if (string.IsNullOrWhiteSpace(folder)) folder = "attach";
         var baseIODirectory = App.WebHostEnvironment.WebRootPath;
         var domain = _config["AppSettings:DomainUrl"];
         var baseRootFolder = "uploads";
-        var saveFolder = baseRootFolder + "/" + folder;   // 保存的相对目录 /uploads/attach
+        var saveFolder = baseRootFolder + "/" + folder + "/";   // 保存的相对目录 /uploads/attach/
 
         List<UploadFileInfo> fileList = new();
         foreach (var file in files)
@@ -41,7 +40,7 @@ public class AttachUploadService : IAttachUploadService, ISingleton
             if (string.IsNullOrWhiteSpace(fileExt) && file.FileName == "blob") fileExt = ".jpg";
             var tempFileIOFolder = Path.Combine(baseIODirectory, baseRootFolder, folder);
             if (!Directory.Exists(tempFileIOFolder)) Directory.CreateDirectory(tempFileIOFolder);
-            var tempFileIOPath = tempFileIOFolder + fileName + fileExt;
+            var tempFileIOPath = tempFileIOFolder + "\\" + fileName + fileExt;
             //保存
             using (FileStream fs = new(tempFileIOPath, FileMode.Create))
             {

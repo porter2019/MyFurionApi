@@ -30,14 +30,16 @@ public class AccountController : BaseApiController
             UserName = "管理员",
             IsAdmin = true
         };
-        _userInfoRep.InsertReturnIdentity(userEntity);
+        if (!_userInfoRep.Any(x => x.LoginName == userEntity.LoginName))
+            _userInfoRep.InsertReturnIdentity(userEntity);
         userEntity = new SysUser()
         {
             LoginName = "test",
             Password = "000".ToMD5Encrypt(),
             UserName = "测试用户A"
         };
-        _userInfoRep.InsertReturnEntity(userEntity);
+        if (!_userInfoRep.Any(x => x.LoginName == userEntity.LoginName))
+            _userInfoRep.InsertReturnEntity(userEntity);
         return userEntity.Id;
     }
 

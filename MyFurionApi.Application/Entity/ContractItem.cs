@@ -21,7 +21,7 @@ public class ContractItem : BaseEntity
     /// <summary>
     /// 单价
     /// </summary>
-    [FsColumn("单价", false, ColumnDataType = "money")]
+    [FsColumn("单价", false, ColumnDataType = DBColumnDataType.Money)]
     public decimal Price { get; set; }
 
     /// <summary>
@@ -33,7 +33,7 @@ public class ContractItem : BaseEntity
     /// <summary>
     /// 金额
     /// </summary>
-    [FsColumn("金额", false, ColumnDataType = "money")]
+    [FsColumn("金额", false, ColumnDataType = DBColumnDataType.Money)]
     public decimal Value { get; set; }
 
     /// <summary>

@@ -96,8 +96,8 @@ public class BaseBuildWhereModel : BaseFormPostModel
             if (filedValue == null) continue;
             if (filedValue.ToString().IsNull()) continue;
             var fileValueChar = "";
-
-            var columnName = queryAttr.ColumnName.IsNull() ? $"[{filedName}]" : $"[{queryAttr.ColumnName}]";
+            // sql server使用[]包含列名，mysql使用``
+            var columnName = queryAttr.ColumnName.IsNull() ? $"{filedName}" : $"{queryAttr.ColumnName}";//$"[{filedName}]" : $"[{queryAttr.ColumnName}]";
             var sqlColumnName = queryAttr.PrefixName.IsNull() ? columnName : queryAttr.PrefixName + "." + columnName;
 
             var propType = itemType.PropertyType;

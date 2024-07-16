@@ -78,7 +78,7 @@ public class ContractController : BaseApiController
     public async Task<string> Add(ContractModifyInput dto)
     {
         var data = dto.Adapt<Contract>();
-
+        data.Code = DateTime.Now.ToFileTime().ToString();
         //添加主体，返回自增id
         var id = await _contractRepository.InsertReturnIdentityAsync(data);
         //添加明细，同edit
@@ -86,7 +86,7 @@ public class ContractController : BaseApiController
         //添加附件，同edit
         await _contractRepository.UpdateAttachFilesAsync(id, CommonAttachType.Demo, data.AttachList);
 
-        return "修改成功";
+        return "添加成功";
     }
 
     /// <summary>
