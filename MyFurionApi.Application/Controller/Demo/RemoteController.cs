@@ -1,4 +1,4 @@
-﻿using Furion.RemoteRequest.Extensions;
+﻿using Furion.HttpRemote;
 
 namespace MyFurionApi.Application.Controller;
 
@@ -7,9 +7,11 @@ namespace MyFurionApi.Application.Controller;
 /// </summary>
 public class RemoteController : BaseApiController
 {
-    public RemoteController()
-    {
+    private readonly IHttpRemoteService _httpRemoteService;
 
+    public RemoteController(IHttpRemoteService httpRemoteService)
+    {
+        _httpRemoteService = httpRemoteService;
     }
 
     /// <summary>
@@ -19,8 +21,8 @@ public class RemoteController : BaseApiController
     [HttpGet]
     public Task<string> Get()
     {
-        //更多用法 https://furion.baiqian.ltd/docs/http
-        return "http://www.baidu.com".GetAsStringAsync();
+        //更多用法 https://furion.net/docs/http-agent
+        return _httpRemoteService.GetAsStringAsync("http://www.baidu.com");
     }
 
 }

@@ -91,13 +91,14 @@ public class BaseBuildWhereModel : BaseFormPostModel
             var queryAttr = quarrAttrArray[0] as PageQueryAttribute;
             if (queryAttr.IsIgnore) continue;
 
+            var dbType = queryAttr.DbType;
             var filedName = itemType.Name;
             var filedValue = itemType.GetValue(this, null);
             if (filedValue == null) continue;
             if (filedValue.ToString().IsNull()) continue;
             var fileValueChar = "";
             // sql server使用[]包含列名，mysql使用``
-            var columnName = queryAttr.ColumnName.IsNull() ? $"{filedName}" : $"{queryAttr.ColumnName}";//$"[{filedName}]" : $"[{queryAttr.ColumnName}]";
+            var columnName = dbType == SqlSugar.DbType.MySql ? (queryAttr.ColumnName.IsNull() ? $"`{filedName}`" : $"`{queryAttr.ColumnName}`") : (queryAttr.ColumnName.IsNull() ? $"[{filedName}]" : $"[{queryAttr.ColumnName}]");
             var sqlColumnName = queryAttr.PrefixName.IsNull() ? columnName : queryAttr.PrefixName + "." + columnName;
 
             var propType = itemType.PropertyType;
@@ -170,7 +171,10 @@ public class BaseBuildWhereModel : BaseFormPostModel
                     break;
 
                 case PageQueryOperatorType.CharIndex:
-                    sbWhere.Append($" {logic} CharIndex('{filedValue}',{sqlColumnName}) > 0");
+                    if (dbType == SqlSugar.DbType.MySql)
+                        sbWhere.Append($" {logic} locate('{filedValue}',{sqlColumnName}) > 0");
+                    else
+                        sbWhere.Append($" {logic} CharIndex('{filedValue}',{sqlColumnName}) > 0");
                     break;
 
                 case PageQueryOperatorType.BetweenNumber:

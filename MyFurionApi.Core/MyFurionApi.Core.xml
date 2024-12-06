@@ -62,11 +62,12 @@
             分页属性设置
             </summary>
         </member>
-        <member name="M:MyFurionApi.Core.PageQueryAttribute.#ctor(MyFurionApi.Core.PageQueryOperatorType)">
+        <member name="M:MyFurionApi.Core.PageQueryAttribute.#ctor(MyFurionApi.Core.PageQueryOperatorType,SqlSugar.DbType)">
             <summary>
             只指定匹配类型
             </summary>
             <param name="action"></param>
+            <param name="dbType">数据库类型，默认MySql</param>
         </member>
         <member name="P:MyFurionApi.Core.PageQueryAttribute.IsIgnore">
             <summary>
@@ -76,6 +77,11 @@
         <member name="P:MyFurionApi.Core.PageQueryAttribute.PrefixName">
             <summary>
             列前缀，a.
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Core.PageQueryAttribute.DbType">
+            <summary>
+            数据库类型
             </summary>
         </member>
         <member name="P:MyFurionApi.Core.PageQueryAttribute.ColumnName">

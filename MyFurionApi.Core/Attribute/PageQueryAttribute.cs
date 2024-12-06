@@ -15,7 +15,8 @@ public class PageQueryAttribute : Attribute
     /// 只指定匹配类型
     /// </summary>
     /// <param name="action"></param>
-    public PageQueryAttribute(PageQueryOperatorType action)
+    /// <param name="dbType">数据库类型，默认MySql</param>
+    public PageQueryAttribute(PageQueryOperatorType action, SqlSugar.DbType dbType = SqlSugar.DbType.MySql)
     {
         this.Operator = action;
     }
@@ -29,6 +30,11 @@ public class PageQueryAttribute : Attribute
     /// 列前缀，a.
     /// </summary>
     public string PrefixName { get; set; }
+
+    /// <summary>
+    /// 数据库类型
+    /// </summary>
+    public SqlSugar.DbType DbType { get; set; }
 
     /// <summary>
     /// 对应数据库的字段名称，如果为空，则跟列名一样

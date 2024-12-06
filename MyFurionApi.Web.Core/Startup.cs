@@ -70,7 +70,7 @@ public class Startup : AppStartup
         //跨域
         services.AddCorsAccessor();
         //远程请求
-        services.AddRemoteRequest();
+        services.AddHttpRemote();
         //虚拟文件系统
         services.AddVirtualFileServer();
 
@@ -108,7 +108,10 @@ public class Startup : AppStartup
         }
 
         //处理使用nginx代理后IP获取不正确的问题 放到最前面
-        app.UseForwardedHeaders();
+        app.UseForwardedHeaders(new ForwardedHeadersOptions
+        {
+            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+        });
 
         // 添加规范化结果状态码
         app.UseUnifyResultStatusCodes();
