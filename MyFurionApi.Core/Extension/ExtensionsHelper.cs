@@ -1014,6 +1014,19 @@ public static class ExtensionsHelper
         return string.Join(separator, list);
     }
 
+    /// <summary>
+    /// 仿照JavaScript的join方法
+    /// </summary>
+    /// <param name="list"></param>
+    /// <param name="separator">分隔符，默认','</param>
+    /// <returns></returns>
+    public static string Join(this IEnumerable<string> list, char separator = ',')
+    {
+        if (list == null) return "";
+        if (list.Count() == 0) return "";
+        return string.Join(separator, list);
+    }
+
     #endregion
 
     #region HTML

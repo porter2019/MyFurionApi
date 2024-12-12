@@ -97,8 +97,6 @@ docker run --name my-furion-api-prod -p 5011:80 -v D:\Docker\Volumes\MyFurionApi
 
 `Linux`：`172.17.0.1`
 
-
-
 # Github workflow
 
 这里使用workflow打包成docker镜像，然后推送到阿里云私有镜像仓库中
@@ -162,5 +160,5 @@ docker run --name my-furion-api-prod -p 5011:80 -v D:\Docker\Volumes\MyFurionApi
       }
     ```
   
-  - 编译，重新运行，大功告成，用这种方式可以实现配置文件的`ReloadOnChange`
+  - 编译，重新运行，用这种方式可以实现配置文件的`ReloadOnChange`
            

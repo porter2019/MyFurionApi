@@ -1270,6 +1270,14 @@
             <param name="separator">分隔符，默认','</param>
             <returns></returns>
         </member>
+        <member name="M:MyFurionApi.Core.ExtensionsHelper.Join(System.Collections.Generic.IEnumerable{System.String},System.Char)">
+            <summary>
+            仿照JavaScript的join方法
+            </summary>
+            <param name="list"></param>
+            <param name="separator">分隔符，默认','</param>
+            <returns></returns>
+        </member>
         <member name="M:MyFurionApi.Core.ExtensionsHelper.StripHtml(System.String)">
             <summary>
             去掉HTML标记

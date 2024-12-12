@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Furion.Logging.Extensions;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,11 +17,19 @@ public class Startup : AppStartup
     public void ConfigureServices(IServiceCollection services)
     {
         //services.AddRemoteRequest();
-        services.AddEventBus();
-        //services.AddEventBus(builder =>
-        //{
-        //    builder.AddSubscriber<LogEventSubscriber>();
-        //});
+
+        //后台服务
+        //services.AddHostedService<ReceiveWorker>();
+
+        //事件订阅
+        services.AddEventBus(builder =>
+        {
+            builder.UnobservedTaskExceptionHandler = (obj, args) =>
+            {
+                var msg = $"【订阅事件出现异常】obj:{obj},异常消息:{args.Exception.Message}";
+                msg.LogError(args.Exception);
+            };
+        });
     }
 
     /// <summary>

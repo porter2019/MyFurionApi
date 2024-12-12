@@ -870,6 +870,19 @@
             上级id
             </summary>
         </member>
+        <member name="T:MyFurionApi.Application.Event.EventSubscriber">
+            <summary>
+            事件订阅器
+            <code>追加继承ISingleton接口，就不用在Startup中一个个注册了</code>
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Application.Event.EventSubscriber.SiloCurrValue(Furion.EventBus.EventHandlerExecutingContext)">
+            <summary>
+            料仓当前容量事件
+            </summary>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
         <member name="T:MyFurionApi.Application.ISysUserService">
             <summary>
             用户服务
@@ -948,6 +961,19 @@
             </summary>
             <param name="app"></param>
             <param name="env"></param>
+        </member>
+        <member name="T:MyFurionApi.Application.ReceiveWorker">
+            <summary>
+            后台持续运行的任务
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Application.ReceiveWorker.ExecuteAsync(System.Threading.CancellationToken)">
+            <summary>
+            执行
+            </summary>
+            <param name="stoppingToken"></param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
         </member>
     </members>
 </doc>

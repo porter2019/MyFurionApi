@@ -18,9 +18,9 @@ public static class SqlsugarSetup
             //Log
             db.Aop.OnLogExecuting = (sql, pars) =>
             {
-                App.PrintToMiniProfiler("SqlSugar", "Info", UtilMethods.GetSqlString(db.CurrentConnectionConfig.DbType, sql, pars));
-                $"Sql:\r\n\r\n {UtilMethods.GetSqlString(db.CurrentConnectionConfig.DbType, sql, pars)}".LogInformation();
-                //Console.WriteLine(sql);//输出sql
+                var sqlStr = UtilMethods.GetSqlString(db.Context.CurrentConnectionConfig.DbType, sql, pars);
+                $"主库:\r\n {sqlStr} \r\n".LogDebug<SqlSugarLogTag>();
+                App.PrintToMiniProfiler("SqlSugar", "Info", sqlStr);
             };
             //数据执行前
             db.Aop.DataExecuting = (oldValue, entityInfo) =>
@@ -103,3 +103,5 @@ public static class SqlsugarSetup
     }
 
 }
+
+public class SqlSugarLogTag { }
