@@ -3,7 +3,7 @@
 /// <summary>
 /// 系统模块下的功能
 /// </summary>
-[SugarTable(tableName: null)]
+[FsTable()]
 public class SysHandler : BaseEntity
 {
     /// <summary>

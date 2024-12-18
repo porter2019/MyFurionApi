@@ -4,12 +4,6 @@
         <name>MyFurionApi.Core</name>
     </assembly>
     <members>
-        <member name="T:MyFurionApi.Core.DisableSyncStructureAttribute">
-            <summary>
-            设置禁止SqlSugar Table迁移属性
-            <code>因为官方的SqlSugar.SugarTable这个不能继承拓展新增个属性</code>
-            </summary>
-        </member>
         <member name="T:MyFurionApi.Core.ForeignKeyTagAttribute">
             <summary>
             表示字段为主表的外键
@@ -53,6 +47,45 @@
             </summary>
         </member>
         <member name="P:MyFurionApi.Core.FsColumnAttribute.IsPK">
+            <summary>
+            是否主键(为True时同时自增)
+            </summary>
+        </member>
+        <member name="T:MyFurionApi.Core.FsTableAttribute">
+            <summary>
+            SqlSugar表属性
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Core.FsTableAttribute.#ctor">
+            <summary>
+            默认
+            </summary>
+        </member>
+        <member name="M:MyFurionApi.Core.FsTableAttribute.#ctor(System.String)">
+            <summary>
+            指定表名
+            </summary>
+            <param name="tableName">表名</param>
+        </member>
+        <member name="M:MyFurionApi.Core.FsTableAttribute.#ctor(System.Boolean)">
+            <summary>
+            忽略迁移
+            </summary>
+            <param name="isIgnore">是否忽略迁移</param>
+        </member>
+        <member name="M:MyFurionApi.Core.FsTableAttribute.#ctor(System.String,System.Boolean)">
+            <summary>
+            指定表名和是否忽略，一般视图类使用
+            </summary>
+            <param name="tableName">表名</param>
+            <param name="isIgnore">是否忽略迁移</param>
+        </member>
+        <member name="F:MyFurionApi.Core.FsTableAttribute._IsIgnore">
+            <summary>
+            必须这样写，不然内存溢出
+            </summary>
+        </member>
+        <member name="P:MyFurionApi.Core.FsTableAttribute.IsIgnore">
             <summary>
             是否主键(为True时同时自增)
             </summary>

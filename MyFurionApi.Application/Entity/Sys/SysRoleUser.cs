@@ -3,7 +3,7 @@
 /// <summary>
 /// 用户组下的用户
 /// </summary>
-[SugarTable(null)]
+[FsTable()]
 public class SysRoleUser : BaseEntityStandard
 {
     /// <summary>

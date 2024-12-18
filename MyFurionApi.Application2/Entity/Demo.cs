@@ -3,7 +3,7 @@
 /// <summary>
 /// 演示表-未同步
 /// </summary>
-[SugarTable(null)]
+[FsTable()]
 public class Demo : BaseEntityStandard
 {
     /// <summary>

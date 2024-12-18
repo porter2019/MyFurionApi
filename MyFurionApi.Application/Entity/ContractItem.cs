@@ -3,7 +3,7 @@
 /// <summary>
 /// 合同明细
 /// </summary>
-[SugarTable(null)]
+[FsTable()]
 public class ContractItem : BaseEntity
 {
     /// <summary>

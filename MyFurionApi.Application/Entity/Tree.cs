@@ -3,7 +3,7 @@
 /// <summary>
 /// 树型实体
 /// </summary>
-[SugarTable(null)]
+[FsTable()]
 public class Tree : BaseEntityStandard
 {
     /// <summary>

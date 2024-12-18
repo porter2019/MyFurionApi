@@ -3,7 +3,7 @@
 /// <summary>
 /// 系统模块
 /// </summary>
-[SugarTable(tableName: null)]
+[FsTable()]
 public class SysModule : BaseEntity
 {
     public SysModule()

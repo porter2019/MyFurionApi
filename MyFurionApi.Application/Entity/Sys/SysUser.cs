@@ -3,7 +3,7 @@
 /// <summary>
 /// 系统用户信息
 /// </summary>
-[SugarTable(null), SugarIndex("unique_sys_user_loginname", nameof(LoginName), OrderByType.Asc, true)]
+[FsTable(), SugarIndex("unique_sys_user_loginname", nameof(LoginName), OrderByType.Asc, true)]
 public class SysUser : BaseEntityStandard
 {
     /// <summary>

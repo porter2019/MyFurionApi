@@ -34,13 +34,13 @@ public class DBController : BaseApiController
         //ALTER DATABASE 数据库名称 SET MULTI_USER
 
         var tableNameList = tableNames.SplitWithComma();
-        List<Type> types = App.EffectiveTypes.Where(a => !a.IsAbstract && a.IsClass && a.GetCustomAttributes(typeof(SugarTable), true)?.FirstOrDefault() != null).ToList();
+        List<Type> types = App.EffectiveTypes.Where(a => !a.IsAbstract && a.IsClass && a.GetCustomAttributes(typeof(FsTableAttribute), true)?.FirstOrDefault() != null).ToList();
         foreach (var type in types)
         {
-            //如果添加了禁止迁移属性，则跳过
-            if (type.GetCustomAttribute(typeof(DisableSyncStructureAttribute), true) != null)
+            var fsTableAttr = type.GetCustomAttribute(typeof(FsTableAttribute), true) as FsTableAttribute;
+            if (fsTableAttr.IsIgnore)
             {
-                _logger.LogDebug($"已禁止迁移实体【{type.FullName}】");
+                _logger.LogDebug($"已忽略实体【{type.FullName}】");
                 continue;
             }
 

@@ -3,7 +3,7 @@
 /// <summary>
 /// 功能下的权限
 /// </summary>
-[SugarTable(tableName: null)]
+[FsTable()]
 public class SysPermit : BaseEntity
 {
     /// <summary>

@@ -9,7 +9,7 @@ public static class SqlsugarSetup
 {
     public static void AddSqlsugarSetup(this IServiceCollection services)
     {
-        List<Type> types = App.EffectiveTypes.Where(a => !a.IsAbstract && a.IsClass && a.GetCustomAttributes(typeof(SugarTable), true)?.FirstOrDefault() != null).ToList();
+        List<Type> types = App.EffectiveTypes.Where(a => !a.IsAbstract && a.IsClass && a.GetCustomAttributes(typeof(FsTableAttribute), true)?.FirstOrDefault() != null).ToList();
         SqlSugarScope sqlSugar = new SqlSugarScope(App.GetConfig<List<ConnectionConfig>>("ConnectionConfigs"),
         db =>
         {

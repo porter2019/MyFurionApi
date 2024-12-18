@@ -3,7 +3,7 @@
 /// <summary>
 /// 附件表
 /// </summary>
-[SqlSugar.SugarTable(null)]
+[FsTable()]
 public class CommonAttach : BaseEntity
 {
     /// <summary>
