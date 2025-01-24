@@ -1,0 +1,49 @@
+﻿#mysql8.0版本
+-- 更改分隔符以定义存储过程
+DELIMITER $$
+
+-- 尝试删除存储过程，如果存在的话
+DROP PROCEDURE IF EXISTS ProcMaterialCategoryLayerUpdate$$
+
+-- 创建存储过程
+CREATE PROCEDURE ProcMaterialCategoryLayerUpdate()
+BEGIN
+    -- 使用递归CTE来构建层级结构
+    WITH RECURSIVE p AS (
+        SELECT 
+            a.Id, 
+            a.`Name`, 
+            a.OrderNo, 
+            CAST('' AS CHAR(255)) AS ParentName,  -- 显式定义初始长度
+            CONCAT('|', a.Id, '|') AS FullId, 
+            a.Name AS FullName,
+            1 AS LevelNo,
+            a.OrderNo AS FullOrderNo
+        FROM MaterialCategory a 
+        WHERE a.ParentId = 0
+        UNION ALL
+        SELECT 
+            a.Id, 
+            a.`Name`, 
+            a.OrderNo,
+            CAST(p.`Name` AS CHAR(255)) AS ParentName,  -- 限制长度
+            LEFT(CONCAT(p.FullId, a.Id, '|'),2000) AS FullId, 
+            LEFT(CONCAT(p.FullName, '|', a.Name),2000) AS FullName,
+            (p.LevelNo + 1) AS LevelNo,
+            LEFT(CONCAT(p.FullOrderNo, '|', a.OrderNo),2000) AS FullOrderNo
+        FROM MaterialCategory a 
+        INNER JOIN p ON a.ParentId = p.Id
+    )
+    -- 更新MaterialCategory表中的层级信息
+    UPDATE MaterialCategory q
+    INNER JOIN p ON q.Id = p.Id
+    SET 
+        q.ParentName = p.ParentName, 
+        q.FullId = p.FullId, 
+        q.FullName = p.FullName, 
+        q.LevelNo = p.LevelNo, 
+        q.FullOrderNo = p.FullOrderNo;
+END$$
+
+-- 恢复默认分隔符
+DELIMITER ;

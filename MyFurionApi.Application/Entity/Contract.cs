@@ -45,7 +45,7 @@ public class Contract : BaseEntityStandard
     /// <summary>
     /// 摘要
     /// </summary>
-    [FsColumn("摘要", true, 2000)]
+    [FsColumn("摘要", true, 500)]
     public string Summary { get; set; }
 
     /// <summary>

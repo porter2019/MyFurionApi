@@ -1,4 +1,6 @@
-﻿namespace MyFurionApi.Core;
+﻿using SqlSugar;
+
+namespace MyFurionApi.Core;
 
 /// <summary>
 /// SqlSugar列属性
@@ -41,12 +43,19 @@ public class FsColumnAttribute : SqlSugar.SugarColumn
     /// </summary>
     /// <param name="displayName">列说明</param>
     /// <param name="isNullable">是否可以为空</param>
-    /// <param name="length">长度，默认255</param>
+    /// <param name="length">长度，默认255，如果 = 9999，则使用string大文本</param>
     public FsColumnAttribute(string displayName, bool isNullable, int length)
     {
         base.ColumnDescription = displayName;
         base.IsNullable = isNullable;
-        base.Length = length;
+        if (length == 9999)
+        {
+            base.ColumnDataType = StaticConfig.CodeFirst_BigString;
+        }
+        else
+        {
+            base.Length = length;
+        }
     }
 
     /// <summary>

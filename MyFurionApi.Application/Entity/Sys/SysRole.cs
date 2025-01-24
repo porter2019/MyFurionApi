@@ -15,7 +15,7 @@ public class SysRole : BaseEntityStandard
     /// <summary>
     /// 描述
     /// </summary>
-    [FsColumn("描述", true, 2000)]
+    [FsColumn("描述", true, 1000)]
     public string Description { get; set; }
 
     /// <summary>

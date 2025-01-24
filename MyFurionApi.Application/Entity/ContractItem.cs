@@ -39,7 +39,7 @@ public class ContractItem : BaseEntity
     /// <summary>
     /// 备注
     /// </summary>
-    [FsColumn("备注", true, 2000)]
+    [FsColumn("备注", true, 9999)]
     public string Remark { get; set; }
 
 }
