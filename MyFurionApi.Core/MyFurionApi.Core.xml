@@ -39,7 +39,7 @@
             </summary>
             <param name="displayName">列说明</param>
             <param name="isNullable">是否可以为空</param>
-            <param name="length">长度，默认255</param>
+            <param name="length">长度，默认255，如果 = 9999，则使用string大文本</param>
         </member>
         <member name="F:MyFurionApi.Core.FsColumnAttribute._IsPK">
             <summary>
