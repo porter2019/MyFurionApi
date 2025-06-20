@@ -10,7 +10,7 @@ public class SysRole : BaseEntityStandard
     /// 用户组名称
     /// </summary>
     [FsColumn("用户组名称", false, 50)]
-    public string RoleName { get; set; }
+    public string Name { get; set; }
 
     /// <summary>
     /// 描述

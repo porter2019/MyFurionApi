@@ -20,7 +20,6 @@ public static class SqlsugarSetup
             {
                 var sqlStr = UtilMethods.GetSqlString(db.Context.CurrentConnectionConfig.DbType, sql, pars);
                 $"主库:\r\n {sqlStr} \r\n".LogDebug<SqlSugarLogTag>();
-                App.PrintToMiniProfiler("SqlSugar", "Info", sqlStr);
             };
             //数据执行前
             db.Aop.DataExecuting = (oldValue, entityInfo) =>

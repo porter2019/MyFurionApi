@@ -3,13 +3,20 @@
 /// <summary>
 /// 系统用户信息
 /// </summary>
-[FsTable(), SugarIndex("unique_sys_user_loginname", nameof(LoginName), OrderByType.Asc, true)]
+[FsTable(), SugarIndex("unique_sys_user_cellphone", nameof(CellPhone), OrderByType.Asc, true)]
 public class SysUser : BaseEntityStandard
 {
+
+    /// <summary>
+    /// 手机号
+    /// </summary>
+    [FsColumn("手机号", true, 100)]
+    public string CellPhone { get; set; }
+
     /// <summary>
     /// 登录名
     /// </summary>
-    [FsColumn("登录名", false, 100)]
+    [FsColumn("登录名", true, 100)]
     public string LoginName { get; set; }
 
     /// <summary>
@@ -44,7 +51,12 @@ public class SysUser : BaseEntityStandard
     {
         get
         {
-            return Avatar.IsNull() ? "" : App.Configuration[AppSettingsConst.DomainUrl] + Avatar;
+            if (Avatar.IsNull()) return "";
+            else
+            {
+                if (Avatar.StartsWith("http")) return Avatar;
+                else return App.Configuration[AppSettingsConst.DomainUrl] + Avatar;
+            }
         }
     }
 
@@ -59,5 +71,37 @@ public class SysUser : BaseEntityStandard
     /// </summary>
     [FsColumn("最后登录时间")]
     public DateTime? LastLoginTime { get; set; }
+
+}
+
+/// <summary>
+/// 系统用户运营管理所需的额外数据
+/// </summary>
+[FsTable("SysUserOMInfoView", true)]
+public class SysUserOMInfo : SysUser
+{
+    /// <summary>
+    /// 用户所属角色组Ids
+    /// </summary>
+    public string RoleIds { get; set; }
+
+    /// <summary>
+    /// 用户所属角色组Id
+    /// <code>Vue需要数组类型的</code>
+    /// </summary>
+    [FsColumn(true)]
+    public int[] RoleIdArray
+    {
+        get
+        {
+            if (RoleIds.IsNull()) return Array.Empty<int>();
+            return RoleIds.Split(',').ConvertIntArray();
+        }
+    }
+
+    /// <summary>
+    /// 所属组，逗号分隔
+    /// </summary>
+    public string RoleNames { get; set; }
 
 }

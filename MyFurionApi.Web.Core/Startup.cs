@@ -11,6 +11,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using MyFurionApi.Core;
 using System;
+using System.IO;
 using System.Text.Encodings.Web;
 
 namespace MyFurionApi.Web.Core;
@@ -41,15 +42,40 @@ public class Startup : AppStartup
 
         //services.AddConsoleFormatter();
 
+        #region 日志输入文件
+
         //日志输出到文件
-        services.AddFileLogging("logs/{0:yyyy}-{0:MM}-{0:dd}.log", options =>
+        //services.AddFileLogging("logs/{0:yyyy}-{0:MM}-{0:dd}.log", options =>
+        //{
+        //    //options.MessageFormat = LoggerFormatter.JsonIndented;
+        //    options.FileNameRule = fileName =>
+        //    {
+        //        return string.Format(fileName, DateTime.Now);
+        //    };
+        //});
+
+        services.AddFileLogging("logs/{0:yyyy-MM}/{0:yyyy-MM-dd}.log", options =>
         {
-            //options.MessageFormat = LoggerFormatter.JsonIndented;
             options.FileNameRule = fileName =>
             {
-                return string.Format(fileName, DateTime.UtcNow);
+                return string.Format(fileName, DateTime.Now);
             };
         });
+
+        // 创建必要的文件夹
+        var logDirectory = Path.Combine(Directory.GetCurrentDirectory(), "logs");
+        if (!Directory.Exists(logDirectory))
+        {
+            Directory.CreateDirectory(logDirectory);
+        }
+
+        var currentMonthDirectory = Path.Combine(logDirectory, DateTime.Now.ToString("yyyy-MM"));
+        if (!Directory.Exists(currentMonthDirectory))
+        {
+            Directory.CreateDirectory(currentMonthDirectory);
+        }
+
+        #endregion
 
         //全局捕捉接口控制器详细日志信息
         services.AddMonitorLogging(options =>
