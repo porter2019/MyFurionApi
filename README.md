@@ -9,8 +9,8 @@ ORM使用SqlSugar
 在本地IIS中创建一个网站，目录指向 `/MyFurionApi.Web.Entry`，端口设置 `5010`，访问域名即 `http://localhost:5010/doc/index.html`
 
 > 此功能需要到 `Visual Studio Installer`程序中勾选`开发时间 IIS 支持`
-> 
-> 网站正常跑起来后，如果在vs中build时提示dll文件被占用，重启VS就好了；如果还是不行，试试清空bin文件夹
+> 网站启动前，将vs的启动文件默认`MyFurionApi.Web.Entry`改为`IIS`
+> 网站正常跑起来后，如果在vs中build时提示dll文件被占用，重启VS就好了；如果不行，检查一下是否将启动项改为`IIS`，如果还是不行，试试清空bin文件夹
 
 # Docker部署
 
@@ -93,7 +93,7 @@ docker run --name my-furion-api-prod -p 5011:80 -v D:\Docker\Volumes\MyFurionApi
 
 不同系统下访问宿主机IP：
 
-`Windows`：`192.168.65.2`
+`Windows`：`host.docker.internal`
 
 `Linux`：`172.17.0.1`
 

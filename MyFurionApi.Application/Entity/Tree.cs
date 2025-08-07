@@ -63,14 +63,14 @@ public class Tree : BaseEntityStandard
     /// <summary>
     /// 父级信息
     /// </summary>
-    [FsColumn("父级信息", IsIgnore = true)]
+    [FsColumn(true)]
     [Navigate(NavigateType.OneToOne, nameof(ParentId))]
     public Tree Parent { get; set; }
 
     /// <summary>
     /// 子列表
     /// </summary>
-    [FsColumn("子列表", IsIgnore = true)]
+    [FsColumn(true)]
     public List<Tree> Childs { get; set; }
 }
 

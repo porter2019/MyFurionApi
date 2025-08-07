@@ -186,9 +186,31 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     /// </summary>
     /// <param name="whereExpression"></param>
     /// <returns></returns>
-    public async Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> whereExpression)
+    public Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> whereExpression)
     {
-        return await Entities.FirstAsync(whereExpression);
+        return Entities.FirstAsync(whereExpression);
+    }
+
+    /// <summary>
+    /// 获取一个实体
+    /// </summary>
+    /// <param name="whereExpression"></param>
+    /// <param name="orderBy"></param>
+    /// <returns></returns>
+    public TEntity FirstOrDefault(Expression<Func<TEntity, bool>> whereExpression, string orderBy)
+    {
+        return Entities.Where(whereExpression).OrderBy(orderBy).First();
+    }
+
+    /// <summary>
+    /// 获取一个实体
+    /// </summary>
+    /// <param name="whereExpression"></param>
+    /// <param name="orderBy"></param>
+    /// <returns></returns>
+    public Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> whereExpression, string orderBy)
+    {
+        return Entities.Where(whereExpression).OrderBy(orderBy).FirstAsync();
     }
 
     /// <summary>
@@ -823,10 +845,10 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     /// <summary>
     /// 更新记录
     /// </summary>
+    /// <param name="content">更新的内容x => new FlowProcess() { IsDefault = false }</param>
     /// <param name="predicate">更新的条件</param>
-    /// <param name="content">更新的内容</param>
     /// <returns></returns>
-    public virtual int Update(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, TEntity>> content)
+    public virtual int Update(Expression<Func<TEntity, TEntity>> content, Expression<Func<TEntity, bool>> predicate)
     {
         return EntityContext.Updateable(content).Where(predicate).IgnoreColumns(UpdateIgnoreColumns).ExecuteCommand();
     }
@@ -834,10 +856,10 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     /// <summary>
     /// 更新记录
     /// </summary>
+    /// <param name="content">更新的内容x => new FlowProcess() { IsDefault = false }</param>
     /// <param name="predicate">更新的条件</param>
-    /// <param name="content">更新的内容</param>
     /// <returns></returns>
-    public virtual async Task<int> UpdateAsync(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, TEntity>> content)
+    public virtual async Task<int> UpdateAsync(Expression<Func<TEntity, TEntity>> content, Expression<Func<TEntity, bool>> predicate)
     {
         return await EntityContext.Updateable(content).Where(predicate).IgnoreColumns(UpdateIgnoreColumns).ExecuteCommandAsync();
     }

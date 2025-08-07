@@ -1297,6 +1297,40 @@ public static class ExtensionsHelper
         return null;
     }
 
+    /// <summary>
+    /// 根据值，获取对应的枚举类型
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    public static T ToEnum<T>(this int value) where T : Enum
+    {
+        if (!Enum.IsDefined(typeof(T), value))
+        {
+            throw new ArgumentException($"无效的枚举值 {value} 对于类型 {typeof(T).Name}");
+        }
+        return (T)Enum.ToObject(typeof(T), value);
+    }
+
+    /// <summary>
+    /// 根据值，获取对应的枚举类型
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="value"></param>
+    /// <param name="result"></param>
+    /// <returns></returns>
+    public static bool TryToEnum<T>(this int value, out T result) where T : Enum
+    {
+        result = default(T);
+        if (Enum.IsDefined(typeof(T), value))
+        {
+            result = (T)Enum.ToObject(typeof(T), value);
+            return true;
+        }
+        return false;
+    }
+
     #endregion 枚举
 
     #region Http上下文

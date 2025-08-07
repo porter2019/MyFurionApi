@@ -9,13 +9,13 @@ public class SysRole : BaseEntityStandard
     /// <summary>
     /// 用户组名称
     /// </summary>
-    [FsColumn("用户组名称", false, 50)]
+    [FsColumn("用户组名称", 50)]
     public string Name { get; set; }
 
     /// <summary>
     /// 描述
     /// </summary>
-    [FsColumn("描述", true, 1000)]
+    [FsColumn("描述", 200)]
     public string Description { get; set; }
 
     /// <summary>

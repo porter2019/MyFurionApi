@@ -42,6 +42,25 @@ public class FsColumnAttribute : SqlSugar.SugarColumn
     /// 适用于String
     /// </summary>
     /// <param name="displayName">列说明</param>
+    /// <param name="length">长度，默认255，如果 = 9999，则使用string大文本</param>
+    public FsColumnAttribute(string displayName, int length)
+    {
+        base.ColumnDescription = displayName;
+        base.IsNullable = true;
+        if (length == 9999)
+        {
+            base.ColumnDataType = StaticConfig.CodeFirst_BigString;
+        }
+        else
+        {
+            base.Length = length;
+        }
+    }
+
+    /// <summary>
+    /// 适用于String
+    /// </summary>
+    /// <param name="displayName">列说明</param>
     /// <param name="isNullable">是否可以为空</param>
     /// <param name="length">长度，默认255，如果 = 9999，则使用string大文本</param>
     public FsColumnAttribute(string displayName, bool isNullable, int length)

@@ -144,7 +144,7 @@ public class Startup : AppStartup
 
         //app.UseHttpLogging();
 
-        app.UseHttpsRedirection();
+        //app.UseHttpsRedirection();
 
         app.UseRouting();
         app.UseStaticFiles(new StaticFileOptions

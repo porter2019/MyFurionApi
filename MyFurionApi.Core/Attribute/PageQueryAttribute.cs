@@ -143,6 +143,16 @@ public enum PageQueryOperatorType
     IntNotIn,
 
     /// <summary>
+    /// is null 查询: is null
+    /// </summary>
+    IsNull,
+
+    /// <summary>
+    /// is not null 查询: is not null
+    /// </summary>
+    IsNotNULL,
+
+    /// <summary>
     /// 指定SQL语句查询: 1=1
     /// </summary>
     Sql,

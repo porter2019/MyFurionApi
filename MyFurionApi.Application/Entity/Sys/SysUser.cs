@@ -10,25 +10,25 @@ public class SysUser : BaseEntityStandard
     /// <summary>
     /// 手机号
     /// </summary>
-    [FsColumn("手机号", true, 100)]
+    [FsColumn("手机号", 100)]
     public string CellPhone { get; set; }
 
     /// <summary>
     /// 登录名
     /// </summary>
-    [FsColumn("登录名", true, 100)]
+    [FsColumn("登录名", 100)]
     public string LoginName { get; set; }
 
     /// <summary>
     /// 用户名
     /// </summary>
-    [FsColumn("用户名", true, 200)]
+    [FsColumn("用户名", 200)]
     public string UserName { get; set; }
 
     /// <summary>
     /// 密码
     /// </summary>
-    [FsColumn("密码", false, 500)]
+    [FsColumn("密码", 500)]
     public string Password { get; set; }
 
     /// <summary>
@@ -40,13 +40,13 @@ public class SysUser : BaseEntityStandard
     /// <summary>
     /// 头像
     /// </summary>
-    [FsColumn("头像", true, 500)]
+    [FsColumn("头像", 500)]
     public string Avatar { get; set; }
 
     /// <summary>
     /// 头像web地址
     /// </summary>
-    [FsColumn("头像web地址", IsIgnore = true)]
+    [FsColumn(true)]
     public string AvatarPath
     {
         get
@@ -63,7 +63,7 @@ public class SysUser : BaseEntityStandard
     /// <summary>
     /// 账号启用状态
     /// </summary>
-    [FsColumn("账号状态", false)]
+    [FsColumn(false)]
     public bool Status { get; set; } = true;
 
     /// <summary>

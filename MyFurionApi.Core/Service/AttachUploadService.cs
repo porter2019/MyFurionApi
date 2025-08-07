@@ -29,18 +29,28 @@ public class AttachUploadService : IAttachUploadService, ISingleton
         var baseIODirectory = App.WebHostEnvironment.WebRootPath;
         var domain = _config["AppSettings:DomainUrl"];
         var baseRootFolder = "uploads";
-        var saveFolder = baseRootFolder + "/" + folder + "/";   // 保存的相对目录 /uploads/attach/
+        var pathArr = folder.Split('/').ToList();
+        // 将baseRootFolder参数添加到pathArr第一个值
+        pathArr.Insert(0, baseRootFolder);
+        var saveFolder = Path.Combine([.. pathArr]);  // 使用 Path.Combine 拼接路径
 
         List<UploadFileInfo> fileList = new();
         foreach (var file in files)
         {
-            var fileExt = Path.GetExtension(file.FileName).ToLower(); //文件后缀名  .jpg
+            var fileExt = Path.GetExtension(file.FileName).ToLower(); // 文件后缀名 .jpg
             var fileName = Guid.NewGuid().ToString("N");
-            var filePath = "/" + saveFolder + fileName + fileExt;
+            var filePath = $"/{saveFolder}/{fileName}{fileExt}".Replace("\\", "/"); // 保存的相对路径
+
             if (string.IsNullOrWhiteSpace(fileExt) && file.FileName == "blob") fileExt = ".jpg";
+
+            // 使用 Path.Combine 构建临时文件的绝对路径
             var tempFileIOFolder = Path.Combine(baseIODirectory, baseRootFolder, folder);
+
+            // 创建目录，兼容 Windows 和 Linux
             if (!Directory.Exists(tempFileIOFolder)) Directory.CreateDirectory(tempFileIOFolder);
-            var tempFileIOPath = tempFileIOFolder + "\\" + fileName + fileExt;
+
+            var tempFileIOPath = Path.Combine(tempFileIOFolder, $"{fileName}{fileExt}");
+
             //保存
             using (FileStream fs = new(tempFileIOPath, FileMode.Create))
             {

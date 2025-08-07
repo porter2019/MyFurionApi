@@ -20,7 +20,7 @@ public class TreeController : BaseApiController
     /// </summary>
     /// <param name="search">搜索关键字</param>
     /// <returns></returns>
-    [HttpGet]
+    [HttpGet, Route("get/tree")]
     [Permission("查看", "show")]
     public Task<List<Tree>> GetList(string search)
     {

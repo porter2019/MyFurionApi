@@ -196,6 +196,12 @@ public class BaseBuildWhereModel : BaseFormPostModel
                 case PageQueryOperatorType.IntNotIn:
                     sbWhere.Append($" {logic} {sqlColumnName} not in({filedValue})");
                     break;
+                case PageQueryOperatorType.IsNull:
+                    sbWhere.Append($" {logic} {sqlColumnName} is null ");
+                    break;
+                case PageQueryOperatorType.IsNotNULL:
+                    sbWhere.Append($" {logic} {sqlColumnName} is not null ");
+                    break;
                 case PageQueryOperatorType.Sql:
                     sbWhere.Append($" {logic} {filedValue}");
                     break;

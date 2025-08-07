@@ -54,7 +54,7 @@ public class AccountController : BaseApiController
         var pwd = req.Password.ToMD5Encrypt();
         var userEntity = _userInfoRep.FirstOrDefault(x => x.LoginName == req.LoginName && x.Password == pwd);
         if (userEntity == null) throw Oops.Bah("用户不存在");
-        _userInfoRep.EntityContext.Updateable<SysUser>().SetColumns("LastLoginTime", DateTime.Now).Where(x => x.Id == userEntity.Id).ExecuteCommand();
+        _userInfoRep.Update(x => new SysUser() { LastLoginTime = DateTime.Now }, x => x.Id == userEntity.Id);
         var token = JWTEncryption.Encrypt(new Dictionary<string, object>()
         {
             { ClaimConst.UserId, userEntity.Id },

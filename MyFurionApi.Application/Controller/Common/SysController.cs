@@ -190,7 +190,7 @@ public class SysController : BaseApiController
                     if (!entityPermit.AliasName.Equals(opeartion.Value))
                     {
                         //如果改了别名，则只改别名就行了
-                        _sysPermitRepo.EntityContext.Updateable<SysPermit>().SetColumns(x => x.AliasName == opeartion.Value).Where(x => x.Id == permitId).ExecuteCommand();
+                        _sysPermitRepo.Update(x => new SysPermit() { AliasName = opeartion.Value }, x => x.Id == permitId);
                         _logger.LogInformation($"【权限数据初始化】修改修改权限别名：{opeartion}，新的别名：{opeartion.Value}，所属模块{moduleName},命名空间：{controllerFullName}");
                     }
                 }
