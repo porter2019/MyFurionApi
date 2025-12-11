@@ -1,8 +1,8 @@
 ﻿#系统用户运营管理所需的额外数据
-#DROP VIEW IF EXISTS SysUserOMInfoView;
+DROP VIEW IF EXISTS SysUserOMInfoView;
 
 CREATE VIEW SysUserOMInfoView AS
-SELECT 
+SELECT
     a.*,
     IFNULL(GROUP_CONCAT(ru.RoleId SEPARATOR ','), '') AS RoleIds, # 角色ID逗号分隔
     IFNULL(GROUP_CONCAT(sr.Name SEPARATOR ','), '') AS RoleNames # 角色名称逗号分隔

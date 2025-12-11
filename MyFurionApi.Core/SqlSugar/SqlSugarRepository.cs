@@ -81,6 +81,7 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     /// <param name="where"></param>
     /// <param name="parameters"></param>
     /// <returns></returns>
+    [Obsolete("尽量避免直接使用where，因为不同数据的列使用不同符号包裹")]
     public int Count(string where, object parameters = null)
     {
         return Entities.Where(where, parameters).Count();
@@ -92,6 +93,7 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     /// <param name="where"></param>
     /// <param name="parameters"></param>
     /// <returns></returns>
+    [Obsolete("尽量避免直接使用where，因为不同数据的列使用不同符号包裹")]
     public Task<int> CountAsync(string where, object parameters = null)
     {
         return Entities.Where(where, parameters).CountAsync();
@@ -249,6 +251,7 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     /// </summary>
     /// <param name="where"></param>
     /// <returns></returns>
+    [Obsolete("尽量避免直接使用where，因为不同数据的列使用不同符号包裹")]
     public List<TEntity> ToList(string where)
     {
         return Entities.Where(where).ToList();
@@ -528,6 +531,21 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     }
 
     /// <summary>
+    /// 新增多条记录，审计信息
+    /// </summary>
+    /// <param name="entities"></param>
+    /// <param name="businessData"></param>
+    /// <returns></returns>
+    public virtual Task<int> InsertAuditAsync(IEnumerable<TEntity> entities, object businessData)
+    {
+        if (entities != null && entities.Any())
+        {
+            return EntityContext.Insertable(entities.ToArray()).EnableDiffLogEvent(businessData).ExecuteCommandAsync();
+        }
+        return Task.FromResult(0);
+    }
+
+    /// <summary>
     /// 新增一条记录返回自增Id
     /// </summary>
     /// <param name="entity"></param>
@@ -535,6 +553,17 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     public virtual async Task<int> InsertReturnIdentityAsync(TEntity entity)
     {
         return await EntityContext.Insertable(entity).ExecuteReturnIdentityAsync();
+    }
+
+    /// <summary>
+    /// 新增一条记录返回自增Id，审计信息
+    /// </summary>
+    /// <param name="entity"></param>
+    /// <param name="businessData"></param>
+    /// <returns></returns>
+    public virtual async Task<int> InsertReturnIdentityAuditAsync(TEntity entity, object businessData)
+    {
+        return await EntityContext.Insertable(entity).EnableDiffLogEvent(businessData).ExecuteReturnIdentityAsync();
     }
 
     /// <summary>
@@ -576,14 +605,14 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
         if (list.IsEmpty())
         {
             //清空
-            DeleteWithSoft($"{foreignKeyName} = {masterId}");
+            DeleteWithSoft(BuildColumnWhere(foreignKeyName, masterId));
             return;
         }
 
         if (!type.GetProperties().Any(x => x.Name == "Id")) throw new Exception($"{type.FullName}缺少Id主键");
 
         //原来的列表
-        var sourceList = ToList($"{foreignKeyName} = {masterId}");
+        var sourceList = ToList(BuildColumnWhere(foreignKeyName, masterId));
         //新增的
         var addDataList = new List<TEntity>();
         //要修改的
@@ -642,14 +671,14 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
         if (list.IsEmpty())
         {
             //清空
-            DeleteWithSoft($"{foreignKeyName} = {masterId}");
+            DeleteWithSoft(BuildColumnWhere(foreignKeyName, masterId));
             return;
         }
 
         if (!type.GetProperties().Any(x => x.Name == "Id")) throw new Exception($"{type.FullName}缺少Id主键");
 
         //原来的列表
-        var sourceList = await ToListAsync($"{foreignKeyName} = {masterId}");
+        var sourceList = await ToListAsync(BuildColumnWhere(foreignKeyName, masterId));
         //新增的
         var addDataList = new List<TEntity>();
         //要修改的
@@ -693,6 +722,73 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     }
 
     /// <summary>
+    /// 更新明细，审计信息
+    /// </summary>
+    /// <param name="masterId"></param>
+    /// <param name="list"></param>
+    /// <param name="businessData"></param>
+    public virtual async Task UpdateItemDiffAuditAsync(int masterId, IEnumerable<TEntity> list, object businessData)
+    {
+        var type = typeof(TEntity);
+        //获取外键
+        var foreignKeyProInfo = type.GetProperties().First(x => x.GetCustomAttribute(typeof(ForeignKeyTagAttribute), true) != null);
+        if (foreignKeyProInfo == null) throw new Exception($"{type.FullName}缺少指定{typeof(ForeignKeyTagAttribute).FullName}标记的属性");
+        var foreignKeyName = foreignKeyProInfo.Name;
+
+        if (list.IsEmpty())
+        {
+            //清空
+            DeleteWithSoft(BuildColumnWhere(foreignKeyName, masterId));
+            return;
+        }
+
+        if (!type.GetProperties().Any(x => x.Name == "Id")) throw new Exception($"{type.FullName}缺少Id主键");
+
+        //原来的列表
+        var sourceList = await ToListAsync(BuildColumnWhere(foreignKeyName, masterId));
+        //新增的
+        var addDataList = new List<TEntity>();
+        //要修改的
+        var updateDataList = new List<TEntity>();
+        var updateIdList = new List<int>();
+        //查找新增和修改的
+        foreach (var item in list)
+        {
+            //如果id>0，则修改，否则是添加
+            var idValue = item.GetType().GetRuntimeProperty("Id").GetValue(item).ObjToInt();
+            if (idValue > 0)
+            {
+                updateIdList.Add(idValue);
+                updateDataList.Add(item);
+            }
+            else
+            {
+                //外键赋值
+                item.GetType().GetRuntimeProperty(foreignKeyName).SetValue(item, masterId);
+                addDataList.Add(item);
+            }
+        }
+
+        //执行添加
+        await InsertAuditAsync(addDataList, businessData);
+        //执行修改
+        await UpdateAuditAsync(updateDataList, businessData);
+        //查找删除的
+        if (sourceList.Any())
+        {
+            //查找原来的数据Id
+            var sourceIdList = new List<int>();
+            foreach (var item in sourceList)
+            {
+                sourceIdList.Add(item.GetType().GetRuntimeProperty("Id").GetValue(item).ObjToInt());
+            }
+            //原来的数据和修改的数据取差集
+            var deleteIdList = sourceIdList.Except<int>(sourceIdList.Intersect<int>(updateIdList));
+            await DeleteWithSoftAuditAsync(deleteIdList.ToList<int>(), businessData);
+        }
+    }
+
+    /// <summary>
     /// 更新明细，清空重新添加
     /// </summary>
     /// <param name="masterId"></param>
@@ -706,7 +802,7 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
         var foreignKeyName = foreignKeyProInfo.Name;
 
         //清空
-        DeleteWithSoft($"{foreignKeyName} = {masterId}");
+        DeleteWithSoft(BuildColumnWhere(foreignKeyName, masterId));
         if (list.IsEmpty()) return;
 
         if (!type.GetProperties().Any(x => x.Name == "Id")) throw new Exception($"{type.FullName}缺少Id主键");
@@ -738,7 +834,7 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
         var foreignKeyName = foreignKeyProInfo.Name;
 
         //清空
-        DeleteWithSoft($"{foreignKeyName} = {masterId}");
+        DeleteWithSoft(BuildColumnWhere(foreignKeyName, masterId));
         if (list.IsEmpty()) return;
 
         if (!type.GetProperties().Any(x => x.Name == "Id")) throw new Exception($"{type.FullName}缺少Id主键");
@@ -757,50 +853,115 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
         await InsertAsync(addDataList);
     }
 
-    /// <summary>
-    /// 添加附件，清空重新添加
-    /// </summary>
-    /// <param name="refId"></param>
-    /// <param name="attachType">附件类型</param>
-    /// <param name="list"></param>
-    public virtual void UpdateAttachFiles(int refId, CommonAttachType attachType, IEnumerable<CommonAttach> list)
-    {
-        //清空
-        Context.Updateable<CommonAttach>().SetColumns("IsDeleted", 1).Where(x => x.AttachType == attachType && x.RefId == refId).ExecuteCommand();
-        if (list.IsEmpty()) return;
+    #region 旧版附件单独保存方法，已弃用
 
-        //查找新增和修改的
-        foreach (var item in list)
-        {
-            item.RefId = refId;
-            item.AttachType = attachType;
-        }
-        //执行添加
-        Context.Insertable<CommonAttach>(list).ExecuteCommand();
-    }
+    ///// <summary>
+    ///// 添加附件，清空重新添加
+    ///// </summary>
+    ///// <param name="refId"></param>
+    ///// <param name="attachType">附件类型</param>
+    ///// <param name="list"></param>
+    //public virtual void UpdateAttachFiles(int refId, string attachType, IEnumerable<CommonAttach> list)
+    //{
+    //    var dbType = Context.CurrentConnectionConfig.DbType;
+    //    object isDeleteValue = 1;
+    //    switch (dbType)
+    //    {
+    //        //case DbType.SqlServer:
+    //        //case DbType.MySql:
+    //        //case DbType.Sqlite:
+    //        //    isDeleteValue = 1;
+    //        //    break;
+    //        case DbType.PostgreSQL:
+    //            isDeleteValue = true;
+    //            break;
+    //    }
+    //    //清空
+    //    Context.Updateable<CommonAttach>().SetColumns("IsDeleted", isDeleteValue).Where(x => x.AttachType == attachType && x.RefId == refId).ExecuteCommand();
+    //    if (list.IsEmpty()) return;
 
-    /// <summary>
-    /// 添加附件，清空重新添加
-    /// </summary>
-    /// <param name="refId"></param>
-    /// <param name="attachType">附件类型</param>
-    /// <param name="list"></param>
-    public virtual async Task UpdateAttachFilesAsync(int refId, CommonAttachType attachType, IEnumerable<CommonAttach> list)
-    {
-        //清空
-        await Context.Updateable<CommonAttach>().SetColumns("IsDeleted", 1).Where(x => x.AttachType == attachType && x.RefId == refId).ExecuteCommandAsync();
-        if (list.IsEmpty()) return;
+    //    //查找新增和修改的
+    //    foreach (var item in list)
+    //    {
+    //        item.RefId = refId;
+    //        item.AttachType = attachType;
+    //    }
+    //    //执行添加
+    //    Context.Insertable<CommonAttach>(list).ExecuteCommand();
+    //}
 
-        //查找新增和修改的
-        foreach (var item in list)
-        {
-            item.RefId = refId;
-            item.AttachType = attachType;
-        }
-        //执行添加
-        await Context.Insertable<CommonAttach>(list).ExecuteCommandAsync();
-    }
+    ///// <summary>
+    ///// 添加附件，清空重新添加
+    ///// </summary>
+    ///// <param name="refId"></param>
+    ///// <param name="attachType">附件类型</param>
+    ///// <param name="list"></param>
+    //public virtual async Task UpdateAttachFilesAsync(int refId, string attachType, IEnumerable<CommonAttach> list)
+    //{
+    //    var dbType = Context.CurrentConnectionConfig.DbType;
+    //    object isDeleteValue = 1;
+    //    switch (dbType)
+    //    {
+    //        //case DbType.SqlServer:
+    //        //case DbType.MySql:
+    //        //case DbType.Sqlite:
+    //        //    isDeleteValue = 1;
+    //        //    break;
+    //        case DbType.PostgreSQL:
+    //            isDeleteValue = true;
+    //            break;
+    //    }
+    //    //清空
+    //    await Context.Updateable<CommonAttach>().SetColumns("IsDeleted", isDeleteValue).Where(x => x.AttachType == attachType && x.RefId == refId).ExecuteCommandAsync();
+    //    if (list.IsEmpty()) return;
 
+    //    //查找新增和修改的
+    //    foreach (var item in list)
+    //    {
+    //        item.RefId = refId;
+    //        item.AttachType = attachType;
+    //    }
+    //    //执行添加
+    //    await Context.Insertable<CommonAttach>(list).ExecuteCommandAsync();
+    //}
+
+    ///// <summary>
+    ///// 添加附件，清空重新添加，审计信息
+    ///// </summary>
+    ///// <param name="refId"></param>
+    ///// <param name="attachType">附件类型</param>
+    ///// <param name="list"></param>
+    ///// <param name="businessData"></param>
+    //public virtual async Task UpdateAttachFilesAuditAsync(int refId, string attachType, IEnumerable<CommonAttach> list, object businessData)
+    //{
+    //    var dbType = Context.CurrentConnectionConfig.DbType;
+    //    object isDeleteValue = 1;
+    //    switch (dbType)
+    //    {
+    //        //case DbType.SqlServer:
+    //        //case DbType.MySql:
+    //        //case DbType.Sqlite:
+    //        //    isDeleteValue = 1;
+    //        //    break;
+    //        case DbType.PostgreSQL:
+    //            isDeleteValue = true;
+    //            break;
+    //    }
+    //    //清空
+    //    await Context.Updateable<CommonAttach>().SetColumns("IsDeleted", isDeleteValue).Where(x => x.AttachType == attachType && x.RefId == refId).ExecuteCommandAsync();
+    //    if (list.IsEmpty()) return;
+
+    //    //查找新增和修改的
+    //    foreach (var item in list)
+    //    {
+    //        item.RefId = refId;
+    //        item.AttachType = attachType;
+    //    }
+    //    //执行添加
+    //    await Context.Insertable<CommonAttach>(list).EnableDiffLogEvent(businessData).ExecuteCommandAsync();
+    //}
+
+    #endregion
 
     /// <summary>
     /// 更新一条记录
@@ -842,6 +1003,19 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     {
         return await EntityContext.Updateable(entity).IgnoreColumns(UpdateIgnoreColumns.Concat(ignoreColumns).ToArray()).ExecuteCommandAsync();
     }
+
+    /// <summary>
+    /// 更新一条记录，审计信息
+    /// </summary>
+    /// <param name="entity"></param>
+    /// <param name="businessData"></param>
+    /// <param name="ignoreColumns"></param>
+    /// <returns></returns>
+    public virtual async Task<int> UpdateAuditAsync(TEntity entity, object businessData, params string[] ignoreColumns)
+    {
+        return await EntityContext.Updateable(entity).EnableDiffLogEvent(businessData).IgnoreColumns(UpdateIgnoreColumns.Concat(ignoreColumns).ToArray()).ExecuteCommandAsync();
+    }
+
     /// <summary>
     /// 更新记录
     /// </summary>
@@ -865,6 +1039,18 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     }
 
     /// <summary>
+    /// 更新记录，审计信息
+    /// </summary>
+    /// <param name="content">更新的内容x => new FlowProcess() { IsDefault = false }</param>
+    /// <param name="predicate">更新的条件</param>
+    /// <param name="businessData"></param>
+    /// <returns></returns>
+    public virtual async Task<int> UpdateAuditAsync(Expression<Func<TEntity, TEntity>> content, Expression<Func<TEntity, bool>> predicate, object businessData)
+    {
+        return await EntityContext.Updateable(content).EnableDiffLogEvent(businessData).Where(predicate).IgnoreColumns(UpdateIgnoreColumns).ExecuteCommandAsync();
+    }
+
+    /// <summary>
     /// 更新多条记录
     /// </summary>
     /// <param name="entities"></param>
@@ -882,6 +1068,17 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     public virtual Task<int> UpdateAsync(IEnumerable<TEntity> entities)
     {
         return EntityContext.Updateable(entities.ToArray()).IgnoreColumns(UpdateIgnoreColumns).ExecuteCommandAsync();
+    }
+
+    /// <summary>
+    /// 更新多条记录，审计信息
+    /// </summary>
+    /// <param name="entities"></param>
+    /// <param name="businessData"></param>
+    /// <returns></returns>
+    public virtual Task<int> UpdateAuditAsync(IEnumerable<TEntity> entities, object businessData)
+    {
+        return EntityContext.Updateable(entities.ToArray()).EnableDiffLogEvent(businessData).IgnoreColumns(UpdateIgnoreColumns).ExecuteCommandAsync();
     }
 
     public virtual IUpdateable<TEntity> AsUpdateable(TEntity entity)
@@ -1038,6 +1235,7 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     /// </summary>
     /// <param name="whereSql"></param>
     /// <returns></returns>
+    [Obsolete("尽量避免直接使用where，因为不同数据的列使用不同符号包裹")]
     public int Delete(string whereSql)
     {
         if (whereSql.IsNull()) return 0;
@@ -1075,6 +1273,17 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     }
 
     /// <summary>
+    /// 删除多条记录，审计信息
+    /// </summary>
+    /// <param name="keys"></param>
+    /// <param name="businessData"></param>
+    /// <returns></returns>
+    public virtual Task<int> DeleteAuditAsync(IEnumerable<int> keys, object businessData)
+    {
+        return EntityContext.Deleteable<TEntity>().EnableDiffLogEvent(businessData).In(keys).ExecuteCommandAsync();
+    }
+
+    /// <summary>
     /// 删除多条记录
     /// </summary>
     /// <param name="keys"></param>
@@ -1099,6 +1308,7 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     /// </summary>
     /// <param name="whereSql"></param>
     /// <returns></returns>
+    [Obsolete("尽量避免直接使用where，因为不同数据的列使用不同符号包裹")]
     public Task<int> DeleteAsync(string whereSql)
     {
         if (whereSql.IsNull()) return Task.FromResult(0);
@@ -1117,7 +1327,7 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     public int DeleteWithSoft(int id)
     {
         if (id < 1) return 0;
-        return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).Where($"Id={id}").ExecuteCommand();
+        return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", BuildDeleteValue()).Where($"{BuildColumnName("Id")}={id}").ExecuteCommand();
     }
 
     /// <summary>
@@ -1128,7 +1338,7 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     public int DeleteWithSoft(IEnumerable<int> idList)
     {
         if (idList.IsEmpty()) return 0;
-        return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).Where($"Id in ({idList.Join()})").ExecuteCommand();
+        return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", BuildDeleteValue()).Where($"{BuildColumnName("Id")} in ({idList.Join()})").ExecuteCommand();
     }
 
     /// <summary>
@@ -1137,10 +1347,11 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     /// <param name="idList"></param>
     /// <param name="where">额外条件</param>
     /// <returns></returns>
+    [Obsolete("尽量避免直接使用where，因为不同数据的列使用不同符号包裹")]
     public int DeleteWithSoft(IEnumerable<int> idList, Expression<Func<TEntity, bool>> where)
     {
         if (idList.IsEmpty()) return 0;
-        return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).Where($"Id in ({idList.Join()})").Where(where).ExecuteCommand();
+        return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", BuildDeleteValue()).Where($"{BuildColumnName("Id")} in ({idList.Join()})").Where(where).ExecuteCommand();
     }
 
     /// <summary>
@@ -1148,10 +1359,11 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     /// </summary>
     /// <param name="whereSql"></param>
     /// <returns></returns>
+    [Obsolete("尽量避免直接使用where，因为不同数据的列使用不同符号包裹")]
     public int DeleteWithSoft(string whereSql)
     {
         if (whereSql.IsNull()) return 0;
-        return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).Where(whereSql).ExecuteCommand();
+        return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", BuildDeleteValue()).Where(whereSql).ExecuteCommand();
     }
 
     /// <summary>
@@ -1162,7 +1374,7 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     public Task<int> DeleteWithSoftAsync(int id)
     {
         if (id < 1) return Task.FromResult(0);
-        return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).Where($"Id={id}").ExecuteCommandAsync();
+        return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", BuildDeleteValue()).Where($"{BuildColumnName("Id")}={id}").ExecuteCommandAsync();
     }
 
     /// <summary>
@@ -1173,7 +1385,19 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     public Task<int> DeleteWithSoftAsync(IEnumerable<int> idList)
     {
         if (idList.IsEmpty()) return Task.FromResult(0);
-        return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).Where($"Id in ({idList.Join()})").ExecuteCommandAsync();
+        return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", BuildDeleteValue()).Where($"{BuildColumnName("Id")} in ({idList.Join()})").ExecuteCommandAsync();
+    }
+
+    /// <summary>
+    /// 软删除，审计信息
+    /// </summary>
+    /// <param name="idList"></param>
+    /// <param name="businessData"></param>
+    /// <returns></returns>
+    public Task<int> DeleteWithSoftAuditAsync(IEnumerable<int> idList, object businessData)
+    {
+        if (idList.IsEmpty()) return Task.FromResult(0);
+        return EntityContext.Updateable<TEntity>().EnableDiffLogEvent(businessData).SetColumns("IsDeleted", BuildDeleteValue()).Where($"{BuildColumnName("Id")} in ({idList.Join()})").ExecuteCommandAsync();
     }
 
     /// <summary>
@@ -1182,10 +1406,11 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     /// <param name="idList"></param>
     /// <param name="where">额外条件</param>
     /// <returns></returns>
+    [Obsolete("尽量避免直接使用where，因为不同数据的列使用不同符号包裹")]
     public Task<int> DeleteWithSoftAsync(IEnumerable<int> idList, Expression<Func<TEntity, bool>> where)
     {
         if (idList.IsEmpty()) return Task.FromResult(0);
-        return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).Where($"Id in ({idList.Join()})").Where(where).ExecuteCommandAsync();
+        return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", BuildDeleteValue()).Where($"{BuildColumnName("Id")} in ({idList.Join()})").Where(where).ExecuteCommandAsync();
     }
 
     /// <summary>
@@ -1193,10 +1418,21 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     /// </summary>
     /// <param name="whereSql"></param>
     /// <returns></returns>
+    [Obsolete("尽量避免直接使用where，因为不同数据的列使用不同符号包裹")]
     public Task<int> DeleteWithSoftAsync(string whereSql)
     {
         if (whereSql.IsNull()) return Task.FromResult(0);
-        return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", 1).Where(whereSql).ExecuteCommandAsync();
+        return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", BuildDeleteValue()).Where(whereSql).ExecuteCommandAsync();
+    }
+
+    /// <summary>
+    /// 软删除
+    /// </summary>
+    /// <param name="where"></param>
+    /// <returns></returns>
+    public Task<int> DeleteWithSoftAsync(Expression<Func<TEntity, bool>> where)
+    {
+        return EntityContext.Updateable<TEntity>().SetColumns("IsDeleted", BuildDeleteValue()).Where(where).ExecuteCommandAsync();
     }
 
     #endregion
@@ -1370,6 +1606,102 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
         Context.RollbackTran();
     }
 
+
+    #endregion
+
+    #region 私有方法
+
+    /// <summary>
+    /// 根据数据库类型生成列名
+    /// </summary>
+    /// <param name="columnName"></param>
+    /// <returns></returns>
+    private string BuildColumnName(string columnName)
+    {
+        var dbType = Context.CurrentConnectionConfig.DbType;
+        string columnSql = columnName;
+
+        switch (dbType)
+        {
+            case SqlSugar.DbType.MySql:
+                columnSql = $"`{columnName}`";
+                break;
+            case SqlSugar.DbType.PostgreSQL:
+                columnSql = $"\"{columnName}\"";
+                break;
+            case SqlSugar.DbType.SqlServer:
+            case SqlSugar.DbType.Sqlite:
+                columnSql = $"[{columnName}]";
+                break;
+        }
+
+        return columnSql;
+    }
+
+    /// <summary>
+    /// 根据数据库类型生成条件 SQL 字符串
+    /// </summary>
+    /// <param name="columnName"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    private string BuildColumnWhere(string columnName, object value)
+    {
+        var dbType = Context.CurrentConnectionConfig.DbType;
+        string columnSql = columnName;
+
+        switch (dbType)
+        {
+            case SqlSugar.DbType.MySql:
+                columnSql = $"`{columnName}`";
+                break;
+            case SqlSugar.DbType.PostgreSQL:
+                columnSql = $"\"{columnName}\"";
+                break;
+            case SqlSugar.DbType.SqlServer:
+            case SqlSugar.DbType.Sqlite:
+                columnSql = $"[{columnName}]";
+                break;
+        }
+
+        if (value is string || value is Guid)
+        {
+            return $"{columnSql} = '{value}'";
+        }
+        else if (value == null)
+        {
+            return $"{columnSql} IS NULL";
+        }
+        else if (value is IEnumerable<int> list)
+        {
+            return $"{columnSql} IN ({string.Join(",", list)})";
+        }
+        else
+        {
+            return $"{columnSql} = {value}";
+        }
+    }
+
+    /// <summary>
+    /// 根据不同数据库构建软删除的值
+    /// </summary>
+    /// <returns></returns>
+    private object BuildDeleteValue()
+    {
+        var dbType = Context.CurrentConnectionConfig.DbType;
+        object isDeleteValue = 1;
+        switch (dbType)
+        {
+            //case DbType.SqlServer:
+            //case DbType.MySql:
+            //case DbType.Sqlite:
+            //    isDeleteValue = 1;
+            //    break;
+            case DbType.PostgreSQL:
+                isDeleteValue = true;
+                break;
+        }
+        return isDeleteValue;
+    }
 
     #endregion
 }

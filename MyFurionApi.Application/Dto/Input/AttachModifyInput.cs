@@ -8,7 +8,7 @@ public class AttachModifyInput
     /// <summary>
     /// 类型
     /// </summary>
-    public CommonAttachType AttachType { get; set; }
+    public string AttachType { get; set; }
 
     /// <summary>
     /// 文件名称

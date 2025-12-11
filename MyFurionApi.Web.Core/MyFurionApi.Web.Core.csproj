@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <NoWarn>1701;1702;1591</NoWarn>
     <DocumentationFile>MyFurionApi.Web.Core.xml</DocumentationFile>
   </PropertyGroup>
@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MyFurionApi.Application2\MyFurionApi.Application2.csproj" />
     <ProjectReference Include="..\MyFurionApi.Application\MyFurionApi.Application.csproj" />
   </ItemGroup>
 

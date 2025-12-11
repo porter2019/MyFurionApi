@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Yitter.IdGenerator;
 
 namespace MyFurionApi.Application;
 
@@ -16,7 +17,9 @@ public class Startup : AppStartup
     /// <param name="services"></param>
     public void ConfigureServices(IServiceCollection services)
     {
-        //services.AddRemoteRequest();
+        //配置短Id
+        var options = new IdGeneratorOptions(App.Configuration.Get<ushort>("AppSettings:YitterShortIdWorkId"));
+        YitIdHelper.SetIdGenerator(options);
 
         //后台服务
         //services.AddHostedService<ReceiveWorker>();

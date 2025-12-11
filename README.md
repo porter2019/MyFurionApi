@@ -20,7 +20,7 @@ ORM使用SqlSugar
 
 1. 创建Publis发布配置文件
    
-   对项目`MyFurionApi.Web.Entry` 右键 `发布` 创建一个本地的发布配置文件 `FolderProfile.pubxml` 按需选择发布配置，点击发布后，在`bin\Release\net6.0\publish\` 输出发布后的文件
+   对项目`MyFurionApi.Web.Entry` 右键 `发布` 创建一个本地的发布配置文件 `FolderProfile.pubxml` 按需选择发布配置，点击发布后，在`bin\Release\net10.0\publish\` 输出发布后的文件
 
 2. 在输出文件夹创建 `Dockerfile` 文件，内容如下：
    
@@ -28,10 +28,10 @@ ORM使用SqlSugar
    # 构建
    docker build -t my-furion-api .
    # 运行
-   docker run --name my-furion-api-prod -p 5011:80 -v D:\Docker\Volumes\MyFurionApi\appsettings.json:/app/appsettings.json -v D:\Docker\Volumes\MyFurionApi\wwwroot:/app/wwwroot -v D:\Docker\Volumes\MyFurionApi\logs:/app/logs -e ASPNETCORE_ENVIRONMENT="Production" -e TZ=Asia/Shanghai -d my-furion-api
+   docker run --name my-furion-api-prod -p 5011:80 -v D:\Docker\Volumes\MyFurionApi\appsettings.json:/app/appsettings.json -v D:\Docker\Volumes\MyFurionApi\wwwroot:/app/wwwroot -v D:\Docker\Volumes\MyFurionApi\logs:/app/logs -e ASPNETCORE_ENVIRONMENT="Production" -e TZ=Asia/Shanghai -e DOTNET_USE_POLLING_FILE_WATCHER=1 -d my-furion-api
    ```
    
-   > 注意docker run中将配置文件和日志目录映射到容器中，宿主机修改了配置文件，需要重启容器才会生效
+   > 注意docker run中将配置文件和日志目录映射到容器中，`-e DOTNET_USE_POLLING_FILE_WATCHER=1`保证了配置文件可以热重载
 
 #### B. 编译+构建+发布
 
@@ -39,12 +39,18 @@ ORM使用SqlSugar
 
 ```bash
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS basese
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+# 复制字体文件到镜像中
+COPY MyFurionApi.Web.Entry/wwwroot/fonts/*.ttf /usr/share/fonts/truetype/custom/
+# 更新字体缓存
+RUN fc-cache -fv
+
 WORKDIR /app
-EXPOSE 80
+EXPOSE 8080
+ENV DOTNET_USE_POLLING_FILE_WATCHER=1
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 COPY ["MyFurionApi.Web.Entry/MyFurionApi.Web.Entry.csproj", "MyFurionApi.Web.Entry/"]
 COPY ["MyFurionApi.Web.Core/MyFurionApi.Web.Core.csproj", "MyFurionApi.Web.Core/"]
@@ -71,7 +77,7 @@ ENTRYPOINT ["dotnet", "MyFurionApi.Web.Entry.dll"]
 # 构建
 docker build -t my-furion-api .
 # 运行
-docker run --name my-furion-api-prod -p 5011:80 -v D:\Docker\Volumes\MyFurionApi\appsettings.json:/app/appsettings.json -v D:\Docker\Volumes\MyFurionApi\wwwroot:/app/wwwroot -v D:\Docker\Volumes\MyFurionApi\logs:/app/logs -e ASPNETCORE_ENVIRONMENT="Production" -e TZ=Asia/Shanghai -d my-furion-api
+docker run --name my-furion-api-prod -p 5011:8080 -v D:\Docker\Volumes\MyFurionApi\appsettings.json:/app/appsettings.json -v D:\Docker\Volumes\MyFurionApi\wwwroot:/app/wwwroot -v D:\Docker\Volumes\MyFurionApi\logs:/app/logs -e ASPNETCORE_ENVIRONMENT="Production" -e TZ=Asia/Shanghai -d my-furion-api
 ```
 
  批处理： 

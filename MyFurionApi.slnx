@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="MyFurionApi.Application/MyFurionApi.Application.csproj" />
+  <Project Path="MyFurionApi.Core/MyFurionApi.Core.csproj" />
+  <Project Path="MyFurionApi.Web.Core/MyFurionApi.Web.Core.csproj" />
+  <Project Path="MyFurionApi.Web.Entry/MyFurionApi.Web.Entry.csproj" />
+</Solution>

@@ -16,4 +16,10 @@ public class ContractPageInput : BasePageQueryModel<Contract>
     /// </summary>
     [PageQuery(PageQueryOperatorType.Like)]
     public string Name { get; set; }
+
+    /// <summary>
+    /// 添加时间
+    /// </summary>
+    [PageQuery(PageQueryOperatorType.BetweenDate)]
+    public string CreatedTime { get; set; }
 }

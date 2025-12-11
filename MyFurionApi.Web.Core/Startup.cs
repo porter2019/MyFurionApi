@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using MyFurionApi.Core;
 using System;
@@ -95,8 +95,19 @@ public class Startup : AppStartup
         services.AddJwt<JwtHandler>(enableGlobalAuthorize: true); //启用全局登录验证 //services.AddJwt<JwtHandler>(); //
         //跨域
         services.AddCorsAccessor();
+        #region 远程请求
         //远程请求
+        services.AddHttpClient(string.Empty, config => //默认客户端
+        {
+
+        }).AddHttpMessageHandler<RemoteFilterHandler>();
+        services.AddHttpClient(RemoteHttpCilentConst.Demo, config =>
+        {
+            config.BaseAddress = new Uri(App.Configuration.Get<string>(AppSettingsConst.DomainUrl));
+            config.DefaultRequestHeaders.Add("from", "myapi");
+        }).AddHttpMessageHandler<RemoteFilterHandler>();
         services.AddHttpRemote();
+        #endregion
         //虚拟文件系统
         services.AddVirtualFileServer();
 

@@ -366,3 +366,7 @@ MigrationBackup/
 FodyWeavers.xsd
 /MyFurionApi.Application/MyFurionApi.Application.xml
 /MyFurionApi.Core/MyFurionApi.Core.xml
+/MyFurionApi.Web.Core/MyFurionApi.Web.Core.xml
+!MyFurionApi.Core/Entity/*
+!MyFurionApi.Application/Controller/Log
+!MyFurionApi.Application/Dto/Input/Log

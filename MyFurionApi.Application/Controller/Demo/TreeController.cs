@@ -77,7 +77,7 @@ public class TreeController : BaseApiController
         int length = 3;
         var parentEntity = await _treeRep.FirstOrDefaultAsync(p => p.Id == pid);
         var parentOrderNo = parentEntity?.OrderNo ?? "";
-        var nowMaxEntity = await _treeRep.FirstOrDefaultAsync(new TreeGenerateNextNoQuery() { ParentId = pid, OrderBy = "OrderNo DESC" });
+        var nowMaxEntity = await _treeRep.FirstOrDefaultAsync(new TreeGenerateNextNoQuery() { ParentId = pid, OrderBy = "\"OrderNo\" DESC" });
         var lastOrderNo = "001";
         if (nowMaxEntity != null)
         {
@@ -98,8 +98,10 @@ public class TreeController : BaseApiController
     {
         await _treeRep.InsertReturnIdentityAsync(dto);
 
-        //执行存储过程
-        await _treeRep.Ado.UseStoredProcedure().ExecuteCommandAsync("sp_update_tree_layer");
+        //pgsql是函数
+        await _treeRep.Ado.ExecuteCommandAsync("SELECT sp_update_tree_layer();");
+        //mysql是存储过程
+        //await _treeRep.Ado.UseStoredProcedure().ExecuteCommandAsync("sp_update_tree_layer");
 
         return "添加成功";
     }
@@ -114,8 +116,7 @@ public class TreeController : BaseApiController
     {
         await _treeRep.UpdateAsync(dto);
 
-        //执行存储过程
-        await _treeRep.Ado.UseStoredProcedure().ExecuteCommandAsync("sp_update_tree_layer");
+        await _treeRep.Ado.ExecuteCommandAsync("SELECT sp_update_tree_layer();");
 
         return "修改成功";
     }
@@ -126,7 +127,7 @@ public class TreeController : BaseApiController
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpDelete]
-    [Permission("删除", "del")]
+    [Permission("删除", "delete")]
     public async Task<int> Delete(int id)
     {
         var allChilds = await _treeRep.AsQueryable().ToChildListAsync(x => x.ParentId, id);

@@ -21,16 +21,16 @@ public class BasePageQueryModel<TEntity> : BaseBuildWhereModel where TEntity : c
 /// </summary>
 public class BaseSingleQueryModel : BaseBuildWhereModel
 {
-    private string _orderBy = "Id ASC";
+    private string _orderBy = "Id DESC";
 
     /// <summary>
-    /// 排序，默默人Id ASC
+    /// 排序，默默人Id DESC
     /// </summary>
     public string OrderBy
     {
         get
         {
-            return string.IsNullOrEmpty(_orderBy) ? "Id ASC" : _orderBy;
+            return string.IsNullOrEmpty(_orderBy) ? "Id DESC" : _orderBy;
         }
         set
         {
@@ -50,16 +50,16 @@ public class BaseListQueryModel : BaseBuildWhereModel
     public int Top { get; set; }
 
 
-    private string _orderBy = "Id ASC";
+    private string _orderBy = "Id DESC";
 
     /// <summary>
-    /// 排序，默默人Id ASC
+    /// 排序，默默人Id DESC
     /// </summary>
     public string OrderBy
     {
         get
         {
-            return string.IsNullOrEmpty(_orderBy) ? "Id ASC" : _orderBy;
+            return string.IsNullOrEmpty(_orderBy) ? "Id DESC" : _orderBy;
         }
         set
         {
@@ -97,8 +97,26 @@ public class BaseBuildWhereModel : BaseFormPostModel
             if (filedValue == null) continue;
             if (filedValue.ToString().IsNull()) continue;
             var fileValueChar = "";
-            // sql server使用[]包含列名，mysql使用``
-            var columnName = dbType == SqlSugar.DbType.MySql ? (queryAttr.ColumnName.IsNull() ? $"`{filedName}`" : $"`{queryAttr.ColumnName}`") : (queryAttr.ColumnName.IsNull() ? $"[{filedName}]" : $"[{queryAttr.ColumnName}]");
+            // sql server使用[]包含列名，mysql使用``，postgresql使用``，sqlite使用[]
+            var columnName = string.Empty;
+
+            if (dbType == SqlSugar.DbType.MySql)
+            {
+                columnName = queryAttr.ColumnName.IsNull() ? $"`{filedName}`" : $"`{queryAttr.ColumnName}`";
+            }
+            else if (dbType == SqlSugar.DbType.PostgreSQL)
+            {
+                columnName = queryAttr.ColumnName.IsNull() ? $"\"{filedName}\"" : $"\"{queryAttr.ColumnName}\"";
+            }
+            else if (dbType == SqlSugar.DbType.SqlServer)
+            {
+                columnName = queryAttr.ColumnName.IsNull() ? $"[{filedName}]" : $"[{queryAttr.ColumnName}]";
+            }
+            else if (dbType == SqlSugar.DbType.Sqlite)
+            {
+                columnName = queryAttr.ColumnName.IsNull() ? $"[{filedName}]" : $"[{queryAttr.ColumnName}]";
+            }
+
             var sqlColumnName = queryAttr.PrefixName.IsNull() ? columnName : queryAttr.PrefixName + "." + columnName;
 
             var propType = itemType.PropertyType;
@@ -173,8 +191,14 @@ public class BaseBuildWhereModel : BaseFormPostModel
                 case PageQueryOperatorType.CharIndex:
                     if (dbType == SqlSugar.DbType.MySql)
                         sbWhere.Append($" {logic} locate('{filedValue}',{sqlColumnName}) > 0");
-                    else
+                    else if (dbType == SqlSugar.DbType.SqlServer)
                         sbWhere.Append($" {logic} CharIndex('{filedValue}',{sqlColumnName}) > 0");
+                    else if (dbType == SqlSugar.DbType.PostgreSQL)
+                        sbWhere.Append($" {logic} position('{filedValue}' in {sqlColumnName}) > 0");
+                    else if ((dbType == SqlSugar.DbType.Sqlite))
+                        sbWhere.Append($" {logic} instr({sqlColumnName},'{filedValue}') > 0");
+                    else
+                        throw Oops.Oh("CharIndex条件仅支持SqlServer、MySql、PostgreSQL、Sqlite数据库");
                     break;
 
                 case PageQueryOperatorType.BetweenNumber:
@@ -288,7 +312,7 @@ public class PageOptions<TEntity> //where TEntity : class//Model.BaseEntity
             //如果没有设置排序
             if (_orderBy.IsNull())
             {
-                return "Id ASC"; // 默认Id升序
+                return "Id DESC";
             }
             else
             {

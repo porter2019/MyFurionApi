@@ -3,10 +3,10 @@
 DELIMITER $$
 
 -- 尝试删除存储过程，如果存在的话
-DROP PROCEDURE IF EXISTS ProcMaterialCategoryLayerUpdate$$
+DROP PROCEDURE IF EXISTS sp_update_tree_layer$$
 
 -- 创建存储过程
-CREATE PROCEDURE ProcMaterialCategoryLayerUpdate()
+CREATE PROCEDURE sp_update_tree_layer()
 BEGIN
     -- 使用递归CTE来构建层级结构
     WITH RECURSIVE p AS (
@@ -15,34 +15,34 @@ BEGIN
             a.`Name`, 
             a.OrderNo, 
             CAST('' AS CHAR(255)) AS ParentName,  -- 显式定义初始长度
-            CONCAT('|', a.Id, '|') AS FullId, 
+            CAST(CONCAT('|', a.Id, '|') AS CHAR(1000)) AS FullId,
             a.Name AS FullName,
             1 AS LevelNo,
             a.OrderNo AS FullOrderNo
-        FROM MaterialCategory a 
+        FROM Tree a 
         WHERE a.ParentId = 0
         UNION ALL
         SELECT 
             a.Id, 
             a.`Name`, 
             a.OrderNo,
-            CAST(p.`Name` AS CHAR(255)) AS ParentName,  -- 限制长度
-            LEFT(CONCAT(p.FullId, a.Id, '|'),2000) AS FullId, 
-            LEFT(CONCAT(p.FullName, '|', a.Name),2000) AS FullName,
+            CAST(p.`Name` AS CHAR(255)) AS ParentName,
+            CAST(LEFT(CONCAT(p.FullId, a.Id, '|'), 1000) AS CHAR(1000)) AS FullId,
+            CAST(LEFT(CONCAT(p.FullName, '|', a.Name), 1000) AS CHAR(1000)) AS FullName,
             (p.LevelNo + 1) AS LevelNo,
             LEFT(CONCAT(p.FullOrderNo, '|', a.OrderNo),2000) AS FullOrderNo
-        FROM MaterialCategory a 
+        FROM Tree a 
         INNER JOIN p ON a.ParentId = p.Id
     )
-    -- 更新MaterialCategory表中的层级信息
-    UPDATE MaterialCategory q
+    -- 更新Tree表中的层级信息
+    UPDATE Tree q
     INNER JOIN p ON q.Id = p.Id
     SET 
         q.ParentName = p.ParentName, 
-        q.FullId = p.FullId, 
-        q.FullName = p.FullName, 
-        q.LevelNo = p.LevelNo, 
-        q.FullOrderNo = p.FullOrderNo;
+        q.FullId = LEFT(p.FullId, 1000),       -- 在赋值时再次截断，保险
+        q.FullName = LEFT(p.FullName, 1000),
+        q.LevelNo = p.LevelNo,
+        q.FullOrderNo = LEFT(p.FullOrderNo, 1000);
 END$$
 
 -- 恢复默认分隔符

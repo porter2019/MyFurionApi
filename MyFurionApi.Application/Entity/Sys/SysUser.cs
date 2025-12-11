@@ -3,44 +3,57 @@
 /// <summary>
 /// 系统用户信息
 /// </summary>
-[FsTable(), SugarIndex("unique_sys_user_cellphone", nameof(CellPhone), OrderByType.Asc, true)]
+[FsTable()]
 public class SysUser : BaseEntityStandard
 {
+    //, SugarIndex("unique_sys_user_cellphone", nameof(CellPhone), OrderByType.Asc, true)
 
     /// <summary>
     /// 手机号
     /// </summary>
-    [FsColumn("手机号", 100)]
+    [FsColumn(20)]
     public string CellPhone { get; set; }
 
     /// <summary>
     /// 登录名
     /// </summary>
-    [FsColumn("登录名", 100)]
+    [FsColumn(100)]
     public string LoginName { get; set; }
 
     /// <summary>
     /// 用户名
     /// </summary>
-    [FsColumn("用户名", 200)]
+    [FsColumn(200)]
     public string UserName { get; set; }
 
     /// <summary>
     /// 密码
     /// </summary>
-    [FsColumn("密码", 500)]
+    [FsColumn(500)]
     public string Password { get; set; }
+
+    /// <summary>
+    /// 运营系统管理权限
+    /// </summary>
+    [FsColumn()]
+    public bool IsOM { get; set; }
+
+    /// <summary>
+    /// 移动端登录权限
+    /// </summary>
+    [FsColumn()]
+    public bool IsMP { get; set; }
 
     /// <summary>
     /// 是否超管
     /// </summary>
-    [FsColumn("是否超管", false)]
-    public bool IsAdmin { get; set; } = false;
+    [FsColumn(IsNullable = false)]
+    public bool IsSuper { get; set; } = false;
 
     /// <summary>
     /// 头像
     /// </summary>
-    [FsColumn("头像", 500)]
+    [FsColumn(500)]
     public string Avatar { get; set; }
 
     /// <summary>
@@ -63,13 +76,13 @@ public class SysUser : BaseEntityStandard
     /// <summary>
     /// 账号启用状态
     /// </summary>
-    [FsColumn(false)]
+    [FsColumn()]
     public bool Status { get; set; } = true;
 
     /// <summary>
     /// 最后登录时间
     /// </summary>
-    [FsColumn("最后登录时间")]
+    [FsColumn()]
     public DateTime? LastLoginTime { get; set; }
 
 }

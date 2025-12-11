@@ -9,19 +9,19 @@ public class Contract : BaseEntityStandard
     /// <summary>
     /// 合同编号
     /// </summary>
-    [FsColumn("合同编号", false, 200)]
+    [FsColumn(200)]
     public string Code { get; set; }
 
     /// <summary>
     /// 合同名称
     /// </summary>
-    [FsColumn("合同名称", false, 500)]
+    [FsColumn(500)]
     public string Name { get; set; }
 
     /// <summary>
     /// 合同类型
     /// </summary>
-    [FsColumn("合同类型", false)]
+    [FsColumn(IsNullable = false)]
     public ContractTypeEnum CType { get; set; } = ContractTypeEnum.Buyer;
 
     /// <summary>
@@ -33,25 +33,49 @@ public class Contract : BaseEntityStandard
     /// <summary>
     /// 签订时间
     /// </summary>
-    [FsColumn("签订时间")]
+    [FsColumn()]
     public DateTime? SignDate { get; set; } = DateTime.Now;
 
     /// <summary>
     /// 合同金额
     /// </summary>
-    [FsColumn("合同金额", false, ColumnDataType = DBColumnDataType.Money)]
+    [FsColumn(IsNullable = false, ColumnDataType = DBColumnDataType.Money)]
     public decimal Value { get; set; }
 
     /// <summary>
-    /// 摘要
+    /// 省份
     /// </summary>
-    [FsColumn("摘要", 500)]
-    public string Summary { get; set; }
+    [FsColumn(30)]
+    public string RegionProvince { get; set; }
+
+    /// <summary>
+    /// 市
+    /// </summary>
+    [FsColumn(30)]
+    public string RegionCity { get; set; }
+
+    /// <summary>
+    /// 区
+    /// </summary>
+    [FsColumn(30)]
+    public string RegionDistrict { get; set; }
+
+    /// <summary>
+    /// 省市区聚合
+    /// </summary>
+    [FsColumn(200)]
+    public string RegionFull { get; set; }
+
+    /// <summary>
+    /// 详细地址
+    /// </summary>
+    [FsColumn(50)]
+    public string RegionAddress { get; set; }
 
     /// <summary>
     /// 审批状态
     /// </summary>
-    [FsColumn("审批状态", false)]
+    [FsColumn(IsNullable = false)]
     public ContractFlagEnum Flag { get; set; } = ContractFlagEnum.草稿;
 
     /// <summary>
@@ -60,6 +84,23 @@ public class Contract : BaseEntityStandard
     [FsColumn(true)]
     public string FlagName => Flag.GetEnumDescription();
 
+    /// <summary>
+    /// 状态
+    /// </summary>
+    [FsColumn()]
+    public bool Status { get; set; }
+
+    /// <summary>
+    /// 备注
+    /// </summary>
+    [FsColumn(200)]
+    public string Remark { get; set; }
+
+    /// <summary>
+    /// 附件
+    /// </summary>
+    [FsColumn(IsJson = true)]
+    public List<CommonAttach> AttachList { get; set; } = [];
 
     #region 关联数据
 
@@ -67,13 +108,7 @@ public class Contract : BaseEntityStandard
     /// 明细
     /// </summary>
     [FsColumn(true)]
-    public List<ContractItem> ItemList { get; set; }
-
-    /// <summary>
-    /// 附件
-    /// </summary>
-    [FsColumn(true)]
-    public List<CommonAttach> AttachList { get; set; }
+    public List<ContractItem> ItemList { get; set; } = [];
 
     #endregion
 

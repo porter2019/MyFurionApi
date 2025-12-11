@@ -86,16 +86,18 @@ public class ImgCaptchaService : IImgCaptchaService, ITransient
         //将文字写到画布上
         //使用本项目的字体文件
         var fontFilePath = Path.Combine(App.WebHostEnvironment.WebRootPath, "fonts", "STXINGKA.ttf");
-        var font = new SKFont(SKFontManager.Default.CreateTypeface(File.Open(fontFilePath, FileMode.Open)));
-        font.Size = 38;
+        using var typeface = SKFontManager.Default.CreateTypeface(File.Open(fontFilePath, FileMode.Open));
+        var font = new SKFont(typeface, height - 10); // 设置字体大小
+
         using (SKPaint drawStyle = new())
         {
-            drawStyle.Color = new SKColor(59, 59, 59);// SKColors.Red;
-            drawStyle.TextSize = height - 10;
-            drawStyle.StrokeWidth = 1;
+            drawStyle.Color = new SKColor(59, 59, 59); // 字体颜色
+            drawStyle.IsAntialias = true;
 
-            float emHeight = height - (float)height * (float)0.14;
-            float emWidth = ((float)width / code.Length) - ((float)width * (float)0.13);
+            float emHeight = height - (float)height * 0.14f;
+            float emWidth = ((float)width / code.Length) - ((float)width * 0.13f);
+
+            // 注意：这里使用 font 而不是 drawStyle 来控制字体大小
             canvas.DrawText(code, emWidth, emHeight, font, drawStyle);
         }
 

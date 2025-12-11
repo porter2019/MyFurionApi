@@ -1,0 +1,128 @@
+﻿namespace MyFurionApi.Application.Controller;
+
+/// <summary>
+/// {{ Desc }}
+/// </summary>
+[PermissionHandler(, "{{ Desc }}", "{{ Name }}", 0)]
+public class {{ Name }}Controller : BaseApiController
+{
+    private readonly ILogger<{{ Name }}Controller> _logger;
+    private readonly SqlSugarRepository<{{ Name }}> _{{ Name2 }}Repository;
+
+    public {{ Name }}Controller(ILogger<{{ Name }}Controller> logger,
+        SqlSugarRepository<{{ Name }}> {{ Name2 }}Repository)
+    {
+        _logger = logger;
+        _{{ Name2 }}Repository = {{ Name2 }}Repository;
+    }
+
+    /// <summary>
+    /// 获取列表
+    /// </summary>
+    /// <returns></returns>
+    [HttpPost, Route("get/pagelist")]
+    [Permission("查看", "show")]
+    public async Task<SqlSugarPagedList<{{ Name }}>> GetPageList({{ Name }}PageInput req)
+    {
+        var data = await _{{ Name2 }}Repository.ToPageListAsync(req);
+        return data;
+    }
+
+    /// <summary>
+    /// 获取详情
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpGet, Route("get/info")]
+    public async Task<{{ Name }}> GetInfo(int id)
+    {
+        var entity = await _{{ Name2 }}Repository.FirstOrDefaultAsync(x => x.Id == id);
+        if (entity == null) entity = new {{ Name }}();
+        return entity;
+    }
+
+    /// <summary>
+    /// 添加
+    /// </summary>
+    /// <returns></returns>
+    [HttpPost, Route("add")]
+    [Permission("添加", "add")]
+    [UnitOfWork]
+    public async Task<string> Add({{ Name }} req)
+    {
+        var id = await _{{ Name2 }}Repository.InsertReturnIdentityAuditAsync(req, new LogAction()
+        {
+            Local = ,
+            ExtraHandler = ,
+            ClientType = CommonHelper.GetClientType(),
+        });
+        return "添加成功";
+    }
+
+
+    /// <summary>
+    /// 更新
+    /// </summary>
+    /// <returns></returns>
+    [HttpPost, Route("edit"), Permission("修改", "edit")]
+    [UnitOfWork]
+    public async Task<string> Update({{ Name }} req)
+    {
+        await _{{ Name2 }}Repository.UpdateAuditAsync(req, new LogAction()
+        {
+            Local = ,
+            ExtraHandler = ,
+            ClientType = CommonHelper.GetClientType(),
+        });
+
+        return "修改成功";
+    }
+
+    /// <summary>
+    /// 删除
+    /// </summary>
+    /// <param name="ids"></param>
+    /// <returns></returns>
+    [HttpDelete, UnitOfWork, Permission("删除", "delete")]
+    public async Task<string> Delete(string ids)
+    {
+        var idList = ids.SplitWithComma().ConvertIntList();
+        await _{{ Name2 }}Repository.DeleteWithSoftAuditAsync(idList, new LogAction()
+        {
+            Local = ,
+            ExtraHandler = ,
+            ClientType = CommonHelper.GetClientType(),
+        });
+        return "删除成功";
+    }
+
+    /// <summary>
+    /// 修改状态
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpGet, Route("switch/status")]
+    public async Task<string> ChangeStatus(int id)
+    {
+        var model = await _{{ Name2 }}Repository.FirstOrDefaultAsync(x => x.Id == id);
+        if (model == null) throw Oops.Bah("数据不存在");
+        var newStatus = !model.Status;
+        var newStatusText = newStatus ? "已启用" : "已禁用";
+
+        await  _{{ Name2 }}Repository.UpdateAuditAsync(x => new {{ Name }}()
+        {
+            Status = newStatus,
+            UpdatedTime = DateTime.Now,
+            UpdatedUserId = CurrentUserId,
+            UpdatedUserName = CurrentUserName
+        }, x => x.Id == id, new LogAction()
+        {
+            Local = ,
+            ExtraHandler = ,
+            ExtraInfo = $"更新后的状态：{newStatusText}",
+            ClientType = CommonHelper.GetClientType(),
+        });
+
+        return newStatusText;
+    }
+}

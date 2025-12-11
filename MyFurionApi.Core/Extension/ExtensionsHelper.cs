@@ -817,6 +817,24 @@ public static class ExtensionsHelper
         return new DateTime(dt.Year, dt.Month, dt.Day);
     }
 
+    private static readonly CultureInfo ChineseCulture = new CultureInfo("zh-CN");
+
+    /// <summary>
+    /// 获取中文星期名称，例如“星期一”
+    /// </summary>
+    public static string GetChineseDayName(this DateTime date)
+    {
+        return ChineseCulture.DateTimeFormat.GetDayName(date.DayOfWeek);
+    }
+
+    /// <summary>
+    /// 获取带“周X”形式的中文星期，例如“周一”
+    /// </summary>
+    public static string GetShortChineseDayName(this DateTime date)
+    {
+        return ChineseCulture.DateTimeFormat.GetAbbreviatedDayName(date.DayOfWeek);
+    }
+
     /// <summary>
     /// 返回该日期所在周的第一天（周一）
     /// </summary>
@@ -970,7 +988,7 @@ public static class ExtensionsHelper
     }
 
     /// <summary>
-    /// 将 string[] 转换为 List<int>
+    /// 将 string[] 转换为 List《int》
     /// </summary>
     /// <param name="array"></param>
     /// <returns></returns>
@@ -1281,8 +1299,9 @@ public static class ExtensionsHelper
     /// 获取枚举名以及对应的Value
     /// </summary>
     /// <param name="type">枚举类型typeof(T)</param>
+    /// <param name="valueIsLabel">int型的value是否改成和label一样的string类型</param>
     /// <returns></returns>
-    public static List<dynamic> GetEnumOptions(this Type type)
+    public static List<dynamic> GetEnumOptions(this Type type, bool valueIsLabel = false)
     {
         if (type.IsEnum)
         {
@@ -1290,7 +1309,15 @@ public static class ExtensionsHelper
             var enumValues = Enum.GetValues(type);
             foreach (Enum value in enumValues)
             {
-                list.Add(new { Label = GetEnumDescription(value), Value = value.GetHashCode().ObjToInt() });
+                if (valueIsLabel)
+                {
+                    var label = GetEnumDescription(value);
+                    list.Add(new { Label = label, Value = label });
+                }
+                else
+                {
+                    list.Add(new { Label = GetEnumDescription(value), Value = value.GetHashCode().ObjToInt() });
+                }
             }
             return list;
         }

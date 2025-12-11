@@ -9,55 +9,55 @@ public class Tree : BaseEntityStandard
     /// <summary>
     /// 名称
     /// </summary>
-    [FsColumn("名称")]
+    [FsColumn()]
     public string Name { get; set; }
 
     /// <summary>
     /// 排序数字，这里是string类型的，升序排列
     /// </summary>
-    [FsColumn("排序")]
+    [FsColumn(1000)]
     public string OrderNo { get; set; } = "01";
 
     /// <summary>
     /// 上级Id
     /// </summary>
-    [FsColumn("父Id", false)]
+    [FsColumn(false)]
     public int ParentId { get; set; }
 
     /// <summary>
     /// 父级名称
     /// </summary>
-    [FsColumn("父级名称")]
+    [FsColumn()]
     public string ParentName { get; set; }
 
     /// <summary>
     /// 完整Id
     /// </summary>
-    [FsColumn("完整Id")]
+    [FsColumn(1000)]
     public string FullId { get; set; }
 
     /// <summary>
     /// 完整名称
     /// </summary>
-    [FsColumn("完整名称", true, 500)]
+    [FsColumn(1000)]
     public string FullName { get; set; }
 
     /// <summary>
     /// 完整类别层级排序，竖线分割
     /// </summary>
-    [FsColumn("完整排序")]
+    [FsColumn(1000)]
     public string FullOrderNo { get; set; }
 
     /// <summary>
     /// 层级
     /// </summary>
-    [FsColumn("层级", false)]
+    [FsColumn(false)]
     public int LevelNo { get; set; }
 
     /// <summary>
     /// 启用状态
     /// </summary>
-    [FsColumn("启用状态", false)]
+    [FsColumn(IsNullable = false)]
     public bool Status { get; set; } = true;
 
     /// <summary>

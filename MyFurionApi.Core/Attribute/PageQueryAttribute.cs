@@ -15,8 +15,7 @@ public class PageQueryAttribute : Attribute
     /// 只指定匹配类型
     /// </summary>
     /// <param name="action"></param>
-    /// <param name="dbType">数据库类型，默认MySql</param>
-    public PageQueryAttribute(PageQueryOperatorType action, SqlSugar.DbType dbType = SqlSugar.DbType.MySql)
+    public PageQueryAttribute(PageQueryOperatorType action)
     {
         this.Operator = action;
     }
@@ -34,7 +33,7 @@ public class PageQueryAttribute : Attribute
     /// <summary>
     /// 数据库类型
     /// </summary>
-    public SqlSugar.DbType DbType { get; set; }
+    public SqlSugar.DbType DbType { get; set; } = SqlSugar.DbType.PostgreSQL; //这里指定默认数据库
 
     /// <summary>
     /// 对应数据库的字段名称，如果为空，则跟列名一样
@@ -118,7 +117,7 @@ public enum PageQueryOperatorType
     LikeRight,
 
     /// <summary>
-    /// CHARINDEX('参数',UserName) > 0，MySQL下使用locate替代
+    /// CHARINDEX('参数',UserName) > 0，MySQL下使用locate替代，PostgreSQL使用position替代
     /// </summary>
     CharIndex,
 

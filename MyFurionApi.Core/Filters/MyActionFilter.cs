@@ -25,7 +25,7 @@ public class MyActionFilter : IAsyncActionFilter
         //var httpRequest = httpContext.Request;
 
         //// 获取客户端 Ipv4 地址
-        //var remoteIPv4 = httpContext.GetRemoteIpAddressToIPv4();
+        //var remoteIPv4 = httpContext.GetClientIpAddress();
 
         //// 获取请求的 Url 地址
         //var requestUrl = httpRequest.GetRequestUrlAddress();
@@ -48,8 +48,11 @@ public class MyActionFilter : IAsyncActionFilter
         if (currentUserId > 0)
         {
             object postModelValue = context.ActionArguments.FirstOrDefault().Value;
-            if ((postModelValue as IEnumerable<object>) != null)
-                postModelValue = (postModelValue as IEnumerable<object>).ToList()[0];
+            if (postModelValue is IEnumerable<object> enumerable)
+            {
+                var list = enumerable.ToList();
+                if (list.Count != 0) postModelValue = list[0];
+            }
 
             var currentUserName = context.HttpContext.User?.FindFirstValue(ClaimConst.UserName);
 

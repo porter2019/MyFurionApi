@@ -1,0 +1,25 @@
+﻿namespace MyFurionApi.Application.Dto;
+
+/// <summary>
+/// {{ Desc }}分页查询
+/// </summary>
+public class {{ Name }}PageInput : BasePageQueryModel<{{ Name }}>
+{
+    /// <summary>
+    /// Name
+    /// </summary>
+    [PageQuery(PageQueryOperatorType.CharIndex)]
+    public string Name { get; set; }
+
+    /// <summary>
+    /// Status
+    /// </summary>
+    [PageQuery(PageQueryOperatorType.Equal)]
+    public bool? Status { get; set; }
+
+    /// <summary>
+    /// 添加时间
+    /// </summary>
+    [PageQuery(PageQueryOperatorType.BetweenDate)]
+    public string CreatedTime { get; set; }
+}

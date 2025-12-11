@@ -7,15 +7,53 @@ public class SysUserService : ISysUserService, ITransient
 {
     private readonly ILogger<SysUserService> _logger;
     private readonly ISysRoleService _roleService;
-    private readonly SqlSugarRepository<SysUser> _userInfoRepo;
+    private readonly SqlSugarRepository<SysUser> _sysUserRepository;
 
-    public SysUserService(ILogger<SysUserService> logger,
-        ISysRoleService roleService,
-        SqlSugarRepository<SysUser> userInfoRepo)
+    public SysUserService(ILogger<SysUserService> logger, ISysRoleService roleService, SqlSugarRepository<SysUser> sysUserRepository)
     {
         _logger = logger;
         _roleService = roleService;
-        _userInfoRepo = userInfoRepo;
+        _sysUserRepository = sysUserRepository;
+    }
+
+    /// <summary>
+    /// 获取有某个权限的用户Id列表
+    /// </summary>
+    /// <param name="hanlderName">ERPOrderSalesJob1</param>
+    /// <param name="actionName">如果为空，则默认置为：show</param>
+    /// <returns></returns>
+    public Task<List<int>> GetPermitUserIdList(string hanlderName, string actionName)
+    {
+        if (actionName.IsNull()) actionName = "show";
+
+        var dbType = _sysUserRepository.Context.CurrentConnectionConfig.DbType;
+        string handlerTable = dbType == DbType.SqlServer ? "[SysHandler]" : "\"SysHandler\"";
+        string permitTable = dbType == DbType.SqlServer ? "[SysPermit]" : "\"SysPermit\"";
+        string rolePermitTable = dbType == DbType.SqlServer ? "[SysRolePermit]" : "\"SysRolePermit\"";
+        string roleUserTable = dbType == DbType.SqlServer ? "[SysRoleUser]" : "\"SysRoleUser\"";
+
+        var sql = $@"SELECT DISTINCT d.""UserId""
+                FROM {roleUserTable} d
+                WHERE EXISTS (
+                    SELECT 1
+                    FROM {rolePermitTable} c
+                    INNER JOIN {permitTable} b ON b.""Id"" = c.""PermitId"" 
+                        AND b.""AliasName"" = @actionName
+                        AND b.""IsDeleted"" = 0
+                    INNER JOIN {handlerTable} a ON a.""Id"" = b.""HandlerId"" 
+                        AND a.""AliasName"" = @hanlderName
+                        AND a.""IsDeleted"" = 0
+                    WHERE c.""RoleId"" = d.""RoleId"" 
+                        AND c.""IsDeleted"" = 0
+                        AND d.""IsDeleted"" = 0
+                );";
+
+        var sqlParams = new List<SugarParameter>()
+    {
+        new("@hanlderName", hanlderName),
+        new("@actionName", actionName),
+    };
+        return _sysUserRepository.Ado.SqlQueryAsync<int>(sql, sqlParams);
     }
 
     /// <summary>

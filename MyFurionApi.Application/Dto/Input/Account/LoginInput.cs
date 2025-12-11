@@ -5,11 +5,17 @@
 /// </summary>
 public class LoginInput
 {
+    ///// <summary>
+    ///// 登录名
+    ///// </summary>
+    //[Required(ErrorMessage = "登录名必填"), DataValidation(MyValidationTypes.AccountName)]
+    //public string LoginName { get; set; }
+
     /// <summary>
-    /// 登录名
+    /// 手机号
     /// </summary>
-    [Required(ErrorMessage = "登录名必填"), DataValidation(MyValidationTypes.AccountName)]
-    public string LoginName { get; set; }
+    [Required(ErrorMessage = "手机号必填"), DataValidation(MyValidationTypes.CellPhone)]
+    public string CellPhone { get; set; }
 
     /// <summary>
     /// 密码

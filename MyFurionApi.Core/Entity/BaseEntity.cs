@@ -12,25 +12,25 @@ public abstract class BaseEntity
     /// 主键自增Id
     /// <c>[SugarColumn(ColumnDescription = "Id主键", IsIdentity = true, IsPrimaryKey = true)]</c>
     /// </summary>
-    [FsColumn("Id主键", false, IsPK = true)]
+    [FsColumn(IsNullable = false, IsPK = true)]
     public int Id { get; set; }
 
     /// <summary>
     /// 创建时间
     /// </summary>
-    [FsColumn("创建时间")]
+    [FsColumn()]
     public DateTime? CreatedTime { get; set; }
 
     /// <summary>
     /// 更新时间
     /// </summary>
-    [FsColumn("更新时间")]
+    [FsColumn()]
     public DateTime? UpdatedTime { get; set; }
 
     /// <summary>
     /// 软删除
     /// </summary>
-    [FsColumn("软删除", false), JsonIgnore]
+    [FsColumn(IsNullable = false), JsonIgnore]
     public bool IsDeleted { get; set; } = false;
 
 }
@@ -45,25 +45,25 @@ public abstract class BaseEntityStandard : BaseEntity
     /// <summary>
     /// 创建者Id
     /// </summary>
-    [FsColumn("创建者Id")]
+    [FsColumn()]
     public int? CreatedUserId { get; set; }
 
     /// <summary>
     /// 创建者名称
     /// </summary>
-    [FsColumn("创建者名称")]
+    [FsColumn()]
     public string CreatedUserName { get; set; }
 
     /// <summary>
     /// 修改者Id
     /// </summary>
-    [FsColumn("修改者Id")]
+    [FsColumn()]
     public int? UpdatedUserId { get; set; }
 
     /// <summary>
     /// 修改者名称
     /// </summary>
-    [FsColumn("修改者名称")]
+    [FsColumn()]
     public string UpdatedUserName { get; set; }
 
     #endregion

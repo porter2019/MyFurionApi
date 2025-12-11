@@ -9,17 +9,15 @@ namespace MyFurionApi.Core;
 public class FsColumnAttribute : SqlSugar.SugarColumn
 {
     /// <summary>
-    /// 基本，只设置列说明，其他默认
+    /// 基本，默认可空
     /// </summary>
-    /// <param name="displayName">显示名</param>
-    public FsColumnAttribute(string displayName)
+    public FsColumnAttribute()
     {
-        base.ColumnDescription = displayName;
         base.IsNullable = true;
     }
 
     /// <summary>
-    /// 基本，设置忽略
+    /// 基本，忽略迁移
     /// </summary>
     /// <param name="isIgnore"></param>
     public FsColumnAttribute(bool isIgnore)
@@ -28,45 +26,11 @@ public class FsColumnAttribute : SqlSugar.SugarColumn
     }
 
     /// <summary>
-    /// 通用，只设置列说明和是否可以为空
-    /// </summary>
-    /// <param name="displayName">列说明</param>
-    /// <param name="isNullable">是否可以为空</param>
-    public FsColumnAttribute(string displayName, bool isNullable)
-    {
-        base.ColumnDescription = displayName;
-        base.IsNullable = isNullable;
-    }
-
-    /// <summary>
     /// 适用于String
     /// </summary>
-    /// <param name="displayName">列说明</param>
     /// <param name="length">长度，默认255，如果 = 9999，则使用string大文本</param>
-    public FsColumnAttribute(string displayName, int length)
+    public FsColumnAttribute(int length)
     {
-        base.ColumnDescription = displayName;
-        base.IsNullable = true;
-        if (length == 9999)
-        {
-            base.ColumnDataType = StaticConfig.CodeFirst_BigString;
-        }
-        else
-        {
-            base.Length = length;
-        }
-    }
-
-    /// <summary>
-    /// 适用于String
-    /// </summary>
-    /// <param name="displayName">列说明</param>
-    /// <param name="isNullable">是否可以为空</param>
-    /// <param name="length">长度，默认255，如果 = 9999，则使用string大文本</param>
-    public FsColumnAttribute(string displayName, bool isNullable, int length)
-    {
-        base.ColumnDescription = displayName;
-        base.IsNullable = isNullable;
         if (length == 9999)
         {
             base.ColumnDataType = StaticConfig.CodeFirst_BigString;

@@ -1,0 +1,26 @@
+# 使用官方的 ASP.NET 核心基础镜像
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+
+## 修改 Debian 镜像源为阿里云
+# 由于 /etc/apt/sources.list 文件可能不存在，我们直接创建并写入阿里云镜像源。
+# 这里使用了 'https'，因为它提供了更安全的连接。
+# 请注意，由于是直接创建文件，所以不再需要备份原始文件。
+# 使用非固件版本，以降低潜在兼容性问题。
+RUN echo "deb https://mirrors.aliyun.com/debian/ bookworm main contrib non-free" > /etc/apt/sources.list && \
+    echo "deb https://mirrors.aliyun.com/debian-security/ bookworm-security main contrib non-free" >> /etc/apt/sources.list && \
+    echo "deb https://mirrors.aliyun.com/debian/ bookworm-updates main contrib non-free" >> /etc/apt/sources.list && \
+    echo "deb https://mirrors.aliyun.com/debian/ bookworm-backports main contrib non-free" >> /etc/apt/sources.list
+
+## 更新包列表并安装中文字体和 libgdiplus
+
+# 使用新的镜像源更新软件包列表，然后安装所需的软件包。
+# 添加了 `apt-get clean` 来清除 apt 缓存，这有助于减小最终镜像的大小。
+RUN apt-get update -qq && \
+    apt-get -y install --no-install-recommends \
+    libgdiplus \
+    libc6-dev \
+    fonts-wqy-microhei \
+    fonts-wqy-zenhei \
+    fonts-noto-cjk \
+    && rm -rf /var/lib/apt/lists/* && \
+    apt-get clean
