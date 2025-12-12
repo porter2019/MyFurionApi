@@ -21,12 +21,12 @@ public class SysPermit : BaseEntity
     /// <summary>
     /// 功能Id
     /// </summary>
-    [FsColumn()]
+    [FsColumn(IsNullable = false)]
     public int HandlerId { get; set; }
 
     /// <summary>
     /// 状态
     /// </summary>
-    [FsColumn()]
+    [FsColumn(IsNullable = false)]
     public bool Status { get; set; } = true;
 }

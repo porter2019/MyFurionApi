@@ -97,7 +97,7 @@ public class BaseBuildWhereModel : BaseFormPostModel
             if (filedValue == null) continue;
             if (filedValue.ToString().IsNull()) continue;
             var fileValueChar = "";
-            // sql server使用[]包含列名，mysql使用``，postgresql使用``，sqlite使用[]
+            // sql server使用[]包含列名，mysql使用``，postgresql不需要，sqlite使用[]
             var columnName = string.Empty;
 
             if (dbType == SqlSugar.DbType.MySql)
@@ -106,7 +106,7 @@ public class BaseBuildWhereModel : BaseFormPostModel
             }
             else if (dbType == SqlSugar.DbType.PostgreSQL)
             {
-                columnName = queryAttr.ColumnName.IsNull() ? $"\"{filedName}\"" : $"\"{queryAttr.ColumnName}\"";
+                columnName = queryAttr.ColumnName.IsNull() ? $"{filedName}" : $"{queryAttr.ColumnName}";
             }
             else if (dbType == SqlSugar.DbType.SqlServer)
             {
@@ -126,7 +126,14 @@ public class BaseBuildWhereModel : BaseFormPostModel
             }
             else if (propType == typeof(System.Boolean) || (propType == typeof(System.Nullable<Boolean>)))
             {
-                filedValue = filedValue.ToString().EqualsIgnoreCase("true") ? 1 : 0;
+                if (dbType == SqlSugar.DbType.PostgreSQL)
+                {
+                    filedValue = filedValue.ToString();
+                }
+                else
+                {
+                    filedValue = filedValue.ToString().EqualsIgnoreCase("true") ? 1 : 0;
+                }
             }
             var logic = queryAttr.Logic.GetEnumDescription();
             switch (queryAttr.Operator)

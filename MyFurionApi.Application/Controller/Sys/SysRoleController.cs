@@ -118,7 +118,7 @@ public class SysRoleController : BaseApiController
     /// <param name="roleId"></param>
     /// <returns></returns>
     [HttpGet, Route("get/permit/list")]
-    public List<SysRoleModuleGroupOutput> GetRolePermitList(int roleId)
+    public Task<List<SysRoleModuleGroupOutput>> GetRolePermitList(int roleId)
     {
         return _sysRoleService.GetPermitListByRoleId(roleId);
     }

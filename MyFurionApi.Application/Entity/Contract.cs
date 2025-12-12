@@ -87,7 +87,7 @@ public class Contract : BaseEntityStandard
     /// <summary>
     /// 状态
     /// </summary>
-    [FsColumn()]
+    [FsColumn(IsNullable = false)]
     public bool Status { get; set; }
 
     /// <summary>

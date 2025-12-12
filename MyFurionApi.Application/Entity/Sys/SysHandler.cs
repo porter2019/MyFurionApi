@@ -33,12 +33,12 @@ public class SysHandler : BaseEntity
     /// <summary>
     /// 排序数字
     /// </summary>
-    [FsColumn()]
+    [FsColumn(IsNullable = false)]
     public int OrderNo { get; set; }
 
     /// <summary>
     /// 状态
     /// </summary>
-    [FsColumn()]
+    [FsColumn(IsNullable = false)]
     public bool Status { get; set; } = true;
 }

@@ -9,12 +9,12 @@ public class SysRolePermit : BaseEntity
     /// <summary>
     /// 用户组Id
     /// </summary>
-    [FsColumn()]
+    [FsColumn(IsNullable = false)]
     public int RoleId { get; set; }
 
     /// <summary>
     /// 权限Id
     /// </summary>
-    [FsColumn()]
+    [FsColumn(IsNullable = false)]
     public int PermitId { get; set; }
 }

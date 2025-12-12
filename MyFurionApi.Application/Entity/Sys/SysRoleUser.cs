@@ -9,13 +9,13 @@ public class SysRoleUser : BaseEntityStandard
     /// <summary>
     /// 用户组Id
     /// </summary>
-    [FsColumn()]
+    [FsColumn(IsNullable = false)]
     public int RoleId { set; get; }
 
     /// <summary>
     /// 用户Id
     /// </summary>
-    [FsColumn()]
+    [FsColumn(IsNullable = false)]
     public int UserId { set; get; }
 
 }

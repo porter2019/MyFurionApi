@@ -35,13 +35,13 @@ public class SysUser : BaseEntityStandard
     /// <summary>
     /// 运营系统管理权限
     /// </summary>
-    [FsColumn()]
+    [FsColumn(IsNullable = false)]
     public bool IsOM { get; set; }
 
     /// <summary>
     /// 移动端登录权限
     /// </summary>
-    [FsColumn()]
+    [FsColumn(IsNullable = false)]
     public bool IsMP { get; set; }
 
     /// <summary>
@@ -76,7 +76,7 @@ public class SysUser : BaseEntityStandard
     /// <summary>
     /// 账号启用状态
     /// </summary>
-    [FsColumn()]
+    [FsColumn(IsNullable = false)]
     public bool Status { get; set; } = true;
 
     /// <summary>

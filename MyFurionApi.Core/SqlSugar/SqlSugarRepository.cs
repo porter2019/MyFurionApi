@@ -1627,7 +1627,7 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
                 columnSql = $"`{columnName}`";
                 break;
             case SqlSugar.DbType.PostgreSQL:
-                columnSql = $"\"{columnName}\"";
+                columnSql = $"{columnName}";
                 break;
             case SqlSugar.DbType.SqlServer:
             case SqlSugar.DbType.Sqlite:
@@ -1655,7 +1655,7 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
                 columnSql = $"`{columnName}`";
                 break;
             case SqlSugar.DbType.PostgreSQL:
-                columnSql = $"\"{columnName}\"";
+                columnSql = $"{columnName}";
                 break;
             case SqlSugar.DbType.SqlServer:
             case SqlSugar.DbType.Sqlite:

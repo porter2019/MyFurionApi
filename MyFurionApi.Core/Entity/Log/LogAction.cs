@@ -20,7 +20,7 @@ public class LogAction : BaseEntityStandard
     /// <summary>
     /// 操作类型
     /// </summary>
-    [FsColumn()]
+    [FsColumn(IsNullable = false)]
     public LogActionType Type { get; set; }
 
     /// <summary>

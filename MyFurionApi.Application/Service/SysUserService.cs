@@ -24,36 +24,22 @@ public class SysUserService : ISysUserService, ITransient
     /// <returns></returns>
     public Task<List<int>> GetPermitUserIdList(string hanlderName, string actionName)
     {
-        if (actionName.IsNull()) actionName = "show";
-
-        var dbType = _sysUserRepository.Context.CurrentConnectionConfig.DbType;
-        string handlerTable = dbType == DbType.SqlServer ? "[SysHandler]" : "\"SysHandler\"";
-        string permitTable = dbType == DbType.SqlServer ? "[SysPermit]" : "\"SysPermit\"";
-        string rolePermitTable = dbType == DbType.SqlServer ? "[SysRolePermit]" : "\"SysRolePermit\"";
-        string roleUserTable = dbType == DbType.SqlServer ? "[SysRoleUser]" : "\"SysRoleUser\"";
-
-        var sql = $@"SELECT DISTINCT d.""UserId""
-                FROM {roleUserTable} d
-                WHERE EXISTS (
-                    SELECT 1
-                    FROM {rolePermitTable} c
-                    INNER JOIN {permitTable} b ON b.""Id"" = c.""PermitId"" 
-                        AND b.""AliasName"" = @actionName
-                        AND b.""IsDeleted"" = 0
-                    INNER JOIN {handlerTable} a ON a.""Id"" = b.""HandlerId"" 
-                        AND a.""AliasName"" = @hanlderName
-                        AND a.""IsDeleted"" = 0
-                    WHERE c.""RoleId"" = d.""RoleId"" 
-                        AND c.""IsDeleted"" = 0
-                        AND d.""IsDeleted"" = 0
-                );";
-
-        var sqlParams = new List<SugarParameter>()
-    {
-        new("@hanlderName", hanlderName),
-        new("@actionName", actionName),
-    };
-        return _sysUserRepository.Ado.SqlQueryAsync<int>(sql, sqlParams);
+        return _sysUserRepository.Change<SysRoleUser>().AsQueryable().Filter(null, true)
+                .Where(d => !d.IsDeleted)
+                .Where(d => SqlFunc.Subqueryable<SysRolePermit>()
+                    .InnerJoin<SysPermit>((c, b) => b.Id == c.PermitId)
+                    .InnerJoin<SysHandler>((c, b, a) => a.Id == b.HandlerId)
+                    .Where((c, b, a) => c.RoleId == d.RoleId)
+                    .Where((c, b, a) => !c.IsDeleted &&
+                                        b.AliasName == actionName &&
+                                        !b.IsDeleted &&
+                                        a.AliasName == hanlderName &&
+                                        !a.IsDeleted)
+                    .Any()
+                )
+                .Select(d => d.UserId)
+                .Distinct()
+                .ToListAsync();
     }
 
     /// <summary>

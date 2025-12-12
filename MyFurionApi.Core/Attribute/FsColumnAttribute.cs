@@ -31,6 +31,7 @@ public class FsColumnAttribute : SqlSugar.SugarColumn
     /// <param name="length">长度，默认255，如果 = 9999，则使用string大文本</param>
     public FsColumnAttribute(int length)
     {
+        base.IsNullable = true;
         if (length == 9999)
         {
             base.ColumnDataType = StaticConfig.CodeFirst_BigString;

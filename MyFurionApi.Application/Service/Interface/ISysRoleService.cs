@@ -29,7 +29,7 @@ public interface ISysRoleService
     /// </summary>
     /// <param name="roleId"></param>
     /// <returns></returns>
-    List<SysRoleModuleGroupOutput> GetPermitListByRoleId(int roleId);
+    Task<List<Dto.SysRoleModuleGroupOutput>> GetPermitListByRoleId(int roleId);
 
     /// <summary>
     /// 根据用户id获取所属的用户组

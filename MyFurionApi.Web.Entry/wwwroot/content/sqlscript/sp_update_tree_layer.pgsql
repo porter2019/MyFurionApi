@@ -1,45 +1,47 @@
-﻿-- Postgresql 18 存储过程
-DROP PROCEDURE IF EXISTS sp_update_tree_layer;
+﻿-- 注意：PostgreSQL使用函数替代存储过程
 
-CREATE OR REPLACE PROCEDURE sp_update_tree_layer()
-LANGUAGE plpgsql
-AS $$
+-- 尝试删除函数，如果存在的话
+DROP FUNCTION IF EXISTS sp_update_tree_layer() CASCADE;
+
+-- 创建函数
+CREATE OR REPLACE FUNCTION sp_update_tree_layer()
+RETURNS void AS $$
 BEGIN
+    -- 使用递归CTE来构建层级结构并更新
     WITH RECURSIVE p AS (
         SELECT
-            a."Id",
-            a."Name"::text AS "Name",
-            a."OrderNo"::text AS "OrderNo",
-            ''::text AS "ParentName",
-            CONCAT('|', a."Id", '|')::text AS "FullId",
-            a."Name"::text AS "FullName",
-            1 AS "LevelNo",
-            a."OrderNo"::text AS "FullOrderNo"
-        FROM "Tree" a
-        WHERE a."ParentId" = 0
-
+            a.id,
+            a.name,
+            a.orderno,
+            CAST('' AS VARCHAR(255)) AS parentname,           -- 指定具体长度
+            CAST(CONCAT('|', a.id, '|') AS VARCHAR(1000)) AS fullid,
+            CAST(a.name AS VARCHAR(1000)) AS fullname,
+            1 AS levelno,
+            CAST(a.orderno AS VARCHAR(2000)) AS fullorderno
+        FROM tree a
+        WHERE a.parentid = 0
         UNION ALL
-
         SELECT
-            a."Id",
-            a."Name"::text AS "Name",
-            a."OrderNo"::text AS "OrderNo",
-            p."Name" AS "ParentName",
-            CONCAT(p."FullId", a."Id", '|')::text AS "FullId",
-            CONCAT(p."FullName", '|', a."Name")::text AS "FullName",
-            p."LevelNo" + 1 AS "LevelNo",
-            CONCAT(p."FullOrderNo", '|', a."OrderNo")::text AS "FullOrderNo"
-        FROM "Tree" a
-        JOIN p ON a."ParentId" = p."Id"
+            a.id,
+            a.name,
+            a.orderno,
+            CAST(p.name AS VARCHAR(255)) AS parentname,
+            CAST(CONCAT(p.fullid, a.id, '|') AS VARCHAR(1000)) AS fullid,
+            CAST(CONCAT(p.fullname, '|', a.name) AS VARCHAR(1000)) AS fullname,
+            (p.levelno + 1) AS levelno,
+            CAST(CONCAT(p.fullorderno, '|', a.orderno) AS VARCHAR(2000)) AS fullorderno
+        FROM tree a
+        INNER JOIN p ON a.parentid = p.id
     )
-    UPDATE "Tree"
+    -- 更新tree表中的层级信息
+    UPDATE tree q
     SET
-        "ParentName" = p."ParentName",
-        "FullId" = LEFT(p."FullId", 1000),
-        "FullName" = LEFT(p."FullName", 1000),
-        "LevelNo" = p."LevelNo",
-        "FullOrderNo" = LEFT(p."FullOrderNo", 1000)
+        parentname = LEFT(p.parentname, 1000),
+        fullid = LEFT(p.fullid, 1000),
+        fullname = LEFT(p.fullname, 1000),
+        levelno = p.levelno,
+        fullorderno = LEFT(p.fullorderno, 1000)
     FROM p
-    WHERE "Tree"."Id" = p."Id";
+    WHERE q.id = p.id;
 END;
-$$;
+$$ LANGUAGE plpgsql;

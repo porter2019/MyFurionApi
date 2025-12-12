@@ -38,8 +38,11 @@ public class SysRoleService : ISysRoleService, ITransient
     /// <returns></returns>
     public Task<List<SysRole>> GetRoleListByUserIdAsync(int userId)
     {
-        string sql = string.Format(@"select b.* from SysRoleUser as a inner join SysRole as b on a.RoleId = b.Id where a.UserId = {0} and b.IsDeleted = 0", userId);
-        return _sysRoleRepository.Ado.SqlQueryAsync<SysRole>(sql);
+        return _sysRoleRepository.AsQueryable()
+            .InnerJoin<SysRoleUser>((a, b) => b.RoleId == a.Id)
+            .Where((a, b) => b.UserId == userId)
+            .Select(a => a)
+            .ToListAsync();
     }
 
     /// <summary>
@@ -49,35 +52,14 @@ public class SysRoleService : ISysRoleService, ITransient
     /// <returns></returns>
     public Task<List<string>> GetPermissionsByRoleIdAsync(string roleIds)
     {
-        var dbType = _sysRoleRepository.Context.CurrentConnectionConfig.DbType;
-        string concatFunc;
-
-        switch (dbType)
-        {
-            case DbType.SqlServer:
-                concatFunc = "(c.AliasName + '.' + b.AliasName)";
-                break;
-            case DbType.PostgreSQL:
-                concatFunc = "CONCAT(c.AliasName, '.', b.AliasName)";
-                break;
-            case DbType.MySql:
-                concatFunc = "CONCAT(c.AliasName, '.', b.AliasName)";
-                break;
-            case DbType.Sqlite:
-                concatFunc = "(c.AliasName || '.' || b.AliasName)";
-                break;
-            default:
-                concatFunc = "CONCAT(c.AliasName, '.', b.AliasName)";
-                break;
-        }
-
-        string sql = string.Format(@"SELECT DISTINCT {0} AS auth FROM
-                                SysRolePermit AS a 
-                                LEFT JOIN SysPermit AS b ON a.PermitId = b.Id AND a.IsDeleted = 0 AND a.RoleId IN({1})
-                                LEFT JOIN SysHandler AS c ON b.HandlerId = c.Id AND c.IsDeleted = 0",
-                                    concatFunc, roleIds);
-
-        return _sysRoleRepository.Ado.SqlQueryAsync<string>(sql);
+        var roleIdList = roleIds.SplitWithComma().ConvertIntArray();
+        return _sysRoleRepository.Change<SysRolePermit>().AsQueryable()
+                .LeftJoin<SysPermit>((a, b) => a.PermitId == b.Id && !a.IsDeleted)
+                .LeftJoin<SysHandler>((a, b, c) => b.HandlerId == c.Id && !c.IsDeleted)
+                .Where((a, b, c) => roleIdList.Contains(a.RoleId))
+                .Select((a, b, c) => SqlFunc.MergeString(c.AliasName, ".", b.AliasName))
+                .Distinct()
+                .ToListAsync();
     }
 
     /// <summary>
@@ -88,18 +70,15 @@ public class SysRoleService : ISysRoleService, ITransient
     /// <returns></returns>
     public Task<List<string>> GetPermissionsByRoleIdsAndRefControllerAsync(string roleIds, string refControllerName)
     {
-        var dbType = _sysRoleRepository.Context.CurrentConnectionConfig.DbType;
-        string quoteChar = dbType == DbType.SqlServer ? "[" : "\"";
-        string handlerStatusField = $"{quoteChar}Status{quoteChar}";
+        var roleIdsArray = roleIds.SplitWithComma().ConvertIntArray();
 
-        string sql = @$"SELECT DISTINCT B.PermitName FROM(
-                        (SELECT * FROM SysRolePermit WHERE IsDeleted = 0 AND RoleId IN ({roleIds})) AS A
-                        INNER JOIN
-                        (SELECT * FROM SysPermit WHERE IsDeleted = 0 AND HandlerId = (SELECT Id FROM SysHandler WHERE {handlerStatusField} = 1 AND IsDeleted = 0 AND RefController = @refControllerName)) AS B
-                        ON A.PermitId = B.Id
-                        )";
-
-        return _sysRoleRepository.Ado.SqlQueryAsync<string>(sql, new { refControllerName = refControllerName });
+        return _sysRoleRepository.Change<SysRolePermit>().AsQueryable()
+                .Where(a => !a.IsDeleted && roleIdsArray.Contains(a.RoleId))
+                .InnerJoin<SysPermit>((a, b) => a.PermitId == b.Id && !b.IsDeleted)
+                .InnerJoin<SysHandler>((a, b, c) => b.HandlerId == c.Id && c.Status && !c.IsDeleted && c.RefController == refControllerName)
+                .Select((a, b, c) => b.PermitName)
+                .Distinct()
+                .ToListAsync();
     }
 
     /// <summary>
@@ -107,34 +86,24 @@ public class SysRoleService : ISysRoleService, ITransient
     /// </summary>
     /// <param name="roleId"></param>
     /// <returns></returns>
-    public List<Dto.SysRoleModuleGroupOutput> GetPermitListByRoleId(int roleId)
+    public async Task<List<Dto.SysRoleModuleGroupOutput>> GetPermitListByRoleId(int roleId)
     {
-        var dbType = _sysRoleRepository.Context.CurrentConnectionConfig.DbType;
-        string nullFunc;
-
-        switch (dbType)
-        {
-            case DbType.SqlServer:
-                nullFunc = "ISNULL";
-                break;
-            case DbType.PostgreSQL:
-            case DbType.MySql:
-            case DbType.Sqlite:
-            default:
-                nullFunc = "COALESCE";
-                break;
-        }
-
-        var sql = string.Format(@"SELECT sm.""ModuleName"", sh.""HandlerName"", sp.""Id"" AS ""PermitId"", sp.""PermitName"", sp.""AliasName"", sh.""OrderNo"",
-                                            CASE WHEN {0}(srp.""PermitId"", 0) != 0 THEN 1 ELSE 0 END AS ""IsChecked""
-                                            FROM ""SysPermit"" AS sp
-                                            INNER JOIN ""SysHandler"" AS sh ON sp.""HandlerId"" = sh.""Id""
-                                            INNER JOIN ""SysModule"" AS sm ON sh.""ModuleId"" = sm.""Id""
-                                            LEFT JOIN ""SysRolePermit"" AS srp ON srp.""PermitId"" = sp.""Id"" AND srp.""RoleId"" = {1}",
-                                                nullFunc, roleId);
-
-        var _sysRolePermitRepo = _sysRoleRepository.Change<SysRolePermit>();
-        var dbData = _sysRolePermitRepo.Ado.SqlQuery<Dto.SysRolePermitOutput>(sql);
+        var dbData = await _sysRoleRepository.Change<SysPermit>().AsQueryable()
+                .InnerJoin<SysHandler>((sp, sh) => sp.HandlerId == sh.Id && !sh.IsDeleted)
+                .InnerJoin<SysModule>((sp, sh, sm) => sh.ModuleId == sm.Id && !sm.IsDeleted)
+                .LeftJoin<SysRolePermit>((sp, sh, sm, srp) => srp.PermitId == sp.Id && srp.RoleId == roleId && !srp.IsDeleted)
+                .Where(sp => !sp.IsDeleted)
+                .Select((sp, sh, sm, srp) => new Dto.SysRolePermitOutput
+                {
+                    ModuleName = sm.ModuleName,
+                    HandlerName = sh.HandlerName,
+                    PermitId = sp.Id,
+                    PermitName = sp.PermitName,
+                    AliasName = sp.AliasName,
+                    OrderNo = sh.OrderNo,
+                    IsChecked = SqlFunc.IIF(SqlSugar.SqlFunc.IsNull(srp.PermitId, 0) == 0, false, true)
+                })
+                .ToListAsync();
 
         var moduleGroup = dbData.GroupBy(p => p.ModuleName).ToList();
         var resultList = new List<Dto.SysRoleModuleGroupOutput>();

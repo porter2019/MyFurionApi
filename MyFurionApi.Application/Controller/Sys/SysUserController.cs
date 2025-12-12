@@ -261,6 +261,19 @@ public class SysUserController : BaseApiController
         return newStatusText;
     }
 
+    /// <summary>
+    /// 获取有某个权限的用户Id列表
+    /// </summary>
+    /// <param name="sysUserService"></param>
+    /// <param name="hanlderName"></param>
+    /// <param name="actionName"></param>
+    /// <returns></returns>
+    [HttpGet, Route("test/get/userid/by/permit")]
+    public Task<List<int>> GetPermitUserIdList([FromServices] ISysUserService sysUserService, string hanlderName, string actionName)
+    {
+        return sysUserService.GetPermitUserIdList(hanlderName, actionName);
+    }
+
     ///// <summary>
     ///// 修改手机号
     ///// </summary>

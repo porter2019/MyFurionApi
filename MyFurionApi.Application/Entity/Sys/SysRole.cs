@@ -21,12 +21,12 @@ public class SysRole : BaseEntityStandard
     /// <summary>
     /// 是否超级管理组
     /// </summary>
-    [FsColumn()]
+    [FsColumn(IsNullable = false)]
     public bool IsSuper { get; set; }
 
     /// <summary>
     /// 状态
     /// </summary>
-    [FsColumn()]
+    [FsColumn(IsNullable = false)]
     public bool Status { get; set; } = true;
 }

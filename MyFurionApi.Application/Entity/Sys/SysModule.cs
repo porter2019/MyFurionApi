@@ -23,12 +23,12 @@ public class SysModule : BaseEntity
     /// <summary>
     /// 排序数字，降序排列
     /// </summary>
-    [FsColumn()]
+    [FsColumn(IsNullable = false)]
     public int OrderNo { get; set; }
 
     /// <summary>
     /// 状态
     /// </summary>
-    [FsColumn()]
+    [FsColumn(IsNullable = false)]
     public bool Status { get; set; } = true;
 }

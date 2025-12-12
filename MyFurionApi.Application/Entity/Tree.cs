@@ -21,7 +21,7 @@ public class Tree : BaseEntityStandard
     /// <summary>
     /// 上级Id
     /// </summary>
-    [FsColumn(false)]
+    [FsColumn(IsNullable = false)]
     public int ParentId { get; set; }
 
     /// <summary>
@@ -51,7 +51,7 @@ public class Tree : BaseEntityStandard
     /// <summary>
     /// 层级
     /// </summary>
-    [FsColumn(false)]
+    [FsColumn(IsNullable = false)]
     public int LevelNo { get; set; }
 
     /// <summary>

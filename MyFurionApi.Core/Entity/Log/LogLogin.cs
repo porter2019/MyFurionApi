@@ -18,7 +18,7 @@ public class LogLogin : BaseEntityStandard
     /// <summary>
     /// 用户Id
     /// </summary>
-    [FsColumn()]
+    [FsColumn(IsNullable = false)]
     public int UserId { get; set; }
 
     /// <summary>

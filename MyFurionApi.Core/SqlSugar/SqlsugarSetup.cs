@@ -136,7 +136,7 @@ public static class SqlsugarSetup
     /// </summary>
     static Tuple<LogActionType, string, string> BuildAuditDescription(DiffLogModel diff)
     {
-        List<string> ignoreColumns = ["CreatedTime", "UpdatedTime", "IsDeleted", "CreatedUserId", "CreatedUserName", "UpdatedUserId", "UpdatedUserName"];
+        List<string> ignoreColumns = ["CreatedTime", "UpdatedTime", "IsDeleted", "CreatedUserId", "CreatedUserName", "UpdatedUserId", "UpdatedUserName", "IsDeleted"];
 
         string mainIds = null;
         var beforeData = diff.BeforeData;
