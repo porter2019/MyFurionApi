@@ -95,7 +95,13 @@ public class SystemTextJsonConfig
 
         public override void Write(Utf8JsonWriter writer, double value, JsonSerializerOptions options)
         {
-            writer.WriteNumberValue(value);//value.ObjToThousString()
+            if (double.IsNaN(value) || double.IsInfinity(value))
+            {
+                writer.WriteNullValue();
+                return;
+            }
+
+            writer.WriteNumberValue(value);
         }
     }
 

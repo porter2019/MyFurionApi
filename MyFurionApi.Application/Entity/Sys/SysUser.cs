@@ -11,7 +11,7 @@ public class SysUser : BaseEntityStandard
     /// <summary>
     /// 手机号
     /// </summary>
-    [FsColumn(20)]
+    [FsColumn(50)]
     public string CellPhone { get; set; }
 
     /// <summary>

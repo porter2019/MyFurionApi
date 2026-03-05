@@ -155,6 +155,16 @@ public enum PageQueryOperatorType
     /// 指定SQL语句查询: 1=1
     /// </summary>
     Sql,
+
+    /// <summary>
+    /// String类型的in查询，值必须英文逗号分隔
+    /// </summary>
+    StringIn,
+
+    /// <summary>
+    /// String类型的not in查询，值必须英文逗号分隔
+    /// </summary>
+    StringNotIn,
 }
 
 /// <summary>

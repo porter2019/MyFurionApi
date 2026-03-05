@@ -1,22 +1,22 @@
 ﻿namespace MyFurionApi.Application.Entity;
 
 /// <summary>
-/// 树型实体
+/// 系统字典类别
 /// </summary>
 [FsTable()]
-public class Tree : BaseEntityStandard
+public class SysDirectoryCategory : BaseEntityStandard
 {
-    /// <summary>
-    /// 标识
-    /// </summary>
-    [FsColumn(50)]
-    public string Code { get; set; }
-
     /// <summary>
     /// 名称
     /// </summary>
-    [FsColumn(50)]
+    [FsColumn()]
     public string Name { get; set; }
+
+    /// <summary>
+    /// 编码
+    /// </summary>
+    [FsColumn()]
+    public string Code { get; set; }
 
     /// <summary>
     /// 排序数字
@@ -34,7 +34,7 @@ public class Tree : BaseEntityStandard
     /// <summary>
     /// 父级名称
     /// </summary>
-    [FsColumn(50)]
+    [FsColumn()]
     public string ParentName { get; set; }
 
     /// <summary>
@@ -72,24 +72,11 @@ public class Tree : BaseEntityStandard
     /// </summary>
     [FsColumn(true)]
     [Navigate(NavigateType.OneToOne, nameof(ParentId))]
-    public Tree Parent { get; set; }
+    public SysDirectoryCategory Parent { get; set; }
 
     /// <summary>
     /// 子列表
     /// </summary>
     [FsColumn(true)]
-    public List<Tree> Childs { get; set; }
-}
-
-
-/// <summary>
-/// 生成排序号查询时所需实体
-/// </summary>
-public class TreeGenerateNextNoQuery : BaseSingleQueryModel
-{
-    /// <summary>
-    /// 上级id
-    /// </summary>
-    [PageQuery(PageQueryOperatorType.Equal)]
-    public int ParentId { get; set; }
+    public List<SysDirectoryCategory> Childs { get; set; }
 }

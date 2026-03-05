@@ -7,12 +7,12 @@
 public class TreeController : BaseApiController
 {
     private readonly ILogger<TreeController> _logger;
-    private readonly SqlSugarRepository<Tree> _treeRep;
+    private readonly SqlSugarRepository<Tree> _treeRepository;
 
     public TreeController(ILogger<TreeController> logger, SqlSugarRepository<Tree> treeRep)
     {
         _logger = logger;
-        _treeRep = treeRep;
+        _treeRepository = treeRep;
     }
 
     /// <summary>
@@ -27,7 +27,7 @@ public class TreeController : BaseApiController
         if (search.IsNull())
         {
             //如果没有搜索条件、或者搜索条件不会破坏树的构造，则可以直接加where
-            return _treeRep.Entities
+            return _treeRepository.Entities
                                   .Includes(x => x.Parent) //同时把父级信息也查出来
                                   .ToTreeAsync(x => x.Childs, x => x.ParentId, 0);
         }
@@ -37,13 +37,13 @@ public class TreeController : BaseApiController
             //1.先根据搜索出所有符合筛选条件的数据
             //2.再将搜索的id数据传入ToTree构造器中,ToTree会自动自动构造出缺少的父级数据，形成最终完整的树数据
             //这种会查两次数据库，第一次筛选条件，第二次查询所有的数据
-            var ids = _treeRep.Entities
+            var ids = _treeRepository.Entities
                                              .Where(x => x.Name.Contains(search))
                                              .Select(x => x.Id)
                                              .ToList()
                                              .Cast<object>()
                                              .ToArray();
-            return _treeRep.Entities
+            return _treeRepository.Entities
                                   .ToTreeAsync(x => x.Childs, x => x.ParentId, 0, ids);
         }
     }
@@ -57,7 +57,7 @@ public class TreeController : BaseApiController
     [Permission("查看", "show")]
     public async Task<Tree> GetInfo(int id)
     {
-        var entity = await _treeRep.FirstOrDefaultAsync(x => x.Id == id);
+        var entity = await _treeRepository.FirstOrDefaultAsync(x => x.Id == id);
         if (entity == null)
         {
             entity = new Tree();
@@ -75,9 +75,9 @@ public class TreeController : BaseApiController
     public async Task<string> GetNextOrderNo(int pid)
     {
         int length = 3;
-        var parentEntity = await _treeRep.FirstOrDefaultAsync(p => p.Id == pid);
+        var parentEntity = await _treeRepository.FirstOrDefaultAsync(p => p.Id == pid);
         var parentOrderNo = parentEntity?.OrderNo ?? "";
-        var nowMaxEntity = await _treeRep.FirstOrDefaultAsync(new TreeGenerateNextNoQuery() { ParentId = pid, OrderBy = "\"OrderNo\" DESC" });
+        var nowMaxEntity = await _treeRepository.FirstOrDefaultAsync(new TreeGenerateNextNoQuery() { ParentId = pid, OrderBy = "\"OrderNo\" DESC" });
         var lastOrderNo = "001";
         if (nowMaxEntity != null)
         {
@@ -94,12 +94,17 @@ public class TreeController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Permission("添加", "add")]
-    public async Task<string> Add(Tree dto)
+    public async Task<string> Add(Tree req)
     {
-        await _treeRep.InsertReturnIdentityAsync(dto);
+        await _treeRepository.InsertReturnIdentityAuditAsync(req, new LogAction()
+        {
+            Local = "原料管理 - 材料分类",
+            ExtraHandler = "材料分类",
+            ClientType = CommonHelper.GetClientType(),
+        });
 
         //pgsql是函数
-        await _treeRep.Ado.ExecuteCommandAsync("SELECT sp_update_tree_layer();");
+        await _treeRepository.Ado.ExecuteCommandAsync("SELECT sp_update_tree_layer();");
         //mysql是存储过程
         //await _treeRep.Ado.UseStoredProcedure().ExecuteCommandAsync("sp_update_tree_layer");
 
@@ -112,11 +117,16 @@ public class TreeController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Permission("修改", "edit")]
-    public async Task<string> Edit(Tree dto)
+    public async Task<string> Edit(Tree req)
     {
-        await _treeRep.UpdateAsync(dto);
+        await _treeRepository.UpdateAuditAsync(req, new LogAction()
+        {
+            Local = "原料管理 - 材料分类",
+            ExtraHandler = "材料分类",
+            ClientType = CommonHelper.GetClientType(),
+        });
 
-        await _treeRep.Ado.ExecuteCommandAsync("SELECT sp_update_tree_layer();");
+        await _treeRepository.Ado.ExecuteCommandAsync("SELECT sp_update_tree_layer();");
 
         return "修改成功";
     }
@@ -128,11 +138,16 @@ public class TreeController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Permission("删除", "delete")]
-    public async Task<int> Delete(int id)
+    public async Task<string> Delete(int id)
     {
-        var allChilds = await _treeRep.AsQueryable().ToChildListAsync(x => x.ParentId, id);
-        if (allChilds.Count < 1) return 0;
-        var total = await _treeRep.DeleteAsync(allChilds.Select(x => x.Id));
-        return total;
+        var allChilds = await _treeRepository.AsQueryable().ToChildListAsync(x => x.ParentId, id);
+        if (allChilds.Count < 1) return "删除的数据为空";
+        await _treeRepository.DeleteAuditAsync(allChilds.Select(x => x.Id), new LogAction()
+        {
+            Local = "原料管理 - 材料分类",
+            ExtraHandler = "材料分类",
+            ClientType = CommonHelper.GetClientType(),
+        });
+        return "删除成功";
     }
 }

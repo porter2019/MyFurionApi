@@ -210,13 +210,13 @@ public class BaseBuildWhereModel : BaseFormPostModel
 
                 case PageQueryOperatorType.BetweenNumber:
                     var tempArr = filedValue.ToString().SplitWithSemicolon();
-                    if (tempArr.Length != 2) throw Oops.Oh("Between条件下值的格式必须使用英文分号分割");
+                    if (tempArr.Length != 2) throw Oops.Bah("Between条件下值的格式必须使用英文分号分割");
                     sbWhere.Append($" {logic} {sqlColumnName} between {tempArr[0]} and {tempArr[1]}");
                     break;
 
                 case PageQueryOperatorType.BetweenDate:
                     var tempArr2 = filedValue.ToString().SplitWithSemicolon();
-                    if (tempArr2.Length != 2) throw Oops.Oh("Between条件下值的格式必须使用英文分号分割");
+                    if (tempArr2.Length != 2) throw Oops.Bah("Between条件下值的格式必须使用英文分号分割");
                     sbWhere.Append($" {logic} {sqlColumnName} between '{tempArr2[0]}' and '{tempArr2[1]} 23:59:59'");
                     break;
 
@@ -235,6 +235,18 @@ public class BaseBuildWhereModel : BaseFormPostModel
                     break;
                 case PageQueryOperatorType.Sql:
                     sbWhere.Append($" {logic} {filedValue}");
+                    break;
+                case PageQueryOperatorType.StringIn:
+                    //filedValue 是一个逗号分割的字符串，给我返回分割后使用'包裹的并且使用逗号分割的字符串
+                    var inVal = filedValue.ToString().SplitWithComma().Select(x => "'" + x + "'").Join();
+                    if (inVal.IsNull()) throw Oops.Bah($"字段参数:{sqlColumnName},缺少值");
+                    sbWhere.Append($" {logic} {sqlColumnName} in ({inVal})");
+                    break;
+                case PageQueryOperatorType.StringNotIn:
+                    //filedValue 是一个逗号分割的字符串，给我返回分割后使用'包裹的并且使用逗号分割的字符串
+                    var notInVal = filedValue.ToString().SplitWithComma().Select(x => "'" + x + "'").Join();
+                    if (notInVal.IsNull()) throw Oops.Bah($"字段参数:{sqlColumnName},缺少值");
+                    sbWhere.Append($" {logic} {sqlColumnName} not in ({notInVal})");
                     break;
                 default:
                     break;

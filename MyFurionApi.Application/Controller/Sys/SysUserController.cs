@@ -79,6 +79,35 @@ public class SysUserController : BaseApiController
     }
 
     /// <summary>
+    /// 修改用户的角色信息
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="roleIds"></param>
+    /// <returns></returns>
+    [HttpGet, Route("modify/role")]
+    public async Task<string> ModifyRoles(int id, string roleIds)
+    {
+        await _sysUserRepository.Change<SysRoleUser>().DeleteAsync(x => x.UserId == id);
+        var userRoleList = new List<SysRoleUser>();
+        foreach (var item in roleIds.SplitWithComma())
+        {
+            userRoleList.Add(new SysRoleUser()
+            {
+                UserId = id,
+                RoleId = Convert.ToInt32(item)
+            });
+        }
+        await _sysUserRepository.Change<SysRoleUser>().InsertAuditAsync(userRoleList, new LogAction()
+        {
+            Local = "系统设置-用户管理",
+            ExtraHandler = "修改用户的角色信息",
+            ClientType = CommonHelper.GetClientType(),
+        });
+
+        return "修改成功";
+    }
+
+    /// <summary>
     /// 添加
     /// </summary>
     /// <returns></returns>
