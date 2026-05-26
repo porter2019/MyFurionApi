@@ -29,9 +29,9 @@ public sealed class SqlSugarUnitOfWork : IUnitOfWork
     /// <param name="context"></param>
     /// <param name="unitOfWork"></param>
     /// <exception cref="NotImplementedException"></exception>
-    public void BeginTransaction(FilterContext context, UnitOfWorkAttribute unitOfWork)
+    Task IUnitOfWork.BeginTransactionAsync(FilterContext context, UnitOfWorkAttribute unitOfWork)
     {
-        _sqlSugarClient.AsTenant().BeginTran();
+        return _sqlSugarClient.AsTenant().BeginTranAsync();
     }
 
     /// <summary>
@@ -39,10 +39,11 @@ public sealed class SqlSugarUnitOfWork : IUnitOfWork
     /// </summary>
     /// <param name="resultContext"></param>
     /// <param name="unitOfWork"></param>
+    /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public void CommitTransaction(FilterContext resultContext, UnitOfWorkAttribute unitOfWork)
+    public Task CommitTransactionAsync(FilterContext resultContext, UnitOfWorkAttribute unitOfWork)
     {
-        _sqlSugarClient.AsTenant().CommitTran();
+        return _sqlSugarClient.AsTenant().CommitTranAsync();
     }
 
     /// <summary>
@@ -50,10 +51,11 @@ public sealed class SqlSugarUnitOfWork : IUnitOfWork
     /// </summary>
     /// <param name="resultContext"></param>
     /// <param name="unitOfWork"></param>
+    /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public void RollbackTransaction(FilterContext resultContext, UnitOfWorkAttribute unitOfWork)
+    public Task RollbackTransactionAsync(FilterContext resultContext, UnitOfWorkAttribute unitOfWork)
     {
-        _sqlSugarClient.AsTenant().RollbackTran();
+        return _sqlSugarClient.AsTenant().RollbackTranAsync();
     }
 
     /// <summary>
@@ -61,9 +63,11 @@ public sealed class SqlSugarUnitOfWork : IUnitOfWork
     /// </summary>
     /// <param name="context"></param>
     /// <param name="resultContext"></param>
+    /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public void OnCompleted(FilterContext context, FilterContext resultContext)
+    public Task OnCompletedAsync(FilterContext context, FilterContext resultContext)
     {
         _sqlSugarClient.Dispose();
+        return Task.CompletedTask;
     }
 }

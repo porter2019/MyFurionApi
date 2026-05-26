@@ -4,10 +4,18 @@ DROP VIEW IF EXISTS SysUserOMInfoView;
 CREATE VIEW SysUserOMInfoView AS
 SELECT
     a.*,
-    COALESCE(STRING_AGG(ru.roleid::text, ',' ORDER BY ru.roleid), '') AS RoleIds, -- 角色ID逗号分隔
-    COALESCE(STRING_AGG(sr.name, ',' ORDER BY ru.roleid), '') AS RoleNames -- 角色名称逗号分隔
+    ARRAY_TO_STRING(r.role_ids, ',') AS RoleIds,
+    ARRAY_TO_STRING(r.role_names, ',') AS RoleNames
 FROM public.sysuser a
-LEFT JOIN public.sysroleuser ru ON a.id = ru.userid AND ru.isdeleted = false
-LEFT JOIN public.sysrole sr ON sr.id = ru.roleid AND sr.isdeleted = false
-WHERE a.isdeleted = false
-GROUP BY a.id;
+LEFT JOIN LATERAL (
+    SELECT
+        ARRAY_AGG(ru.roleid ORDER BY ru.roleid) AS role_ids,
+        ARRAY_AGG(sr.name ORDER BY ru.roleid) AS role_names
+    FROM public.sysroleuser ru
+    LEFT JOIN public.sysrole sr
+        ON sr.id = ru.roleid
+        AND sr.isdeleted = false
+    WHERE ru.userid = a.id
+      AND ru.isdeleted = false
+) r ON true
+WHERE a.isdeleted = false;
