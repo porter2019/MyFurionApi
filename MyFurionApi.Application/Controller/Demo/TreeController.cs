@@ -77,7 +77,7 @@ public class TreeController : BaseApiController
         int length = 3;
         var parentEntity = await _treeRepository.FirstOrDefaultAsync(p => p.Id == pid);
         var parentOrderNo = parentEntity?.OrderNo ?? "";
-        var nowMaxEntity = await _treeRepository.FirstOrDefaultAsync(new TreeGenerateNextNoQuery() { ParentId = pid, OrderBy = "\"OrderNo\" DESC" });
+        var nowMaxEntity = await _treeRepository.FirstOrDefaultAsync(new TreeGenerateNextNoQuery() { ParentId = pid, OrderBy = "OrderNo DESC" });
         var lastOrderNo = "001";
         if (nowMaxEntity != null)
         {

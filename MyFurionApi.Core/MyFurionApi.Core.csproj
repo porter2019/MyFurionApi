@@ -13,9 +13,9 @@
   <ItemGroup>
     <PackageReference Include="Caching.CSRedis" Version="3.8.807" />
     <PackageReference Include="Fluid.Core" Version="2.31.0" />
-    <PackageReference Include="Furion.Extras.Authentication.JwtBearer" Version="4.9.8.85" />
-    <PackageReference Include="Furion.Extras.ObjectMapper.Mapster" Version="4.9.8.85" />
-    <PackageReference Include="Furion.Pure" Version="4.9.8.85" />
+    <PackageReference Include="Furion.Extras.Authentication.JwtBearer" Version="4.9.8.87" />
+    <PackageReference Include="Furion.Extras.ObjectMapper.Mapster" Version="4.9.8.87" />
+    <PackageReference Include="Furion.Pure" Version="4.9.8.87" />
     <PackageReference Include="Hangfire.HttpJob.Client" Version="1.2.9" />
 	<PackageReference Include="Magicodes.IE.Excel" Version="2.8.2" />
     <PackageReference Include="SkiaSharp" Version="3.119.4" />
