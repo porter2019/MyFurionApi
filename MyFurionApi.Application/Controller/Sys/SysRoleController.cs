@@ -9,6 +9,8 @@ public class SysRoleController : BaseApiController
     private readonly ILogger<SysRoleController> _logger;
     private readonly ISysRoleService _sysRoleService;
     private readonly SqlSugarRepository<SysRole> _sysRoleRepository;
+    private readonly string _logPath = "系统设置-角色管理";
+    private readonly string _logHandler = "角色信息";
 
     public SysRoleController(ILogger<SysRoleController> logger, ISysRoleService sysRoleService, SqlSugarRepository<SysRole> sysRoleRepository)
     {
@@ -52,12 +54,7 @@ public class SysRoleController : BaseApiController
     public async Task<string> Add(SysRole entity)
     {
         entity.IsSuper = false;
-        await _sysRoleRepository.InsertReturnIdentityAuditAsync(entity, new LogAction()
-        {
-            Local = "系统设置-角色管理",
-            ExtraHandler = "角色",
-            ClientType = CommonHelper.GetClientType(),
-        });
+        await _sysRoleRepository.InsertReturnIdentityAuditAsync(entity, new LogAction(_logPath, _logHandler, CommonHelper.GetClientType()));
 
         return "添加成功";
     }
@@ -82,12 +79,7 @@ public class SysRoleController : BaseApiController
     [Permission("修改", "edit")]
     public async Task<string> Update(SysRole entity)
     {
-        await _sysRoleRepository.UpdateAuditAsync(entity, new LogAction()
-        {
-            Local = "系统设置-角色管理",
-            ExtraHandler = "角色",
-            ClientType = CommonHelper.GetClientType(),
-        });
+        await _sysRoleRepository.UpdateAuditAsync(entity, new LogAction(_logPath, _logHandler, CommonHelper.GetClientType()));
 
         return "修改成功";
     }
@@ -102,12 +94,7 @@ public class SysRoleController : BaseApiController
     {
         var idList = ids.SplitWithComma().ConvertIntList();
         await _sysRoleRepository.Change<SysRoleUser>().DeleteAsync(x => idList.Contains(x.RoleId));
-        await _sysRoleRepository.DeleteWithSoftAuditAsync(idList, new LogAction()
-        {
-            Local = "系统设置-角色管理",
-            ExtraHandler = "角色",
-            ClientType = CommonHelper.GetClientType(),
-        });
+        await _sysRoleRepository.DeleteWithSoftAuditAsync(idList, new LogAction(_logPath, _logHandler, CommonHelper.GetClientType()));
         return "删除成功";
     }
 

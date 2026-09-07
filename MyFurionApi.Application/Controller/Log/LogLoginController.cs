@@ -3,7 +3,7 @@
 /// <summary>
 /// 登录日志
 /// </summary>
-[PermissionHandler("日志记录", "登录日志", "LogLogin", 0)]
+[PermissionHandler("审计日志", "登录日志", "LogLogin", 0)]
 public class LogLoginController : BaseApiController
 {
     private readonly ILogger<LogLoginController> _logger;

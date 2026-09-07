@@ -7,12 +7,14 @@
 public class SysDirectoryCategoryController : BaseApiController
 {
     private readonly ILogger<SysDirectoryCategoryController> _logger;
-    private readonly SqlSugarRepository<SysDirectoryCategory> _categoryRepository;
+    private readonly SqlSugarRepository<SysDirectoryCategory> _treeRepository;
+    private readonly string _logPath = "系统设置 - 字典管理";
+    private readonly string _logHandler = "字典分类";
 
-    public SysDirectoryCategoryController(ILogger<SysDirectoryCategoryController> logger, SqlSugarRepository<SysDirectoryCategory> categoryRepository)
+    public SysDirectoryCategoryController(ILogger<SysDirectoryCategoryController> logger, SqlSugarRepository<SysDirectoryCategory> treeRepository)
     {
         _logger = logger;
-        _categoryRepository = categoryRepository;
+        _treeRepository = treeRepository;
     }
 
     /// <summary>
@@ -28,25 +30,25 @@ public class SysDirectoryCategoryController : BaseApiController
         if (search.IsNull())
         {
             //如果没有搜索条件、或者搜索条件不会破坏树的构造，则可以直接加where
-            return _categoryRepository.Entities
+            return _treeRepository.Entities
                                   .Includes(x => x.Parent) //同时把父级信息也查出来
-                                                           //.OrderBy(x => x.FullOrderNo)
+                                  .OrderBy(x => x.FullOrderNo)
                                   .ToTreeAsync(x => x.Childs, x => x.ParentId, 0);
         }
         else
         {
             //如果搜索条件破坏树的构造，如果直接where的话，因为可能找不到PId的数据，导致树不完整
             //1.先根据搜索出所有符合筛选条件的数据
-            //2.再将搜索的id数据传入ToSysDirectoryCategory构造器中,ToSysDirectoryCategory会自动自动构造出缺少的父级数据，形成最终完整的树数据
+            //2.再将搜索的id数据传入ToTree构造器中,ToTree会自动自动构造出缺少的父级数据，形成最终完整的树数据
             //这种会查两次数据库，第一次筛选条件，第二次查询所有的数据
-            var ids = _categoryRepository.Entities
+            var ids = _treeRepository.Entities
                                              .Where(x => x.Name.Contains(search))
                                              .Select(x => x.Id)
                                              .ToList()
                                              .Cast<object>()
                                              .ToArray();
-            return _categoryRepository.Entities
-                                  //.OrderBy(x => x.FullOrderNo)
+            return _treeRepository.Entities
+                                  .OrderBy(x => x.FullOrderNo)
                                   .ToTreeAsync(x => x.Childs, x => x.ParentId, 0, ids);
         }
     }
@@ -60,7 +62,7 @@ public class SysDirectoryCategoryController : BaseApiController
     public Task<List<SysDirectoryItem>> GetItemListByCode(string codes)
     {
         var codeArr = codes.SplitWithComma();
-        return _categoryRepository.Change<SysDirectoryItem>().AsQueryable()
+        return _treeRepository.Change<SysDirectoryItem>().AsQueryable()
                     .FullJoin<SysDirectoryCategory>((i, c) => i.CategoryId == c.Id)
                     .Where((i, c) => codeArr.Contains(c.Code) && i.Status)
                     .ToListAsync();
@@ -75,7 +77,7 @@ public class SysDirectoryCategoryController : BaseApiController
     [Permission("查看", "show")]
     public async Task<SysDirectoryCategory> GetInfo(int id)
     {
-        var entity = await _categoryRepository.FirstOrDefaultAsync(x => x.Id == id);
+        var entity = await _treeRepository.FirstOrDefaultAsync(x => x.Id == id);
         if (entity == null)
         {
             entity = new SysDirectoryCategory();
@@ -93,9 +95,9 @@ public class SysDirectoryCategoryController : BaseApiController
     public async Task<string> GetNextOrderNo(int pid)
     {
         int length = 3;
-        var parentEntity = await _categoryRepository.FirstOrDefaultAsync(p => p.Id == pid);
+        var parentEntity = await _treeRepository.FirstOrDefaultAsync(p => p.Id == pid);
         var parentOrderNo = parentEntity?.OrderNo ?? "";
-        var nowMaxEntity = await _categoryRepository.FirstOrDefaultAsync(new TreeGenerateNextNoQuery() { ParentId = pid, OrderBy = "OrderNo DESC" });
+        var nowMaxEntity = await _treeRepository.FirstOrDefaultAsync(new TreeGenerateNextNoQuery() { ParentId = pid, OrderBy = "OrderNo DESC" });
         var lastOrderNo = "001";
         if (nowMaxEntity != null)
         {
@@ -113,7 +115,7 @@ public class SysDirectoryCategoryController : BaseApiController
     [HttpGet, Route("check/code")]
     public async Task<bool> CheckNameExists(int id, string code)
     {
-        return await _categoryRepository.Entities.WhereIF(id > 0, x => x.Id != id).AnyAsync(x => x.Code.Equals(code));
+        return await _treeRepository.Entities.WhereIF(id > 0, x => x.Id != id).AnyAsync(x => x.Code.Equals(code));
     }
 
     /// <summary>
@@ -124,15 +126,10 @@ public class SysDirectoryCategoryController : BaseApiController
     [Permission("添加", "add")]
     public async Task<string> Add(SysDirectoryCategory req)
     {
-        await _categoryRepository.InsertReturnIdentityAuditAsync(req, new LogAction()
-        {
-            Local = "系统设置 - 字典管理",
-            ExtraHandler = "字典分类",
-            ClientType = CommonHelper.GetClientType(),
-        });
+        await _treeRepository.InsertReturnIdentityAuditAsync(req, new LogAction(_logPath, _logHandler, CommonHelper.GetClientType()));
 
         //pgsql是函数
-        await _categoryRepository.Ado.ExecuteCommandAsync("SELECT fn_update_directory_category_layer()");
+        await _treeRepository.Ado.ExecuteCommandAsync("SELECT fn_update_directory_category_layer()");
         //await _categoryRepository.Ado.ExecuteCommandAsync("SELECT fn_update_directory_category_layer(@tenant_id)", new { tenant_id = CurrentTenantId });
 
         return "添加成功";
@@ -146,13 +143,8 @@ public class SysDirectoryCategoryController : BaseApiController
     [Permission("修改", "edit")]
     public async Task<string> Edit(SysDirectoryCategory req)
     {
-        await _categoryRepository.UpdateAuditAsync(req, new LogAction()
-        {
-            Local = "系统设置 - 字典管理",
-            ExtraHandler = "字典分类",
-            ClientType = CommonHelper.GetClientType(),
-        });
-        await _categoryRepository.Ado.ExecuteCommandAsync("SELECT fn_update_directory_category_layer()");
+        await _treeRepository.UpdateAuditAsync(req, new LogAction(_logPath, _logHandler, CommonHelper.GetClientType()));
+        await _treeRepository.Ado.ExecuteCommandAsync("SELECT fn_update_directory_category_layer()");
         //await _categoryRepository.Ado.ExecuteCommandAsync("SELECT fn_update_directory_category_layer(@tenant_id)", new { tenant_id = CurrentTenantId });
 
         return "修改成功";
@@ -167,14 +159,9 @@ public class SysDirectoryCategoryController : BaseApiController
     [Permission("删除", "delete")]
     public async Task<string> Delete(int id)
     {
-        var allChilds = await _categoryRepository.AsQueryable().ToChildListAsync(x => x.ParentId, id);
+        var allChilds = await _treeRepository.AsQueryable().ToChildListAsync(x => x.ParentId, id);
         if (allChilds.Count < 1) return "删除的数据为空";
-        await _categoryRepository.DeleteAuditAsync(allChilds.Select(x => x.Id), new LogAction()
-        {
-            Local = "系统设置 - 字典管理",
-            ExtraHandler = "字典分类",
-            ClientType = CommonHelper.GetClientType(),
-        });
+        await _treeRepository.DeleteAuditAsync(allChilds.Select(x => x.Id), new LogAction(_logPath, _logHandler, CommonHelper.GetClientType()));
         return "删除成功";
     }
 }

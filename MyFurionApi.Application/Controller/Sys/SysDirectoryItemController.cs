@@ -7,6 +7,8 @@ public class SysDirectoryItemController : BaseApiController
 {
     private readonly ILogger<SysDirectoryItemController> _logger;
     private readonly SqlSugarRepository<SysDirectoryItem> _sysDirectoryItemRepository;
+    private readonly string _logPath = "系统设置 - 字典管理";
+    private readonly string _logHandler = "字典信息";
 
     public SysDirectoryItemController(ILogger<SysDirectoryItemController> logger,
         SqlSugarRepository<SysDirectoryItem> sysDirectoryItemRepository)
@@ -49,12 +51,7 @@ public class SysDirectoryItemController : BaseApiController
     [UnitOfWork]
     public async Task<string> Add(SysDirectoryItem req)
     {
-        await _sysDirectoryItemRepository.InsertReturnIdentityAuditAsync(req, new LogAction()
-        {
-            Local = "系统设置 - 字典管理",
-            ExtraHandler = "字典分类",
-            ClientType = CommonHelper.GetClientType(),
-        });
+        await _sysDirectoryItemRepository.InsertReturnIdentityAuditAsync(req, new LogAction(_logPath, _logHandler, CommonHelper.GetClientType()));
         return "添加成功";
     }
 
@@ -67,12 +64,7 @@ public class SysDirectoryItemController : BaseApiController
     [UnitOfWork]
     public async Task<string> Update(SysDirectoryItem req)
     {
-        await _sysDirectoryItemRepository.UpdateAuditAsync(req, new LogAction()
-        {
-            Local = "系统设置 - 字典管理",
-            ExtraHandler = "字典信息",
-            ClientType = CommonHelper.GetClientType(),
-        });
+        await _sysDirectoryItemRepository.UpdateAuditAsync(req, new LogAction(_logPath, _logHandler, CommonHelper.GetClientType()));
 
         return "修改成功";
     }
@@ -86,12 +78,7 @@ public class SysDirectoryItemController : BaseApiController
     public async Task<string> Delete(string ids)
     {
         var idList = ids.SplitWithComma().ConvertIntList();
-        await _sysDirectoryItemRepository.DeleteWithSoftAuditAsync(idList, new LogAction()
-        {
-            Local = "系统设置 - 字典管理",
-            ExtraHandler = "字典信息",
-            ClientType = CommonHelper.GetClientType(),
-        });
+        await _sysDirectoryItemRepository.DeleteWithSoftAuditAsync(idList, new LogAction(_logPath, _logHandler, CommonHelper.GetClientType()));
         return "删除成功";
     }
 
@@ -116,8 +103,8 @@ public class SysDirectoryItemController : BaseApiController
             UpdatedUserName = CurrentUserName
         }, x => x.Id == id, new LogAction()
         {
-            Local = "系统设置 - 字典管理",
-            ExtraHandler = "字典信息",
+            Local = _logPath,
+            ExtraHandler = _logHandler,
             ExtraInfo = $"更新后的状态：{newStatusText}",
             ClientType = CommonHelper.GetClientType(),
         });

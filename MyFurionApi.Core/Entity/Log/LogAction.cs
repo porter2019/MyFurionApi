@@ -8,6 +8,18 @@ namespace MyFurionApi.Core;
 [FsTable()]
 public class LogAction : BaseEntityStandard
 {
+    public LogAction()
+    {
+
+    }
+
+    public LogAction(string local, string handler, ClientFromType clientType)
+    {
+        Local = local;
+        ExtraHandler = handler;
+        ClientType = clientType;
+    }
+
     /// <summary>
     /// 客户端类型
     /// </summary>

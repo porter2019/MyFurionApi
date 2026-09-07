@@ -3,11 +3,13 @@
 /// <summary>
 /// 合同接口
 /// </summary>
-[PermissionHandler("演示", "合同", "Contract", 10)]
+//[PermissionHandler("演示", "合同", "Contract", 10)]
 public class ContractController : BaseApiController
 {
     private readonly ILogger<ContractController> _logger;
     private readonly SqlSugarRepository<Contract> _contractRepository;
+    private readonly string _logPath = "演示 - 合同";
+    private readonly string _logHandler = "合同";
 
     public ContractController(ILogger<ContractController> logger, SqlSugarRepository<Contract> contractRepository)
     {
@@ -78,13 +80,9 @@ public class ContractController : BaseApiController
     public async Task<string> Add(Contract req)
     {
         req.Code = DateTime.Now.ToFileTime().ToString();
+
         //添加主体，返回自增id
-        var id = await _contractRepository.InsertReturnIdentityAuditAsync(req, new LogAction()
-        {
-            Local = "演示-合同",
-            ExtraHandler = "合同",
-            ClientType = CommonHelper.GetClientType(),
-        });
+        var id = await _contractRepository.InsertReturnIdentityAuditAsync(req, new LogAction(_logPath, _logHandler, CommonHelper.GetClientType()));
         //添加明细，同edit
         await _contractRepository.Change<ContractItem>().UpdateItemDiffAsync(id, req.ItemList);
 
@@ -102,12 +100,7 @@ public class ContractController : BaseApiController
     {
 
         //更新主体
-        await _contractRepository.UpdateAuditAsync(req, new LogAction()
-        {
-            Local = "演示-合同",
-            ExtraHandler = "合同",
-            ClientType = CommonHelper.GetClientType(),
-        });
+        await _contractRepository.UpdateAuditAsync(req, new LogAction(_logPath, _logHandler, CommonHelper.GetClientType()));
         //更新明细，同add
         await _contractRepository.Change<ContractItem>().UpdateItemDiffAsync(req.Id, req.ItemList);
 
@@ -124,12 +117,7 @@ public class ContractController : BaseApiController
     {
         var idList = ids.SplitWithComma().ConvertIntList();
         await _contractRepository.Change<ContractItem>().DeleteWithSoftAsync(x => idList.Contains(x.ContractId));
-        var total = await _contractRepository.DeleteWithSoftAuditAsync(idList, new LogAction()
-        {
-            Local = "演示-合同",
-            ExtraHandler = "合同",
-            ClientType = CommonHelper.GetClientType(),
-        });
+        var total = await _contractRepository.DeleteWithSoftAuditAsync(idList, new LogAction(_logPath, _logHandler, CommonHelper.GetClientType()));
 
         return "删除成功";
     }
@@ -152,8 +140,8 @@ public class ContractController : BaseApiController
             UpdatedUserName = CurrentUserName
         }, x => x.Id == id, new LogAction()
         {
-            Local = "演示-合同",
-            ExtraHandler = "合同",
+            Local = _logPath,
+            ExtraHandler = _logHandler,
             ExtraInfo = $"新的状态：{flag.GetEnumDescription()}",
             ClientType = CommonHelper.GetClientType(),
         });
@@ -181,8 +169,8 @@ public class ContractController : BaseApiController
             UpdatedUserName = CurrentUserName
         }, x => x.Id == id, new LogAction()
         {
-            Local = "演示-合同",
-            ExtraHandler = "合同",
+            Local = _logPath,
+            ExtraHandler = _logHandler,
             ExtraInfo = $"更新后的状态：{newStatusText}",
             ClientType = CommonHelper.GetClientType(),
         });
@@ -193,7 +181,7 @@ public class ContractController : BaseApiController
     #region 导出
 
     /// <summary>
-    /// 导出运输任务
+    /// 导出
     /// </summary>
     /// <param name="exportService"></param>
     /// <param name="format">格式</param>
@@ -217,6 +205,33 @@ public class ContractController : BaseApiController
         var exportData = new ExcelExportStandardOutput<Contract>() { DataList = tempData.ToList() };
 
         return await exportService.Export("导出模板.xlsx", $"Demo-{DateTime.Now.ToFileTime()}", format, exportData);
+    }
+
+    /// <summary>
+    /// 导出-配置
+    /// </summary>
+    /// <param name="exportService"></param>
+    /// <param name="req"></param>
+    /// <returns></returns>
+    [HttpPost, Route("export/config")]
+    public async Task<string> Export2([FromServices] IExportService exportService, PostExportOptionsInput req)
+    {
+        var query = JsonHelper.Deserialize<ContractPageInput>(req.QueryObject.ToString());
+        query.PageInfo.PageIndex = 0;
+        query.PageInfo.PageSize = 1000;
+
+        var data = await _contractRepository.ToPageListAsync(query);
+        if (data.Items.Count() == 0) throw Oops.Bah("数据为空，无法导出");
+        var tempData = data.Items;
+        foreach (var item in tempData)
+        {
+            //地址完整拼接一下
+            item.RegionFull += item.RegionAddress;
+        }
+
+        var exportData = new ExcelExportStandardOutput<Contract>() { DataList = tempData.ToList() };
+
+        return await exportService.Export("导出模板.xlsx", $"Demo-{DateTime.Now.ToFileTime()}", req.Format, exportData);
     }
 
     #endregion

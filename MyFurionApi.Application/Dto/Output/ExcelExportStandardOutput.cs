@@ -9,7 +9,7 @@ public class ExcelExportStandardOutput<T>
     /// <summary>
     /// 列表数据
     /// </summary>
-    public List<T> DataList { get; set; }
+    public IEnumerable<T> DataList { get; set; }
 
     /// <summary>
     /// 模型数据

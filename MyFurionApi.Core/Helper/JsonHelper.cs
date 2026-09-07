@@ -20,6 +20,7 @@ public static class JsonHelper
         {
             Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
             PropertyNamingPolicy = null,
+            PropertyNameCaseInsensitive = true,
             ReferenceHandler = ReferenceHandler.IgnoreCycles
         };
         //options.Converters.Add(item: new JsonStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
@@ -49,6 +50,7 @@ public static class JsonHelper
             {
                 Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
                 PropertyNamingPolicy = null,
+                PropertyNameCaseInsensitive = true,
                 ReferenceHandler = ReferenceHandler.IgnoreCycles
             };
 

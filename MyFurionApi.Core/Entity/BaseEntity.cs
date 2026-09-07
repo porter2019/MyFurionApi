@@ -10,7 +10,6 @@ public abstract class BaseEntity
 {
     /// <summary>
     /// 主键自增Id
-    /// <c>[SugarColumn(ColumnDescription = "Id主键", IsIdentity = true, IsPrimaryKey = true)]</c>
     /// </summary>
     [FsColumn(IsNullable = false, IsPK = true)]
     public int Id { get; set; }

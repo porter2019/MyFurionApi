@@ -88,6 +88,7 @@ public class ImgCaptchaService : IImgCaptchaService, ITransient
         var fontFilePath = Path.Combine(App.WebHostEnvironment.WebRootPath, "fonts", "STXINGKA.ttf");
         using var typeface = SKFontManager.Default.CreateTypeface(File.Open(fontFilePath, FileMode.Open));
         var font = new SKFont(typeface, height - 10); // 设置字体大小
+        var textAlign = SKTextAlign.Center;
 
         using (SKPaint drawStyle = new())
         {
@@ -98,7 +99,7 @@ public class ImgCaptchaService : IImgCaptchaService, ITransient
             float emWidth = ((float)width / code.Length) - ((float)width * 0.13f);
 
             // 注意：这里使用 font 而不是 drawStyle 来控制字体大小
-            canvas.DrawText(code, emWidth, emHeight, font, drawStyle);
+            canvas.DrawText(code, emWidth, emHeight, textAlign, font, drawStyle);
         }
 
         //画图片的前景噪音点

@@ -15,19 +15,17 @@ public class SysDirectoryService : ISysDirectoryService, ITransient
     /// <summary>
     /// 构建枚举列表
     /// </summary>
-    /// <param name="codes">系统字典的code，多个英文逗号分割</param>
-    /// <param name="key">返回对应的key名称，与code的index一一对应</param>
+    /// <param name="codes">系统字典的code</param>
     /// <returns></returns>
-    public async Task<List<dynamic>> BuildEnumList(string codes, params string[] key)
+    public async Task<List<dynamic>> BuildEnumList(params string[] codes)
     {
-        var codeArr = codes.SplitWithComma();
-        if (codeArr.Length != key.Length) throw Oops.Bah("构建枚举时，长度不一致");
-        var allDirectoryList = await _sysDirectoryItemFullInfoRepository.Where(x => x.Status && codeArr.Contains(x.CategoryCode)).ToListAsync();
+        if (codes.Length == 0) return null;
+        var allDirectoryList = await _sysDirectoryItemFullInfoRepository.Where(x => x.Status && codes.Contains(x.CategoryCode)).ToListAsync();
         var resultList = new List<dynamic>();
 
-        for (int i = 0; i < codeArr.Length; i++)
+        for (int i = 0; i < codes.Length; i++)
         {
-            var currList = allDirectoryList.Where(x => x.CategoryCode == codeArr[i]).ToList();
+            var currList = allDirectoryList.Where(x => x.CategoryCode == codes[i]).ToList();
             var optionList = new List<dynamic>();
             foreach (var item in currList)
             {
@@ -35,7 +33,7 @@ public class SysDirectoryService : ISysDirectoryService, ITransient
             }
             resultList.Add(new
             {
-                Name = key[i],
+                Name = codes[i],
                 Options = optionList
             });
         }
@@ -60,7 +58,7 @@ public class SysDirectoryService : ISysDirectoryService, ITransient
             },
             //new { Name = "ApplyFlag", Options = typeof(OrderBookApplyFlagEnum).GetEnumOptions() },
         };
-        var dny = await BuildEnumList("01,02", "frist", "second");
+        var dny = await BuildEnumList("code1", "code2");
         return [enums, .. dny];
     }
 

@@ -120,6 +120,7 @@ public class Startup : AppStartup
                 {
                     options.JsonSerializerOptions.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
                     options.JsonSerializerOptions.PropertyNamingPolicy = null;
+                    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
                     options.JsonSerializerOptions.Converters.Add(new SystemTextJsonConfig.DateTimeConverter());
                     options.JsonSerializerOptions.Converters.Add(new SystemTextJsonConfig.DateTimeNullableConverter());

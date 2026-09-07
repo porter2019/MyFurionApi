@@ -1,10 +1,10 @@
 ﻿-- 注意：PostgreSQL使用函数替代存储过程
 
 -- 尝试删除函数，如果存在的话
-DROP FUNCTION IF EXISTS sp_update_tree_layer() CASCADE;
+DROP FUNCTION IF EXISTS fn_update_tree_layer() CASCADE;
 
 -- 创建函数
-CREATE OR REPLACE FUNCTION sp_update_tree_layer()
+CREATE OR REPLACE FUNCTION fn_update_tree_layer()
 RETURNS void AS $$
 BEGIN
     -- 使用递归CTE来构建层级结构并更新

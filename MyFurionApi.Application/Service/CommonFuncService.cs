@@ -47,7 +47,7 @@ public class CommonFuncService : ICommonFuncService, ITransient
             // 获取表名
             var tableName = _dbRepository.Context.EntityMaintenance.GetEntityInfo(entityType).DbTableName;
 
-            var sql = $"select {columnName} from {tableName} where 1=1 {todayWhere} {extWhere} order by \"Id\" desc limit 1;";
+            var sql = $"select {columnName} from {tableName} where 1=1 {todayWhere} {extWhere} order by Id desc limit 1;";
             var maxCode = await _dbRepository.Ado.SqlQuerySingleAsync<string>(sql);
             var code = 0;
             if (maxCode.IsNotNull())

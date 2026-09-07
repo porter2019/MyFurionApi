@@ -251,7 +251,6 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     /// </summary>
     /// <param name="where"></param>
     /// <returns></returns>
-    [Obsolete("尽量避免直接使用where，因为不同数据的列使用不同符号包裹")]
     public List<TEntity> ToList(string where)
     {
         return Entities.Where(where).ToList();
@@ -1347,7 +1346,6 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     /// <param name="idList"></param>
     /// <param name="where">额外条件</param>
     /// <returns></returns>
-    [Obsolete("尽量避免直接使用where，因为不同数据的列使用不同符号包裹")]
     public int DeleteWithSoft(IEnumerable<int> idList, Expression<Func<TEntity, bool>> where)
     {
         if (idList.IsEmpty()) return 0;
@@ -1359,7 +1357,6 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
     /// </summary>
     /// <param name="whereSql"></param>
     /// <returns></returns>
-    [Obsolete("尽量避免直接使用where，因为不同数据的列使用不同符号包裹")]
     public int DeleteWithSoft(string whereSql)
     {
         if (whereSql.IsNull()) return 0;

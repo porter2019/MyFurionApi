@@ -29,7 +29,6 @@ public class DBController : BaseApiController
     {
         _logger.LogDebug("======数据库迁移开始======");
         _db.DbMaintenance.CreateDatabase();
-        _logger.LogDebug($"数据库创建完成，如果是新建，注意修改数据库排序规则为：Chinese_PRC_CI_AS");
         //sql server下修改数据库排序规则为：Chinese_PRC_CI_AS
         //ALTER DATABASE 数据库名称 SET SINGLE_USER WITH ROLLBACK IMMEDIATE
         //ALTER DATABASE 数据库名称 COLLATE Chinese_PRC_CI_AS
@@ -91,6 +90,8 @@ public class DBController : BaseApiController
 
         Type[] controllerList = types.Where(o => isAttribute(Attribute.GetCustomAttributes(o, true)))
                 .OrderBy(o => (o.GetCustomAttributes(typeof(PermissionHandlerAttribute), true)[0] as PermissionHandlerAttribute).OrderNo).ToArray();
+
+        if (!controllerList.Any()) throw Oops.Bah("未扫描到任何权限控制器,同步已中止");
 
         //模块Id集合
         List<int> moduleIdList = new();
@@ -212,7 +213,7 @@ public class DBController : BaseApiController
                 else
                 {
                     permitId = entityPermit.Id;
-                    if (!entityPermit.AliasName.Equals(opeartion.Value))
+                    if (!string.Equals(entityPermit.AliasName, opeartion.Value))
                     {
                         //如果改了别名，则只改别名就行了
                         _sysPermitRepo.Update(x => new SysPermit() { AliasName = opeartion.Value }, x => x.Id == permitId);

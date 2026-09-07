@@ -11,6 +11,9 @@ public class SysUserController : BaseApiController
     private readonly SqlSugarRepository<SysUser> _sysUserRepository;
     private static readonly string _displayPassword = "SS@@****@@SS";
 
+    private readonly string _logPath = "系统设置 - 用户管理";
+    private readonly string _logHandler = "用户";
+
     public SysUserController(ILogger<SysUserController> logger,
         SqlSugarRepository<SysUser> sysUserRepository)
     {
@@ -99,7 +102,7 @@ public class SysUserController : BaseApiController
         }
         await _sysUserRepository.Change<SysRoleUser>().InsertAuditAsync(userRoleList, new LogAction()
         {
-            Local = "系统设置-用户管理",
+            Local = _logPath,
             ExtraHandler = "修改用户的角色信息",
             ClientType = CommonHelper.GetClientType(),
         });
@@ -118,12 +121,7 @@ public class SysUserController : BaseApiController
     {
         entity.IsSuper = false;
         entity.Password = entity.Password.ToMD5Encrypt();
-        var userId = await _sysUserRepository.InsertReturnIdentityAuditAsync(entity, new LogAction()
-        {
-            Local = "系统设置-用户管理",
-            ExtraHandler = "用户",
-            ClientType = CommonHelper.GetClientType(),
-        });
+        var userId = await _sysUserRepository.InsertReturnIdentityAuditAsync(entity, new LogAction(_logPath, _logHandler, CommonHelper.GetClientType()));
         var userRoleList = new List<SysRoleUser>();
         foreach (var item in entity.RoleIds.SplitWithComma())
         {
@@ -151,21 +149,11 @@ public class SysUserController : BaseApiController
         {
             //修改了密码
             entity.Password = entity.Password.ToMD5Encrypt();
-            await _sysUserRepository.UpdateAuditAsync(entity, new LogAction()
-            {
-                Local = "系统设置-用户管理",
-                ExtraHandler = "用户",
-                ClientType = CommonHelper.GetClientType(),
-            });
+            await _sysUserRepository.UpdateAuditAsync(entity, new LogAction(_logPath, _logHandler, CommonHelper.GetClientType()));
         }
         else
         {
-            await _sysUserRepository.UpdateAuditAsync(entity, new LogAction()
-            {
-                Local = "系统设置-用户管理",
-                ExtraHandler = "用户",
-                ClientType = CommonHelper.GetClientType(),
-            }, "Password");
+            await _sysUserRepository.UpdateAuditAsync(entity, new LogAction(_logPath, _logHandler, CommonHelper.GetClientType()), "Password");
         }
 
         //修改角色组信息
@@ -193,12 +181,7 @@ public class SysUserController : BaseApiController
     {
         var idList = ids.SplitWithComma().ConvertIntList();
         await _sysUserRepository.Change<SysRoleUser>().DeleteWithSoftAsync(x => idList.Contains(x.UserId));
-        await _sysUserRepository.DeleteWithSoftAuditAsync(idList, new LogAction()
-        {
-            Local = "系统设置-用户管理",
-            ExtraHandler = "用户",
-            ClientType = CommonHelper.GetClientType(),
-        });
+        await _sysUserRepository.DeleteWithSoftAuditAsync(idList, new LogAction(_logPath, _logHandler, CommonHelper.GetClientType()));
         await _sysUserRepository.EntityContext.Updateable<SysUser>()
                                     .PublicSetColumns(x => x.CellPhone, x => x.CellPhone + "-" + DateTime.Now.ToTimeStamp().ToString()) //将手机号后缀加上-时间戳，防止手机号重复
                                     .Where(x => idList.Contains(x.Id))
@@ -226,8 +209,8 @@ public class SysUserController : BaseApiController
             UpdatedUserName = CurrentUserName
         }, x => x.Id == id, new LogAction()
         {
-            Local = "系统设置-用户管理",
-            ExtraHandler = "用户",
+            Local = _logPath,
+            ExtraHandler = _logHandler,
             ExtraInfo = $"更新后的用户状态：{newStatusText}",
             ClientType = CommonHelper.GetClientType(),
         });
@@ -254,8 +237,8 @@ public class SysUserController : BaseApiController
             UpdatedUserName = CurrentUserName
         }, x => x.Id == id, new LogAction()
         {
-            Local = "系统设置-用户管理",
-            ExtraHandler = "用户",
+            Local = _logPath,
+            ExtraHandler = _logHandler,
             ExtraInfo = $"更新后的后台登录权限状态：{newStatusText}",
             ClientType = CommonHelper.GetClientType(),
         });
@@ -282,8 +265,8 @@ public class SysUserController : BaseApiController
             UpdatedUserName = CurrentUserName
         }, x => x.Id == id, new LogAction()
         {
-            Local = "系统设置-用户管理",
-            ExtraHandler = "用户",
+            Local = _logPath,
+            ExtraHandler = _logHandler,
             ExtraInfo = $"更新后的移动端登录权限状态：{newStatusText}",
             ClientType = CommonHelper.GetClientType(),
         });

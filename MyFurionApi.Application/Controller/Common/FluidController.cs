@@ -69,14 +69,12 @@ public class FluidController : BaseApiController
     /// <param name="path">完整路径</param>
     /// <param name="text"></param>
     /// <returns></returns>
-    bool WriteFile(string path, string text)
+    static bool WriteFile(string path, string text)
     {
         if (File.Exists(path)) File.Delete(path);
         Encoding utf8Bom = new UTF8Encoding(true);
-        using (StreamWriter writer = new StreamWriter(path, false, utf8Bom))
-        {
-            writer.WriteLine(text); // 写入数据
-        }
+        using StreamWriter writer = new StreamWriter(path, false, utf8Bom);
+        writer.WriteLine(text); // 写入数据
         return true;
     }
 
