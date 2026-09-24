@@ -27,7 +27,7 @@ FROM base AS final
 
 # 复制项目内字体到容器
 RUN mkdir -p /usr/share/fonts/truetype/custom
-COPY CYERPApi.Web.Entry/wwwroot/fonts/*.ttf /usr/share/fonts/truetype/custom/
+COPY MyFurionApi.Web.Entry/wwwroot/fonts/*.ttf /usr/share/fonts/truetype/custom/
 # 更新字体缓存
 RUN fc-cache -fv
 

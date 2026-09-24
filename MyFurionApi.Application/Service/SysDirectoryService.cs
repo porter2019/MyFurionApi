@@ -59,7 +59,7 @@ public class SysDirectoryService : ISysDirectoryService, ITransient
             //new { Name = "ApplyFlag", Options = typeof(OrderBookApplyFlagEnum).GetEnumOptions() },
         };
         var dny = await BuildEnumList("code1", "code2");
-        return [enums, .. dny];
+        return [..enums, .. dny];
     }
 
 }

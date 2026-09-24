@@ -120,6 +120,8 @@ public class SysUserController : BaseApiController
     public async Task<string> Add(SysUserOMInfo entity)
     {
         entity.IsSuper = false;
+        entity.IsOM = false;
+        entity.IsMP = true;
         entity.Password = entity.Password.ToMD5Encrypt();
         var userId = await _sysUserRepository.InsertReturnIdentityAuditAsync(entity, new LogAction(_logPath, _logHandler, CommonHelper.GetClientType()));
         var userRoleList = new List<SysRoleUser>();

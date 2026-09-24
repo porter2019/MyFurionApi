@@ -42,7 +42,10 @@ public class AccountController : BaseApiController
         {
             CellPhone = "14000000000",
             Password = "000".ToMD5Encrypt(),
-            UserName = "测试用户A"
+            UserName = "测试用户A",
+            IsSuper = false,
+            IsOM = true,
+            IsMP = true
         };
         if (!_userRepository.Any(x => x.CellPhone == userEntity.CellPhone))
             _userRepository.InsertReturnEntity(userEntity);
