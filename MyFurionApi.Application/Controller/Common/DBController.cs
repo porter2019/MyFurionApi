@@ -103,20 +103,25 @@ public class DBController : BaseApiController
         //数据库已有的模块
         var dbModuleList = _sysModuleRepo.ToList();
         //获取所有模块名称
-        var registeredModuleList = controllerList
+        List<(string ModuleName, int OrderNo)> registeredModuleList = controllerList
                                         .Select(p => p.GetCustomAttributes(typeof(PermissionHandlerAttribute), true)[0] as PermissionHandlerAttribute)
                                         .OrderByDescending(p => p.OrderNo)
-                                        .ToList()
-                                        .Select(p => p.ModuleName).Distinct().ToList();//去重
-        foreach (var moduleName in registeredModuleList)
+                                        .GroupBy(p => p.ModuleName)
+                                        .Select(g => (g.Key, g.Max(p => p.OrderNo)))
+                                        .ToList();
+
+        foreach (var moduleGroup in registeredModuleList)
         {
             var moduleId = 0;
-            var entityModule = dbModuleList.Where(p => p.ModuleName == moduleName).FirstOrDefault();
+            var entityModule = dbModuleList.Where(p => p.ModuleName == moduleGroup.ModuleName).FirstOrDefault();
             if (entityModule == null)
             {
-                entityModule = new SysModule(moduleName);
+                entityModule = new SysModule(moduleGroup.ModuleName)
+                {
+                    OrderNo = moduleGroup.OrderNo
+                };
                 moduleId = _sysModuleRepo.InsertReturnIdentity(entityModule);
-                _logger.LogInformation($"【权限数据初始化】新增模块:{moduleName},数据编号:{moduleId}");
+                _logger.LogInformation($"【权限数据初始化】新增模块:{moduleGroup},数据编号:{moduleId}");
             }
             else moduleId = entityModule.Id;
 
