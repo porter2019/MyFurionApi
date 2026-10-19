@@ -42,4 +42,9 @@ public class ContractItem : BaseEntity
     [FsColumn(9999)]
     public string Remark { get; set; }
 
+    /// <summary>
+    /// 排序数字
+    /// </summary>
+    [FsColumn(IsNullable = false)]
+    public int Sort { get; set; } //升序排列
 }

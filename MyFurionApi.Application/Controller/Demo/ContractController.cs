@@ -1,4 +1,6 @@
-﻿namespace MyFurionApi.Application.Controller;
+﻿using Microsoft.VisualBasic;
+
+namespace MyFurionApi.Application.Controller;
 
 /// <summary>
 /// 合同接口
@@ -60,7 +62,7 @@ public class ContractController : BaseApiController
         var entity = await _contractRepository.FirstOrDefaultAsync(x => x.Id == id);
         if (entity != null)
         {
-            entity.ItemList = await _contractRepository.Change<ContractItem>().ToListAsync(x => x.ContractId == id);
+            entity.ItemList = await _contractRepository.Change<ContractItem>().ToListAsync(x => x.ContractId == id, x => x.Sort);
         }
         else
         {
@@ -80,7 +82,10 @@ public class ContractController : BaseApiController
     public async Task<string> Add(Contract req)
     {
         req.Code = DateTime.Now.ToFileTime().ToString();
-
+        for (var i = 0; i < req.ItemList.Count; i++)
+        {
+            req.ItemList[i].Sort = i + 1;
+        }
         //添加主体，返回自增id
         var id = await _contractRepository.InsertReturnIdentityAuditAsync(req, new LogAction(_logPath, _logHandler, CommonHelper.GetClientType()));
         //添加明细，同edit
@@ -98,7 +103,10 @@ public class ContractController : BaseApiController
     [UnitOfWork]
     public async Task<string> Update(Contract req)
     {
-
+        for (var i = 0; i < req.ItemList.Count; i++)
+        {
+            req.ItemList[i].Sort = i + 1;
+        }
         //更新主体
         await _contractRepository.UpdateAuditAsync(req, new LogAction(_logPath, _logHandler, CommonHelper.GetClientType()));
         //更新明细，同add
@@ -120,6 +128,24 @@ public class ContractController : BaseApiController
         var total = await _contractRepository.DeleteWithSoftAuditAsync(idList, new LogAction(_logPath, _logHandler, CommonHelper.GetClientType()));
 
         return "删除成功";
+    }
+
+    /// <summary>
+    /// 修改排序
+    /// </summary>
+    /// <param name="itemRepository"></param>
+    /// <param name="req"></param>
+    /// <returns></returns>
+    [HttpPost, Route("modify/sort")]
+    public async Task<string> ModifySort(SqlSugarRepository<ContractItem> itemRepository, List<ContractItem> req)
+    {
+        var updateList = req.Select((item, index) => new ContractItem
+        {
+            Id = item.Id,
+            Sort = index + 1,
+        }).ToList();
+        await itemRepository.EntityContext.Updateable(updateList).UpdateColumns(x => new { x.Sort }).ExecuteCommandAsync();
+        return "保存成功";
     }
 
     /// <summary>

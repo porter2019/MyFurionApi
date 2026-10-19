@@ -1080,15 +1080,15 @@ public class SqlSugarRepository<TEntity> where TEntity : class, new()
         return EntityContext.Updateable(entities.ToArray()).EnableDiffLogEvent(businessData).IgnoreColumns(UpdateIgnoreColumns).ExecuteCommandAsync();
     }
 
-    public virtual IUpdateable<TEntity> AsUpdateable(TEntity entity)
-    {
-        return EntityContext.Updateable(entity).IgnoreColumns(UpdateIgnoreColumns);
-    }
+    //public virtual IUpdateable<TEntity> AsUpdateable(TEntity entity)
+    //{
+    //    return EntityContext.Updateable(entity).IgnoreColumns(UpdateIgnoreColumns);
+    //}
 
-    public virtual IUpdateable<TEntity> AsUpdateable(IEnumerable<TEntity> entities)
-    {
-        return EntityContext.Updateable<TEntity>(entities).IgnoreColumns(UpdateIgnoreColumns);
-    }
+    //public virtual IUpdateable<TEntity> AsUpdateable(IEnumerable<TEntity> entities)
+    //{
+    //    return EntityContext.Updateable<TEntity>(entities).IgnoreColumns(UpdateIgnoreColumns);
+    //}
     #endregion
 
     //#region 更新 带乐观锁 Version
