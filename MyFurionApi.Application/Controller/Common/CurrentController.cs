@@ -1,4 +1,5 @@
-﻿using Furion.DataEncryption.Extensions;
+﻿using DocumentFormat.OpenXml.Vml.Office;
+using Furion.DataEncryption.Extensions;
 
 namespace MyFurionApi.Application.Controller;
 
@@ -65,6 +66,7 @@ public class CurrentController : BaseApiController
     /// <param name="userName"></param>
     /// <returns></returns>
     [HttpGet, Route("modify/username")]
+    [UnitOfWork]
     public async Task<string> ChangeUserName(string userName)
     {
         if (userName.IsNull()) throw Oops.Bah("名称不能为空");
@@ -81,6 +83,12 @@ public class CurrentController : BaseApiController
             ExtraInfo = $"更新后的用户名：{userName}",
             ClientType = CommonHelper.GetClientType(),
         });
+
+        //部门中的领导，冗余存储的
+        await _sysUserRepository.Change<SysOrg>().UpdateAsync(x => new SysOrg()
+        {
+            LeaderName = userName,
+        }, x => x.LeaderId == CurrentUserId);
 
         return "修改成功";
     }

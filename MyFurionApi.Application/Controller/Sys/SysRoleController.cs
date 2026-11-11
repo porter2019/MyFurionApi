@@ -9,7 +9,7 @@ public class SysRoleController : BaseApiController
     private readonly ILogger<SysRoleController> _logger;
     private readonly ISysRoleService _sysRoleService;
     private readonly SqlSugarRepository<SysRole> _sysRoleRepository;
-    private readonly string _logPath = "系统设置-角色管理";
+    private readonly string _logPath = "系统设置 - 角色管理";
     private readonly string _logHandler = "角色信息";
 
     public SysRoleController(ILogger<SysRoleController> logger, ISysRoleService sysRoleService, SqlSugarRepository<SysRole> sysRoleRepository)
@@ -29,6 +29,29 @@ public class SysRoleController : BaseApiController
     {
         var data = await _sysRoleRepository.ToPageListAsync(req);
         return data;
+    }
+
+    /// <summary>
+    /// 批量修改排序
+    /// </summary>
+    /// <param name="req"></param>
+    /// <returns></returns>
+    [HttpPost, Route("modify/sorts")]
+    public async Task<string> ModifySorts(List<int> req)
+    {
+        if (req.IsEmpty()) throw Oops.Bah("缺少数据");
+
+        var updateObjs = new List<SysRole>();
+        for (var i = 0; i < req.Count; i++)
+        {
+            updateObjs.Add(new SysRole()
+            {
+                Id = req[i],
+                Sort = i + 1
+            });
+        }
+        await _sysRoleRepository.EntityContext.Updateable<SysRole>(updateObjs).UpdateColumns(x => new { x.Sort }).ExecuteCommandAsync();
+        return "保存成功";
     }
 
     /// <summary>

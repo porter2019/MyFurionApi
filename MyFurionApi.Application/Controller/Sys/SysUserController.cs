@@ -1,4 +1,5 @@
-﻿using Furion.DataEncryption.Extensions;
+﻿using DocumentFormat.OpenXml.Vml.Office;
+using Furion.DataEncryption.Extensions;
 namespace MyFurionApi.Application.Controller;
 
 /// <summary>
@@ -124,6 +125,7 @@ public class SysUserController : BaseApiController
         entity.IsMP = true;
         entity.Password = entity.Password.ToMD5Encrypt();
         var userId = await _sysUserRepository.InsertReturnIdentityAuditAsync(entity, new LogAction(_logPath, _logHandler, CommonHelper.GetClientType()));
+        //角色
         var userRoleList = new List<SysRoleUser>();
         foreach (var item in entity.RoleIds.SplitWithComma())
         {
@@ -134,6 +136,18 @@ public class SysUserController : BaseApiController
             });
         }
         await _sysUserRepository.Change<SysRoleUser>().InsertAsync(userRoleList);
+        //岗位
+        var userPostList = new List<SysPostUser>();
+        foreach (var item in entity.PostIds.SplitWithComma())
+        {
+            userPostList.Add(new SysPostUser()
+            {
+                UserId = userId,
+                PostId = Convert.ToInt32(item)
+            });
+        }
+        await _sysUserRepository.Change<SysPostUser>().InsertAsync(userPostList);
+
         return "添加成功";
     }
 
@@ -170,6 +184,25 @@ public class SysUserController : BaseApiController
             });
         }
         await _sysUserRepository.Change<SysRoleUser>().InsertAsync(userRoleList);
+        //修改岗位信息
+        await _sysUserRepository.Change<SysPostUser>().DeleteAsync(x => x.UserId == entity.Id);
+        var userPostList = new List<SysPostUser>();
+        foreach (var item in entity.PostIds.SplitWithComma())
+        {
+            userPostList.Add(new SysPostUser()
+            {
+                UserId = entity.Id,
+                PostId = Convert.ToInt32(item)
+            });
+        }
+        await _sysUserRepository.Change<SysPostUser>().InsertAsync(userPostList);
+
+        //部门中的领导，冗余存储的
+        await _sysUserRepository.Change<SysOrg>().UpdateAsync(x => new SysOrg()
+        {
+            LeaderName = entity.UserName,
+        }, x => x.LeaderId == entity.CreatedUserId);
+
         return "修改成功";
     }
 
@@ -183,6 +216,13 @@ public class SysUserController : BaseApiController
     {
         var idList = ids.SplitWithComma().ConvertIntList();
         await _sysUserRepository.Change<SysRoleUser>().DeleteWithSoftAsync(x => idList.Contains(x.UserId));
+        await _sysUserRepository.Change<SysPostUser>().DeleteWithSoftAsync(x => idList.Contains(x.UserId));
+        //部门中的领导，冗余存储的
+        await _sysUserRepository.Change<SysOrg>().UpdateAsync(x => new SysOrg()
+        {
+            LeaderId = 0,
+            LeaderName = null,
+        }, x => idList.Contains(x.LeaderId));
         await _sysUserRepository.DeleteWithSoftAuditAsync(idList, new LogAction(_logPath, _logHandler, CommonHelper.GetClientType()));
         await _sysUserRepository.EntityContext.Updateable<SysUser>()
                                     .PublicSetColumns(x => x.CellPhone, x => x.CellPhone + "-" + DateTime.Now.ToTimeStamp().ToString()) //将手机号后缀加上-时间戳，防止手机号重复
@@ -305,5 +345,17 @@ public class SysUserController : BaseApiController
     //    return "修改成功";
     //}
 
+    #region 部门权限
+
+    [Permission("部门-添加", "org-add")]
+    public void AAA() { }
+
+    [Permission("部门-修改", "org-edit")]
+    public void BBB() { }
+
+    [Permission("部门-删除", "org-delete")]
+    public void CCC() { }
+
+    #endregion
 
 }

@@ -24,7 +24,7 @@ public class SysModule : BaseEntity
     /// 排序数字，降序排列
     /// </summary>
     [FsColumn(IsNullable = false)]
-    public int OrderNo { get; set; }
+    public int Sort { get; set; }
 
     /// <summary>
     /// 状态

@@ -89,7 +89,7 @@ public class DBController : BaseApiController
         };
 
         Type[] controllerList = types.Where(o => isAttribute(Attribute.GetCustomAttributes(o, true)))
-                .OrderBy(o => (o.GetCustomAttributes(typeof(PermissionHandlerAttribute), true)[0] as PermissionHandlerAttribute).OrderNo).ToArray();
+                .OrderBy(o => (o.GetCustomAttributes(typeof(PermissionHandlerAttribute), true)[0] as PermissionHandlerAttribute).Sort).ToArray();
 
         if (!controllerList.Any()) throw Oops.Bah("未扫描到任何权限控制器,同步已中止");
 
@@ -103,11 +103,11 @@ public class DBController : BaseApiController
         //数据库已有的模块
         var dbModuleList = _sysModuleRepo.ToList();
         //获取所有模块名称
-        List<(string ModuleName, int OrderNo)> registeredModuleList = controllerList
+        List<(string ModuleName, int Sort)> registeredModuleList = controllerList
                                         .Select(p => p.GetCustomAttributes(typeof(PermissionHandlerAttribute), true)[0] as PermissionHandlerAttribute)
-                                        .OrderByDescending(p => p.OrderNo)
+                                        .OrderByDescending(p => p.Sort)
                                         .GroupBy(p => p.ModuleName)
-                                        .Select(g => (g.Key, g.Max(p => p.OrderNo)))
+                                        .Select(g => (g.Key, g.Max(p => p.Sort)))
                                         .ToList();
 
         foreach (var moduleGroup in registeredModuleList)
@@ -118,7 +118,7 @@ public class DBController : BaseApiController
             {
                 entityModule = new SysModule(moduleGroup.ModuleName)
                 {
-                    OrderNo = moduleGroup.OrderNo
+                    Sort = moduleGroup.Sort
                 };
                 moduleId = _sysModuleRepo.InsertReturnIdentity(entityModule);
                 _logger.LogInformation($"【权限数据初始化】新增模块:{moduleGroup},数据编号:{moduleId}");
@@ -162,7 +162,7 @@ public class DBController : BaseApiController
                 ModuleId = moduleEntity.Id,
                 HandlerName = handerName,
                 AliasName = handerAliasName,
-                OrderNo = handlerAttribute.OrderNo,
+                Sort = handlerAttribute.Sort,
                 RefController = controllerFullName
             };
 

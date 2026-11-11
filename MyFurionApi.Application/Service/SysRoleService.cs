@@ -100,7 +100,7 @@ public class SysRoleService : ISysRoleService, ITransient
                     PermitId = sp.Id,
                     PermitName = sp.PermitName,
                     AliasName = sp.AliasName,
-                    OrderNo = sh.OrderNo,
+                    OrderNo = sh.Sort,
                     IsChecked = SqlFunc.IIF(SqlSugar.SqlFunc.IsNull(srp.PermitId, 0) == 0, false, true)
                 })
                 .ToListAsync();

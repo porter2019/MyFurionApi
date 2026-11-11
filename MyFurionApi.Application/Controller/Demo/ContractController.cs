@@ -137,7 +137,7 @@ public class ContractController : BaseApiController
     /// <param name="req"></param>
     /// <returns></returns>
     [HttpPost, Route("modify/sort")]
-    public async Task<string> ModifySort(SqlSugarRepository<ContractItem> itemRepository, List<ContractItem> req)
+    public async Task<string> ModifySort([FromServices] SqlSugarRepository<ContractItem> itemRepository, List<ContractItem> req)
     {
         var updateList = req.Select((item, index) => new ContractItem
         {

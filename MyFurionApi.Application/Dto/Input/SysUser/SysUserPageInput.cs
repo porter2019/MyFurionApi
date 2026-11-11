@@ -6,16 +6,34 @@
 public class SysUserPageInput : BasePageQueryModel<SysUserOMInfo>
 {
     /// <summary>
+    /// OrgId
+    /// </summary>
+    [PageQuery(PageQueryOperatorType.IntEqualWhenGreaterZero)]
+    public int? OrgId { get; set; }
+
+    /// <summary>
     /// CellPhone like查询
     /// </summary>
     [PageQuery(PageQueryOperatorType.Like)]
     public string CellPhone { get; set; }
 
     /// <summary>
+    /// OrgName like查询
+    /// </summary>
+    [PageQuery(PageQueryOperatorType.Like)]
+    public string OrgName { get; set; }
+
+    /// <summary>
     /// 组名 like查询
     /// </summary>
     [PageQuery(PageQueryOperatorType.Like)]
     public string RoleNames { get; set; }
+
+    /// <summary>
+    /// 岗位 like查询
+    /// </summary>
+    [PageQuery(PageQueryOperatorType.Like)]
+    public string PostNames { get; set; }
 
     /// <summary>
     /// UserName like查询

@@ -18,7 +18,7 @@ public class PermissionHandlerAttribute : Attribute
         this.ModuleName = moduleName;
         this.HandlerName = handlerName;
         this.AliasName = aliasName;
-        this.OrderNo = orderNo;
+        this.Sort = orderNo;
     }
 
     /// <summary>
@@ -39,5 +39,5 @@ public class PermissionHandlerAttribute : Attribute
     /// <summary>
     /// 排序数字
     /// </summary>
-    public int OrderNo { get; set; } = 0;
+    public int Sort { get; set; } = 0;
 }

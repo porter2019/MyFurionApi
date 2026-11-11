@@ -28,7 +28,7 @@ public class Contract : BaseEntityStandard
     /// 合同类型名称
     /// </summary>
     [FsColumn(true)]
-    public string CTypeName => CType.GetEnumDescription();
+    public string CTypeText => CType.GetEnumDescription();
 
     /// <summary>
     /// 签订时间
@@ -83,18 +83,6 @@ public class Contract : BaseEntityStandard
     /// </summary>
     [FsColumn(true)]
     public string FlagName => Flag.GetEnumDescription();
-
-    /// <summary>
-    /// 状态
-    /// </summary>
-    [FsColumn(IsNullable = false)]
-    public bool Status { get; set; }
-
-    /// <summary>
-    /// 备注
-    /// </summary>
-    [FsColumn(200)]
-    public string Remark { get; set; }
 
     /// <summary>
     /// 附件

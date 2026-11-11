@@ -4,7 +4,7 @@
 /// 用户组下的用户
 /// </summary>
 [FsTable()]
-public class SysRoleUser : BaseEntityStandard
+public class SysRoleUser : BaseEntity
 {
     /// <summary>
     /// 用户组Id

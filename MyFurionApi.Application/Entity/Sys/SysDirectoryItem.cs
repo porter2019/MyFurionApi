@@ -23,12 +23,6 @@ public class SysDirectoryItem : BaseEntityStandard
     /// </summary>
     [FsColumn(IsNullable = false)]
     public string Value { get; set; }
-
-    /// <summary>
-    /// 启用状态
-    /// </summary>
-    [FsColumn(IsNullable = false)]
-    public bool Status { get; set; } = true;
 }
 
 /// <summary>

@@ -33,6 +33,18 @@ public class SysUser : BaseEntityStandard
     public string Password { get; set; }
 
     /// <summary>
+    /// 部门Id
+    /// </summary>
+    [FsColumn]
+    public int OrgId { get; set; }
+
+    /// <summary>
+    /// 部门名称
+    /// </summary>
+    [FsColumn(30)]
+    public string OrgName { get; set; } // 冗余存储
+
+    /// <summary>
     /// 运营系统管理权限
     /// </summary>
     [FsColumn(IsNullable = false)]
@@ -74,16 +86,16 @@ public class SysUser : BaseEntityStandard
     }
 
     /// <summary>
-    /// 账号启用状态
-    /// </summary>
-    [FsColumn(IsNullable = false)]
-    public bool Status { get; set; } = true;
-
-    /// <summary>
     /// 最后登录时间
     /// </summary>
     [FsColumn()]
     public DateTime? LastLoginTime { get; set; }
+
+    /// <summary>
+    /// 最后登录Ip
+    /// </summary>
+    [FsColumn(30)]
+    public string LastLoginIp { get; set; }
 
 }
 
@@ -93,6 +105,8 @@ public class SysUser : BaseEntityStandard
 [FsTable("SysUserOMInfoView", true)]
 public class SysUserOMInfo : SysUser
 {
+    #region 用户组
+
     /// <summary>
     /// 用户所属角色组Ids
     /// </summary>
@@ -116,5 +130,35 @@ public class SysUserOMInfo : SysUser
     /// 所属组，逗号分隔
     /// </summary>
     public string RoleNames { get; set; }
+
+    #endregion
+
+    #region 岗位
+
+    /// <summary>
+    /// 用户所属岗位组Ids
+    /// </summary>
+    public string PostIds { get; set; }
+
+    /// <summary>
+    /// 用户所属岗位组Id
+    /// <code>Vue需要数组类型的</code>
+    /// </summary>
+    [FsColumn(true)]
+    public int[] PostIdArray
+    {
+        get
+        {
+            if (PostIds.IsNull()) return Array.Empty<int>();
+            return PostIds.Split(',').ConvertIntArray();
+        }
+    }
+
+    /// <summary>
+    /// 所属组，逗号分隔
+    /// </summary>
+    public string PostNames { get; set; }
+
+    #endregion
 
 }

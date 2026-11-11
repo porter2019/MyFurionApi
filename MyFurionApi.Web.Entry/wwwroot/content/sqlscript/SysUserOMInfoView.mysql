@@ -1,13 +1,17 @@
 ﻿#系统用户运营管理所需的额外数据
-DROP VIEW IF EXISTS SysUserOMInfoView;
+DROP VIEW IF EXISTS sys_user_om_view;
 
-CREATE VIEW SysUserOMInfoView AS
+CREATE VIEW sys_user_om_view AS
 SELECT
     a.*,
-    IFNULL(GROUP_CONCAT(ru.RoleId SEPARATOR ','), '') AS RoleIds, # 角色ID逗号分隔
-    IFNULL(GROUP_CONCAT(sr.Name SEPARATOR ','), '') AS RoleNames # 角色名称逗号分隔
-FROM SysUser a
-LEFT JOIN SysRoleUser ru ON a.Id = ru.UserId AND ru.IsDeleted = 0
-LEFT JOIN SysRole sr ON sr.Id = ru.RoleId AND sr.IsDeleted = 0
-WHERE a.IsDeleted = 0
-GROUP BY a.Id;
+    IFNULL(GROUP_CONCAT(ru.role_id SEPARATOR ','), '') AS role_ids, # 角色ID逗号分隔
+    IFNULL(GROUP_CONCAT(sr.name SEPARATOR ','), '') AS role_names, # 角色名称逗号分隔
+    IFNULL(GROUP_CONCAT(spu.post_id SEPARATOR ','), '') AS post_ids, # 岗位ID逗号分隔
+    IFNULL(GROUP_CONCAT(sp.name SEPARATOR ','), '') AS post_names # 角色名称逗号分隔
+FROM sys_user a
+LEFT JOIN sys_role_user ru ON a.id = ru.user_id AND ru.is_deleted = 0
+LEFT JOIN sys_role sr ON sr.id = ru.role_id AND sr.is_deleted = 0
+LEFT JOIN sys_post_user spu on a.id = spu.user_id  and spu.is_deleted  = 0
+LEFT JOIN sys_post sp on sp.id = spu.post_id  and sp.is_deleted = 0
+WHERE a.is_deleted = 0
+GROUP BY a.id;

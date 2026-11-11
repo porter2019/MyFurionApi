@@ -34,7 +34,7 @@ public class SysHandler : BaseEntity
     /// 排序数字
     /// </summary>
     [FsColumn(IsNullable = false)]
-    public int OrderNo { get; set; }
+    public int Sort { get; set; }
 
     /// <summary>
     /// 状态
