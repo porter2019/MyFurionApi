@@ -146,5 +146,17 @@ public class SysPostController : BaseApiController
 
         return newStatusText;
     }
+
+    /// <summary>
+    /// 自动搜索字段
+    /// </summary>
+    /// <param name="commonFuncService"></param>
+    /// <param name="keyword"></param>
+    /// <returns></returns>
+    [HttpGet, Route("auto/search/name")]
+    public Task<List<dynamic>> SearchGroupField([FromServices] ICommonFuncService commonFuncService, string keyword)
+    {
+        return commonFuncService.AutoSearchField(typeof(SysPost), where: $"position('{keyword}' in Name) > 0");
+    }
 }
 

@@ -64,6 +64,7 @@ public class AccountController : BaseApiController
 
         var clientType = CommonHelper.GetClientType();
         if (clientType == ClientFromType.未知) throw Oops.Bah("未知来源(Head缺少from)");
+        var ip = App.HttpContext.GetClientIpAddress();
 
         var pwd = req.Password.ToMD5Encrypt();
         var userEntity = await _userRepository.FirstOrDefaultAsync(x => x.CellPhone == req.CellPhone && x.Password == pwd);
@@ -71,7 +72,7 @@ public class AccountController : BaseApiController
         if (!userEntity.Status) throw Oops.Bah("用户被禁用");
         if (clientType == ClientFromType.后台 && !userEntity.IsOM) throw Oops.Bah("账号不允许登录管理后台");
         if (clientType == ClientFromType.小程序 && !userEntity.IsMP) throw Oops.Bah("账号不允许登录移动端");
-        await _userRepository.UpdateAsync(x => new SysUser() { LastLoginTime = DateTime.Now }, x => x.Id == userEntity.Id);
+        await _userRepository.UpdateAsync(x => new SysUser() { LastLoginTime = DateTime.Now, LastLoginIp = ip }, x => x.Id == userEntity.Id);
         var token = GenerateToken(userEntity);
 
         //将token输出到响应头中

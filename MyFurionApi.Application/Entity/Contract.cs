@@ -82,7 +82,7 @@ public class Contract : BaseEntityStandard
     /// 审批状态名称
     /// </summary>
     [FsColumn(true)]
-    public string FlagName => Flag.GetEnumDescription();
+    public string FlagText => Flag.GetEnumDescription();
 
     /// <summary>
     /// 附件

@@ -30,6 +30,29 @@ public class SysDirectoryItemController : BaseApiController
     }
 
     /// <summary>
+    /// 批量修改排序
+    /// </summary>
+    /// <param name="req"></param>
+    /// <returns></returns>
+    [HttpPost, Route("modify/sorts")]
+    public async Task<string> ModifySorts(List<int> req)
+    {
+        if (req.IsEmpty()) throw Oops.Bah("缺少数据");
+
+        var updateObjs = new List<SysDirectoryItem>();
+        for (var i = 0; i < req.Count; i++)
+        {
+            updateObjs.Add(new SysDirectoryItem()
+            {
+                Id = req[i],
+                Sort = i + 1
+            });
+        }
+        await _sysDirectoryItemRepository.EntityContext.Updateable<SysDirectoryItem>(updateObjs).UpdateColumns(x => new { x.Sort }).ExecuteCommandAsync();
+        return "保存成功";
+    }
+
+    /// <summary>
     /// 获取详情
     /// </summary>
     /// <param name="id"></param>

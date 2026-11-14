@@ -15,7 +15,7 @@ public class SysRole : BaseEntityStandard
     /// <summary>
     /// 排序数字
     /// </summary>
-    [FsColumn()]
+    [FsColumn(IsNullable = false)]
     public int Sort { get; set; }
 
     /// <summary>

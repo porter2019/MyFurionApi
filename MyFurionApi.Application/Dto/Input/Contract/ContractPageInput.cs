@@ -18,6 +18,18 @@ public class ContractPageInput : BasePageQueryModel<Contract>
     public string Name { get; set; }
 
     /// <summary>
+    /// Flag
+    /// </summary>
+    [PageQuery(PageQueryOperatorType.IntEqualWhenGreaterMinus)]
+    public int? Flag { get; set; }
+
+    /// <summary>
+    /// flag in
+    /// </summary>
+    [PageQuery(PageQueryOperatorType.IntIn, ColumnName = "Flag")]
+    public string FlagIn { get; set; }
+
+    /// <summary>
     /// 添加时间
     /// </summary>
     [PageQuery(PageQueryOperatorType.BetweenDate)]

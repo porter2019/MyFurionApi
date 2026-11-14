@@ -4,14 +4,27 @@ DROP VIEW IF EXISTS sys_user_om_view;
 CREATE VIEW sys_user_om_view AS
 SELECT
     a.*,
-    IFNULL(GROUP_CONCAT(ru.role_id SEPARATOR ','), '') AS role_ids, # 角色ID逗号分隔
-    IFNULL(GROUP_CONCAT(sr.name SEPARATOR ','), '') AS role_names, # 角色名称逗号分隔
-    IFNULL(GROUP_CONCAT(spu.post_id SEPARATOR ','), '') AS post_ids, # 岗位ID逗号分隔
-    IFNULL(GROUP_CONCAT(sp.name SEPARATOR ','), '') AS post_names # 角色名称逗号分隔
+    IFNULL(r.role_ids, '')   AS role_ids,
+    IFNULL(r.role_names, '') AS role_names,
+    IFNULL(p.post_ids, '')   AS post_ids,
+    IFNULL(p.post_names, '') AS post_names
 FROM sys_user a
-LEFT JOIN sys_role_user ru ON a.id = ru.user_id AND ru.is_deleted = 0
-LEFT JOIN sys_role sr ON sr.id = ru.role_id AND sr.is_deleted = 0
-LEFT JOIN sys_post_user spu on a.id = spu.user_id  and spu.is_deleted  = 0
-LEFT JOIN sys_post sp on sp.id = spu.post_id  and sp.is_deleted = 0
-WHERE a.is_deleted = 0
-GROUP BY a.id;
+LEFT JOIN (
+    SELECT ru.user_id,
+           GROUP_CONCAT(ru.role_id SEPARATOR ',') AS role_ids,
+           GROUP_CONCAT(sr.name    SEPARATOR ',') AS role_names
+    FROM sys_role_user ru
+    LEFT JOIN sys_role sr ON sr.id = ru.role_id AND sr.is_deleted = 0
+    WHERE ru.is_deleted = 0
+    GROUP BY ru.user_id
+) r ON r.user_id = a.id
+LEFT JOIN (
+    SELECT spu.user_id,
+           GROUP_CONCAT(spu.post_id SEPARATOR ',') AS post_ids,
+           GROUP_CONCAT(sp.name     SEPARATOR ',') AS post_names
+    FROM sys_post_user spu
+    LEFT JOIN sys_post sp ON sp.id = spu.post_id AND sp.is_deleted = 0
+    WHERE spu.is_deleted = 0
+    GROUP BY spu.user_id
+) p ON p.user_id = a.id
+WHERE a.is_deleted = 0;

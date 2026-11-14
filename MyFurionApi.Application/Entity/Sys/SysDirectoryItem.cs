@@ -23,6 +23,12 @@ public class SysDirectoryItem : BaseEntityStandard
     /// </summary>
     [FsColumn(IsNullable = false)]
     public string Value { get; set; }
+
+    /// <summary>
+    /// 排序数字
+    /// </summary>
+    [FsColumn(IsNullable = false)]
+    public int Sort { get; set; }
 }
 
 /// <summary>

@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualBasic;
-
-namespace MyFurionApi.Application.Controller;
+﻿namespace MyFurionApi.Application.Controller;
 
 /// <summary>
 /// 合同接口
@@ -136,7 +134,7 @@ public class ContractController : BaseApiController
     /// <param name="itemRepository"></param>
     /// <param name="req"></param>
     /// <returns></returns>
-    [HttpPost, Route("modify/sort")]
+    [HttpPost, Route("modify/sorts")]
     public async Task<string> ModifySort([FromServices] SqlSugarRepository<ContractItem> itemRepository, List<ContractItem> req)
     {
         var updateList = req.Select((item, index) => new ContractItem
@@ -172,7 +170,7 @@ public class ContractController : BaseApiController
             ClientType = CommonHelper.GetClientType(),
         });
         var model = await _contractRepository.FirstOrDefaultAsync(x => x.Id == id);
-        return model?.FlagName ?? "";
+        return model?.FlagText ?? "";
     }
 
     /// <summary>

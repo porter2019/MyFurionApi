@@ -21,6 +21,6 @@ public class SysPost : BaseEntityStandard
     /// <summary>
     /// 排序数字
     /// </summary>
-    [FsColumn()]
+    [FsColumn(IsNullable = false)]
     public int Sort { get; set; }
 }

@@ -166,4 +166,15 @@ public class SysRoleController : BaseApiController
         return _sysRoleService.GetPermissionsByRoleIdAsync(roleIds);
     }
 
+    /// <summary>
+    /// 自动搜索字段
+    /// </summary>
+    /// <param name="commonFuncService"></param>
+    /// <param name="keyword"></param>
+    /// <returns></returns>
+    [HttpGet, Route("auto/search/name")]
+    public Task<List<dynamic>> SearchGroupField([FromServices] ICommonFuncService commonFuncService, string keyword)
+    {
+        return commonFuncService.AutoSearchField(typeof(SysRole), where: $"position('{keyword}' in Name) > 0");
+    }
 }
